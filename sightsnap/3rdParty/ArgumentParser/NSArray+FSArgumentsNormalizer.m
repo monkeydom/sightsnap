@@ -16,6 +16,7 @@
     FSMutableAttributedArray * args = [FSMutableAttributedArray attributedArrayWithCapacity:[self count]];
     [self enumerateObjectsUsingBlock:^(NSString * arg, NSUInteger idx, BOOL *stop) {
         if (![arg isKindOfClass:[NSString class]]) return; // just... what?
+        if (idx == 0) return; // remove first argument -e-g the calling name of the program
         
         // handle equals-sign assignments
         // possibly check for \= so that we can escape from = assignments. probably overkill though

@@ -104,6 +104,7 @@
     [signatures enumerateObjectsUsingBlock:^(FSArgumentSignature * signature, BOOL *stop) {
         [signature.switches enumerateObjectsUsingBlock:^(id _switch, BOOL *stop) {
             [_switches setObject:signature forKey:_switch];
+            [_switches setObject:signature forKey:__fsargs_expandSwitch(_switch)];
         }];
         [signature.aliases enumerateObjectsUsingBlock:^(id alias, BOOL *stop) {
             [_aliases setObject:signature forKey:alias];

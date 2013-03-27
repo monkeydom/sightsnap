@@ -127,9 +127,9 @@
             if ([t isKindOfClass:[FSSwitchToken class]]) {
                 NSString * sw = [((FSSwitchToken *)t) identifier];
                 if ([sw hasPrefix:@"--"])
-                    [switches addObject:sw];
+                    [switches addObject:[sw substringFromIndex:2]];
                 else if ([sw hasPrefix:@"-"])
-                    [switches addObject:sw];
+                    [switches addObject:[sw substringFromIndex:1]];
                 else
                     NSAssert(YES==NO, @"Dude, seriously?");
             } else if ([t isKindOfClass:[FSAliasToken class]]) {
