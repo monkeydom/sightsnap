@@ -7,15 +7,17 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <QTKit/QTKit.h>
 
-int main(int argc, const char * argv[])
-{
-
+int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        
         // insert code here...
-        NSLog(@"Hello, World!");
         
+        NSMutableArray *videoDevices = [NSMutableArray new];
+        [videoDevices addObjectsFromArray:[QTCaptureDevice inputDevicesWithMediaType:QTMediaTypeVideo]];
+        [videoDevices addObjectsFromArray:[QTCaptureDevice inputDevicesWithMediaType:QTMediaTypeMuxed]];
+        
+        NSLog(@"Video Devices:\n%@",videoDevices);
     }
     return 0;
 }
