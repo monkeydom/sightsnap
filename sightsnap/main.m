@@ -8,16 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import <QTKit/QTKit.h>
+#import "TCMCaptureManager.h"
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        // insert code here...
         
-        NSMutableArray *videoDevices = [NSMutableArray new];
-        [videoDevices addObjectsFromArray:[QTCaptureDevice inputDevicesWithMediaType:QTMediaTypeVideo]];
-        [videoDevices addObjectsFromArray:[QTCaptureDevice inputDevicesWithMediaType:QTMediaTypeMuxed]];
-        
-        NSLog(@"Video Devices:\n%@",videoDevices);
+        TCMCaptureManager *captureManager = [TCMCaptureManager captureManager];
+        NSLog(@"Video Devices:\n%@",captureManager.availableVideoDevices);
     }
     return 0;
 }

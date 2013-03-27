@@ -11,6 +11,7 @@
 		F2D1918A170341A8004B8DCD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D19189170341A8004B8DCD /* main.m */; };
 		F2D1918E170341A8004B8DCD /* sightsnap.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = F2D1918D170341A8004B8DCD /* sightsnap.1 */; };
 		F2D19195170342C3004B8DCD /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2D19194170342C3004B8DCD /* QTKit.framework */; };
+		F2D1919917034604004B8DCD /* TCMCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1919817034604004B8DCD /* TCMCaptureManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -33,6 +34,8 @@
 		F2D1918C170341A8004B8DCD /* sightsnap-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "sightsnap-Prefix.pch"; sourceTree = "<group>"; };
 		F2D1918D170341A8004B8DCD /* sightsnap.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = sightsnap.1; sourceTree = "<group>"; };
 		F2D19194170342C3004B8DCD /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
+		F2D1919717034604004B8DCD /* TCMCaptureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TCMCaptureManager.h; path = Classes/TCMCaptureManager.h; sourceTree = "<group>"; };
+		F2D1919817034604004B8DCD /* TCMCaptureManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCMCaptureManager.m; path = Classes/TCMCaptureManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +80,7 @@
 		F2D19188170341A8004B8DCD /* sightsnap */ = {
 			isa = PBXGroup;
 			children = (
+				F2D19196170345D4004B8DCD /* Classes */,
 				F2D19189170341A8004B8DCD /* main.m */,
 				F2D1918D170341A8004B8DCD /* sightsnap.1 */,
 				F2D1918B170341A8004B8DCD /* Supporting Files */,
@@ -90,6 +94,15 @@
 				F2D1918C170341A8004B8DCD /* sightsnap-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F2D19196170345D4004B8DCD /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				F2D1919717034604004B8DCD /* TCMCaptureManager.h */,
+				F2D1919817034604004B8DCD /* TCMCaptureManager.m */,
+			);
+			name = Classes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -144,6 +157,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F2D1918A170341A8004B8DCD /* main.m in Sources */,
+				F2D1919917034604004B8DCD /* TCMCaptureManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
