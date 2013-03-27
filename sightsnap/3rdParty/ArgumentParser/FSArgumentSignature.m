@@ -127,9 +127,9 @@
             if ([t isKindOfClass:[FSSwitchToken class]]) {
                 NSString * sw = [((FSSwitchToken *)t) identifier];
                 if ([sw hasPrefix:@"--"])
-                    [switches addObject:[sw substringFromIndex:2]];
+                    [switches addObject:sw];
                 else if ([sw hasPrefix:@"-"])
-                    [switches addObject:[sw substringFromIndex:1]];
+                    [switches addObject:sw];
                 else
                     NSAssert(YES==NO, @"Dude, seriously?");
             } else if ([t isKindOfClass:[FSAliasToken class]]) {
@@ -220,7 +220,7 @@
         @"ValueInvocation  ::= \"=\" <ValueSpecifier>?;"
         @"ValueSpecifier   ::= \"{\" \"Number\" \",\" \"Number\"? \"}\";"
         ;
-        expressionGrammer = [CPGrammar grammarWithStart:@"FormatSequence" backusNaurForm:bnfFormat];
+        expressionGrammer = [CPGrammar grammarWithStart:@"FormatSequence" backusNaurForm:bnfFormat error:NULL];
     });
     return expressionGrammer;
 }

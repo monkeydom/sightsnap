@@ -33,11 +33,43 @@
 		F2D191D91703576E004B8DCD /* NSString+Indenter.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191C51703572A004B8DCD /* NSString+Indenter.m */; };
 		F2D19239170358A3004B8DCD /* NSArray+Functional.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191F217035849004B8DCD /* NSArray+Functional.m */; };
 		F2D1923A170358A3004B8DCD /* NSSetFunctional.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191F417035849004B8DCD /* NSSetFunctional.m */; };
-		F2D1923B170358A3004B8DCD /* CPParser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191F717035849004B8DCD /* CPParser.m */; };
-		F2D1923C170358A3004B8DCD /* CPShiftReduceParser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191F917035849004B8DCD /* CPShiftReduceParser.m */; };
-		F2D1923D170358A3004B8DCD /* CPSyntaxTree.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1921517035849004B8DCD /* CPSyntaxTree.m */; };
-		F2D1923E170358A3004B8DCD /* CPTokeniser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1921817035849004B8DCD /* CPTokeniser.m */; };
-		F2D1923F170358A3004B8DCD /* CPTokenStream.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1921A17035849004B8DCD /* CPTokenStream.m */; };
+		F2D1923B170358A3004B8DCD /* CPParser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191F717035849004B8DCD /* CPParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1923C170358A3004B8DCD /* CPShiftReduceParser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191F917035849004B8DCD /* CPShiftReduceParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1923D170358A3004B8DCD /* CPSyntaxTree.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1921517035849004B8DCD /* CPSyntaxTree.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1923E170358A3004B8DCD /* CPTokeniser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1921817035849004B8DCD /* CPTokeniser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1923F170358A3004B8DCD /* CPTokenStream.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1921A17035849004B8DCD /* CPTokenStream.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924017035C3B004B8DCD /* CPJSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191DD17035848004B8DCD /* CPJSONParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924117035C3B004B8DCD /* CPGrammar.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191E217035848004B8DCD /* CPGrammar.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924217035C3B004B8DCD /* CPGrammarInternal.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191E417035848004B8DCD /* CPGrammarInternal.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924317035C3B004B8DCD /* CPGrammarPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191E617035848004B8DCD /* CPGrammarPrivate.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924417035C3B004B8DCD /* CPGrammarSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191E817035848004B8DCD /* CPGrammarSymbol.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924517035C3B004B8DCD /* CPRHSItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191EB17035848004B8DCD /* CPRHSItem.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924617035C3B004B8DCD /* CPRHSItemResult.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191ED17035849004B8DCD /* CPRHSItemResult.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924717035C3B004B8DCD /* CPRule.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191F017035849004B8DCD /* CPRule.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924817035C3B004B8DCD /* CPItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191FC17035849004B8DCD /* CPItem.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924917035C3B004B8DCD /* CPLALR1Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191FE17035849004B8DCD /* CPLALR1Parser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924A17035C3B004B8DCD /* CPLR1Item.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1920017035849004B8DCD /* CPLR1Item.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924B17035C3B004B8DCD /* CPLR1Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1920217035849004B8DCD /* CPLR1Parser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924C17035C3B004B8DCD /* CPShiftAction.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1920417035849004B8DCD /* CPShiftAction.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924D17035C3B004B8DCD /* CPShiftReduceAction.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1920617035849004B8DCD /* CPShiftReduceAction.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924E17035C3B004B8DCD /* CPShiftReduceActionTable.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1920817035849004B8DCD /* CPShiftReduceActionTable.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924F17035C3B004B8DCD /* CPShiftReduceGotoTable.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1920A17035849004B8DCD /* CPShiftReduceGotoTable.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925017035C3B004B8DCD /* CPShiftReduceState.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1920D17035849004B8DCD /* CPShiftReduceState.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925117035C3B004B8DCD /* CPSLRParser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1920F17035849004B8DCD /* CPSLRParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925217035C3B004B8DCD /* CPRecoveryAction.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1921217035849004B8DCD /* CPRecoveryAction.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925317035C3B004B8DCD /* CPIdentifierRecogniser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1921D17035849004B8DCD /* CPIdentifierRecogniser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925417035C3B004B8DCD /* CPKeywordRecogniser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1921F17035849004B8DCD /* CPKeywordRecogniser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925517035C3B004B8DCD /* CPNumberRecogniser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1922117035849004B8DCD /* CPNumberRecogniser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925617035C3B004B8DCD /* CPQuotedRecogniser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1922317035849004B8DCD /* CPQuotedRecogniser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925717035C3B004B8DCD /* CPWhiteSpaceRecogniser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1922617035849004B8DCD /* CPWhiteSpaceRecogniser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925817035C3B004B8DCD /* CPEOFToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1922917035849004B8DCD /* CPEOFToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925917035C3B004B8DCD /* CPErrorToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1922B17035849004B8DCD /* CPErrorToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925A17035C3B004B8DCD /* CPIdentifierToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1922D17035849004B8DCD /* CPIdentifierToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925B17035C3B004B8DCD /* CPKeywordToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1922F17035849004B8DCD /* CPKeywordToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925C17035C3B004B8DCD /* CPNumberToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1923117035849004B8DCD /* CPNumberToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925D17035C3B004B8DCD /* CPQuotedToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1923317035849004B8DCD /* CPQuotedToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925E17035C3B004B8DCD /* CPToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1923517035849004B8DCD /* CPToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925F17035C3B004B8DCD /* CPWhiteSpaceToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1923717035849004B8DCD /* CPWhiteSpaceToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -561,6 +593,38 @@
 				F2D1923D170358A3004B8DCD /* CPSyntaxTree.m in Sources */,
 				F2D1923E170358A3004B8DCD /* CPTokeniser.m in Sources */,
 				F2D1923F170358A3004B8DCD /* CPTokenStream.m in Sources */,
+				F2D1924017035C3B004B8DCD /* CPJSONParser.m in Sources */,
+				F2D1924117035C3B004B8DCD /* CPGrammar.m in Sources */,
+				F2D1924217035C3B004B8DCD /* CPGrammarInternal.m in Sources */,
+				F2D1924317035C3B004B8DCD /* CPGrammarPrivate.m in Sources */,
+				F2D1924417035C3B004B8DCD /* CPGrammarSymbol.m in Sources */,
+				F2D1924517035C3B004B8DCD /* CPRHSItem.m in Sources */,
+				F2D1924617035C3B004B8DCD /* CPRHSItemResult.m in Sources */,
+				F2D1924717035C3B004B8DCD /* CPRule.m in Sources */,
+				F2D1924817035C3B004B8DCD /* CPItem.m in Sources */,
+				F2D1924917035C3B004B8DCD /* CPLALR1Parser.m in Sources */,
+				F2D1924A17035C3B004B8DCD /* CPLR1Item.m in Sources */,
+				F2D1924B17035C3B004B8DCD /* CPLR1Parser.m in Sources */,
+				F2D1924C17035C3B004B8DCD /* CPShiftAction.m in Sources */,
+				F2D1924D17035C3B004B8DCD /* CPShiftReduceAction.m in Sources */,
+				F2D1924E17035C3B004B8DCD /* CPShiftReduceActionTable.m in Sources */,
+				F2D1924F17035C3B004B8DCD /* CPShiftReduceGotoTable.m in Sources */,
+				F2D1925017035C3B004B8DCD /* CPShiftReduceState.m in Sources */,
+				F2D1925117035C3B004B8DCD /* CPSLRParser.m in Sources */,
+				F2D1925217035C3B004B8DCD /* CPRecoveryAction.m in Sources */,
+				F2D1925317035C3B004B8DCD /* CPIdentifierRecogniser.m in Sources */,
+				F2D1925417035C3B004B8DCD /* CPKeywordRecogniser.m in Sources */,
+				F2D1925517035C3B004B8DCD /* CPNumberRecogniser.m in Sources */,
+				F2D1925617035C3B004B8DCD /* CPQuotedRecogniser.m in Sources */,
+				F2D1925717035C3B004B8DCD /* CPWhiteSpaceRecogniser.m in Sources */,
+				F2D1925817035C3B004B8DCD /* CPEOFToken.m in Sources */,
+				F2D1925917035C3B004B8DCD /* CPErrorToken.m in Sources */,
+				F2D1925A17035C3B004B8DCD /* CPIdentifierToken.m in Sources */,
+				F2D1925B17035C3B004B8DCD /* CPKeywordToken.m in Sources */,
+				F2D1925C17035C3B004B8DCD /* CPNumberToken.m in Sources */,
+				F2D1925D17035C3B004B8DCD /* CPQuotedToken.m in Sources */,
+				F2D1925E17035C3B004B8DCD /* CPToken.m in Sources */,
+				F2D1925F17035C3B004B8DCD /* CPWhiteSpaceToken.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

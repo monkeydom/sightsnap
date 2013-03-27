@@ -14,7 +14,7 @@
 - (NSSet *)map:(id(^)(id obj))block
 {
     NSUInteger c = [self count];
-    id *resultingObjects = malloc(c * sizeof(id));
+    NSMutableSet *result = [NSMutableSet setWithCapacity:c];
     
     NSUInteger nonNilCount = 0;
     for (id obj in self)
@@ -22,14 +22,12 @@
         id r = block(obj);
         if (nil != r)
         {
-            resultingObjects[nonNilCount] = r;
+            [result addObject:r];
             nonNilCount++;
         }
     }
     
-    NSSet *s = [NSSet setWithObjects:resultingObjects count:nonNilCount];
-    free(resultingObjects);
-    return s;
+    return result;
 }
 
 @end
