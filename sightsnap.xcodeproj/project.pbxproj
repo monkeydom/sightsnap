@@ -12,6 +12,64 @@
 		F2D1918E170341A8004B8DCD /* sightsnap.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = F2D1918D170341A8004B8DCD /* sightsnap.1 */; };
 		F2D19195170342C3004B8DCD /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2D19194170342C3004B8DCD /* QTKit.framework */; };
 		F2D1919917034604004B8DCD /* TCMCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1919817034604004B8DCD /* TCMCaptureManager.m */; };
+		F2D191C71703576E004B8DCD /* FSAliasRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1919D1703572A004B8DCD /* FSAliasRecognizer.m */; };
+		F2D191C81703576E004B8DCD /* FSAliasToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1919F1703572A004B8DCD /* FSAliasToken.m */; };
+		F2D191C91703576E004B8DCD /* FSArgsKonstants.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191A11703572A004B8DCD /* FSArgsKonstants.m */; };
+		F2D191CA1703576E004B8DCD /* FSArgumentPackage.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191A31703572A004B8DCD /* FSArgumentPackage.m */; };
+		F2D191CB1703576E004B8DCD /* FSArgumentParser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191A61703572A004B8DCD /* FSArgumentParser.m */; };
+		F2D191CC1703576E004B8DCD /* FSArguments_Coalescer_Internal.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191A91703572A004B8DCD /* FSArguments_Coalescer_Internal.m */; };
+		F2D191CD1703576E004B8DCD /* FSArgumentSignature.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191AB1703572A004B8DCD /* FSArgumentSignature.m */; };
+		F2D191CE1703576E004B8DCD /* FSCountedArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191AE1703572A004B8DCD /* FSCountedArgument.m */; };
+		F2D191CF1703576E004B8DCD /* FSFormatCtorParserDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191B01703572A004B8DCD /* FSFormatCtorParserDelegate.m */; };
+		F2D191D01703576E004B8DCD /* FSFormatCtorTokeniserDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191B21703572A004B8DCD /* FSFormatCtorTokeniserDelegate.m */; };
+		F2D191D11703576E004B8DCD /* FSMutableAttributedArray.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191B41703572A004B8DCD /* FSMutableAttributedArray.m */; };
+		F2D191D21703576E004B8DCD /* FSSwitchRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191B61703572A004B8DCD /* FSSwitchRecognizer.m */; };
+		F2D191D31703576E004B8DCD /* FSSwitchToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191B81703572A004B8DCD /* FSSwitchToken.m */; };
+		F2D191D41703576E004B8DCD /* FSValuedArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191BA1703572A004B8DCD /* FSValuedArgument.m */; };
+		F2D191D51703576E004B8DCD /* NSArray+FSArgumentsNormalizer.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191BD1703572A004B8DCD /* NSArray+FSArgumentsNormalizer.m */; };
+		F2D191D61703576E004B8DCD /* NSDictionary+RubyDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191BF1703572A004B8DCD /* NSDictionary+RubyDescription.m */; };
+		F2D191D71703576E004B8DCD /* NSProcessInfo+FSArgumentParser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191C11703572A004B8DCD /* NSProcessInfo+FSArgumentParser.m */; };
+		F2D191D81703576E004B8DCD /* NSScanner+EscapedScanning.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191C31703572A004B8DCD /* NSScanner+EscapedScanning.m */; };
+		F2D191D91703576E004B8DCD /* NSString+Indenter.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191C51703572A004B8DCD /* NSString+Indenter.m */; };
+		F2D19239170358A3004B8DCD /* NSArray+Functional.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191F217035849004B8DCD /* NSArray+Functional.m */; };
+		F2D1923A170358A3004B8DCD /* NSSetFunctional.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191F417035849004B8DCD /* NSSetFunctional.m */; };
+		F2D1923B170358A3004B8DCD /* CPParser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191F717035849004B8DCD /* CPParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1923C170358A3004B8DCD /* CPShiftReduceParser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191F917035849004B8DCD /* CPShiftReduceParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1923D170358A3004B8DCD /* CPSyntaxTree.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1921517035849004B8DCD /* CPSyntaxTree.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1923E170358A3004B8DCD /* CPTokeniser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1921817035849004B8DCD /* CPTokeniser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1923F170358A3004B8DCD /* CPTokenStream.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1921A17035849004B8DCD /* CPTokenStream.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924017035C3B004B8DCD /* CPJSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191DD17035848004B8DCD /* CPJSONParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924117035C3B004B8DCD /* CPGrammar.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191E217035848004B8DCD /* CPGrammar.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924217035C3B004B8DCD /* CPGrammarInternal.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191E417035848004B8DCD /* CPGrammarInternal.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924317035C3B004B8DCD /* CPGrammarPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191E617035848004B8DCD /* CPGrammarPrivate.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924417035C3B004B8DCD /* CPGrammarSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191E817035848004B8DCD /* CPGrammarSymbol.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924517035C3B004B8DCD /* CPRHSItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191EB17035848004B8DCD /* CPRHSItem.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924617035C3B004B8DCD /* CPRHSItemResult.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191ED17035849004B8DCD /* CPRHSItemResult.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924717035C3B004B8DCD /* CPRule.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191F017035849004B8DCD /* CPRule.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924817035C3B004B8DCD /* CPItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191FC17035849004B8DCD /* CPItem.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924917035C3B004B8DCD /* CPLALR1Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D191FE17035849004B8DCD /* CPLALR1Parser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924A17035C3B004B8DCD /* CPLR1Item.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1920017035849004B8DCD /* CPLR1Item.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924B17035C3B004B8DCD /* CPLR1Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1920217035849004B8DCD /* CPLR1Parser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924C17035C3B004B8DCD /* CPShiftAction.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1920417035849004B8DCD /* CPShiftAction.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924D17035C3B004B8DCD /* CPShiftReduceAction.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1920617035849004B8DCD /* CPShiftReduceAction.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924E17035C3B004B8DCD /* CPShiftReduceActionTable.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1920817035849004B8DCD /* CPShiftReduceActionTable.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1924F17035C3B004B8DCD /* CPShiftReduceGotoTable.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1920A17035849004B8DCD /* CPShiftReduceGotoTable.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925017035C3B004B8DCD /* CPShiftReduceState.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1920D17035849004B8DCD /* CPShiftReduceState.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925117035C3B004B8DCD /* CPSLRParser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1920F17035849004B8DCD /* CPSLRParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925217035C3B004B8DCD /* CPRecoveryAction.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1921217035849004B8DCD /* CPRecoveryAction.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925317035C3B004B8DCD /* CPIdentifierRecogniser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1921D17035849004B8DCD /* CPIdentifierRecogniser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925417035C3B004B8DCD /* CPKeywordRecogniser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1921F17035849004B8DCD /* CPKeywordRecogniser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925517035C3B004B8DCD /* CPNumberRecogniser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1922117035849004B8DCD /* CPNumberRecogniser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925617035C3B004B8DCD /* CPQuotedRecogniser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1922317035849004B8DCD /* CPQuotedRecogniser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925717035C3B004B8DCD /* CPWhiteSpaceRecogniser.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1922617035849004B8DCD /* CPWhiteSpaceRecogniser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925817035C3B004B8DCD /* CPEOFToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1922917035849004B8DCD /* CPEOFToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925917035C3B004B8DCD /* CPErrorToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1922B17035849004B8DCD /* CPErrorToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925A17035C3B004B8DCD /* CPIdentifierToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1922D17035849004B8DCD /* CPIdentifierToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925B17035C3B004B8DCD /* CPKeywordToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1922F17035849004B8DCD /* CPKeywordToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925C17035C3B004B8DCD /* CPNumberToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1923117035849004B8DCD /* CPNumberToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925D17035C3B004B8DCD /* CPQuotedToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1923317035849004B8DCD /* CPQuotedToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925E17035C3B004B8DCD /* CPToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1923517035849004B8DCD /* CPToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D1925F17035C3B004B8DCD /* CPWhiteSpaceToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1923717035849004B8DCD /* CPWhiteSpaceToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -36,6 +94,133 @@
 		F2D19194170342C3004B8DCD /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 		F2D1919717034604004B8DCD /* TCMCaptureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TCMCaptureManager.h; path = Classes/TCMCaptureManager.h; sourceTree = "<group>"; };
 		F2D1919817034604004B8DCD /* TCMCaptureManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TCMCaptureManager.m; path = Classes/TCMCaptureManager.m; sourceTree = "<group>"; };
+		F2D1919C1703572A004B8DCD /* FSAliasRecognizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSAliasRecognizer.h; sourceTree = "<group>"; };
+		F2D1919D1703572A004B8DCD /* FSAliasRecognizer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSAliasRecognizer.m; sourceTree = "<group>"; };
+		F2D1919E1703572A004B8DCD /* FSAliasToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSAliasToken.h; sourceTree = "<group>"; };
+		F2D1919F1703572A004B8DCD /* FSAliasToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSAliasToken.m; sourceTree = "<group>"; };
+		F2D191A01703572A004B8DCD /* FSArgsKonstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSArgsKonstants.h; sourceTree = "<group>"; };
+		F2D191A11703572A004B8DCD /* FSArgsKonstants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSArgsKonstants.m; sourceTree = "<group>"; };
+		F2D191A21703572A004B8DCD /* FSArgumentPackage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSArgumentPackage.h; sourceTree = "<group>"; };
+		F2D191A31703572A004B8DCD /* FSArgumentPackage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSArgumentPackage.m; sourceTree = "<group>"; };
+		F2D191A41703572A004B8DCD /* FSArgumentPackage_Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSArgumentPackage_Private.h; sourceTree = "<group>"; };
+		F2D191A51703572A004B8DCD /* FSArgumentParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSArgumentParser.h; sourceTree = "<group>"; };
+		F2D191A61703572A004B8DCD /* FSArgumentParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSArgumentParser.m; sourceTree = "<group>"; };
+		F2D191A71703572A004B8DCD /* FSArguments.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSArguments.h; sourceTree = "<group>"; };
+		F2D191A81703572A004B8DCD /* FSArguments_Coalescer_Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSArguments_Coalescer_Internal.h; sourceTree = "<group>"; };
+		F2D191A91703572A004B8DCD /* FSArguments_Coalescer_Internal.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSArguments_Coalescer_Internal.m; sourceTree = "<group>"; };
+		F2D191AA1703572A004B8DCD /* FSArgumentSignature.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSArgumentSignature.h; sourceTree = "<group>"; };
+		F2D191AB1703572A004B8DCD /* FSArgumentSignature.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSArgumentSignature.m; sourceTree = "<group>"; };
+		F2D191AC1703572A004B8DCD /* FSArgumentSignature_Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSArgumentSignature_Private.h; sourceTree = "<group>"; };
+		F2D191AD1703572A004B8DCD /* FSCountedArgument.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSCountedArgument.h; sourceTree = "<group>"; };
+		F2D191AE1703572A004B8DCD /* FSCountedArgument.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSCountedArgument.m; sourceTree = "<group>"; };
+		F2D191AF1703572A004B8DCD /* FSFormatCtorParserDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSFormatCtorParserDelegate.h; sourceTree = "<group>"; };
+		F2D191B01703572A004B8DCD /* FSFormatCtorParserDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSFormatCtorParserDelegate.m; sourceTree = "<group>"; };
+		F2D191B11703572A004B8DCD /* FSFormatCtorTokeniserDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSFormatCtorTokeniserDelegate.h; sourceTree = "<group>"; };
+		F2D191B21703572A004B8DCD /* FSFormatCtorTokeniserDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSFormatCtorTokeniserDelegate.m; sourceTree = "<group>"; };
+		F2D191B31703572A004B8DCD /* FSMutableAttributedArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSMutableAttributedArray.h; sourceTree = "<group>"; };
+		F2D191B41703572A004B8DCD /* FSMutableAttributedArray.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSMutableAttributedArray.m; sourceTree = "<group>"; };
+		F2D191B51703572A004B8DCD /* FSSwitchRecognizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSSwitchRecognizer.h; sourceTree = "<group>"; };
+		F2D191B61703572A004B8DCD /* FSSwitchRecognizer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSSwitchRecognizer.m; sourceTree = "<group>"; };
+		F2D191B71703572A004B8DCD /* FSSwitchToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSSwitchToken.h; sourceTree = "<group>"; };
+		F2D191B81703572A004B8DCD /* FSSwitchToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSSwitchToken.m; sourceTree = "<group>"; };
+		F2D191B91703572A004B8DCD /* FSValuedArgument.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSValuedArgument.h; sourceTree = "<group>"; };
+		F2D191BA1703572A004B8DCD /* FSValuedArgument.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSValuedArgument.m; sourceTree = "<group>"; };
+		F2D191BB1703572A004B8DCD /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.md; sourceTree = "<group>"; };
+		F2D191BC1703572A004B8DCD /* NSArray+FSArgumentsNormalizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSArray+FSArgumentsNormalizer.h"; sourceTree = "<group>"; };
+		F2D191BD1703572A004B8DCD /* NSArray+FSArgumentsNormalizer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSArray+FSArgumentsNormalizer.m"; sourceTree = "<group>"; };
+		F2D191BE1703572A004B8DCD /* NSDictionary+RubyDescription.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+RubyDescription.h"; sourceTree = "<group>"; };
+		F2D191BF1703572A004B8DCD /* NSDictionary+RubyDescription.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+RubyDescription.m"; sourceTree = "<group>"; };
+		F2D191C01703572A004B8DCD /* NSProcessInfo+FSArgumentParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSProcessInfo+FSArgumentParser.h"; sourceTree = "<group>"; };
+		F2D191C11703572A004B8DCD /* NSProcessInfo+FSArgumentParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSProcessInfo+FSArgumentParser.m"; sourceTree = "<group>"; };
+		F2D191C21703572A004B8DCD /* NSScanner+EscapedScanning.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSScanner+EscapedScanning.h"; sourceTree = "<group>"; };
+		F2D191C31703572A004B8DCD /* NSScanner+EscapedScanning.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSScanner+EscapedScanning.m"; sourceTree = "<group>"; };
+		F2D191C41703572A004B8DCD /* NSString+Indenter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+Indenter.h"; sourceTree = "<group>"; };
+		F2D191C51703572A004B8DCD /* NSString+Indenter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+Indenter.m"; sourceTree = "<group>"; };
+		F2D191C61703572A004B8DCD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		F2D191DC17035848004B8DCD /* CPJSONParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPJSONParser.h; sourceTree = "<group>"; };
+		F2D191DD17035848004B8DCD /* CPJSONParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPJSONParser.m; sourceTree = "<group>"; };
+		F2D191DE17035848004B8DCD /* CoreParse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CoreParse.h; sourceTree = "<group>"; };
+		F2D191DF17035848004B8DCD /* CPSenTestKitAssertions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPSenTestKitAssertions.h; sourceTree = "<group>"; };
+		F2D191E117035848004B8DCD /* CPGrammar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPGrammar.h; sourceTree = "<group>"; };
+		F2D191E217035848004B8DCD /* CPGrammar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPGrammar.m; sourceTree = "<group>"; };
+		F2D191E317035848004B8DCD /* CPGrammarInternal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPGrammarInternal.h; sourceTree = "<group>"; };
+		F2D191E417035848004B8DCD /* CPGrammarInternal.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPGrammarInternal.m; sourceTree = "<group>"; };
+		F2D191E517035848004B8DCD /* CPGrammarPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPGrammarPrivate.h; sourceTree = "<group>"; };
+		F2D191E617035848004B8DCD /* CPGrammarPrivate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPGrammarPrivate.m; sourceTree = "<group>"; };
+		F2D191E717035848004B8DCD /* CPGrammarSymbol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPGrammarSymbol.h; sourceTree = "<group>"; };
+		F2D191E817035848004B8DCD /* CPGrammarSymbol.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPGrammarSymbol.m; sourceTree = "<group>"; };
+		F2D191E917035848004B8DCD /* CPRHSItem+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CPRHSItem+Private.h"; sourceTree = "<group>"; };
+		F2D191EA17035848004B8DCD /* CPRHSItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPRHSItem.h; sourceTree = "<group>"; };
+		F2D191EB17035848004B8DCD /* CPRHSItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPRHSItem.m; sourceTree = "<group>"; };
+		F2D191EC17035848004B8DCD /* CPRHSItemResult.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPRHSItemResult.h; sourceTree = "<group>"; };
+		F2D191ED17035849004B8DCD /* CPRHSItemResult.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPRHSItemResult.m; sourceTree = "<group>"; };
+		F2D191EE17035849004B8DCD /* CPRule+Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CPRule+Internal.h"; sourceTree = "<group>"; };
+		F2D191EF17035849004B8DCD /* CPRule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPRule.h; sourceTree = "<group>"; };
+		F2D191F017035849004B8DCD /* CPRule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPRule.m; sourceTree = "<group>"; };
+		F2D191F117035849004B8DCD /* NSArray+Functional.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSArray+Functional.h"; sourceTree = "<group>"; };
+		F2D191F217035849004B8DCD /* NSArray+Functional.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Functional.m"; sourceTree = "<group>"; };
+		F2D191F317035849004B8DCD /* NSSetFunctional.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSSetFunctional.h; sourceTree = "<group>"; };
+		F2D191F417035849004B8DCD /* NSSetFunctional.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSSetFunctional.m; sourceTree = "<group>"; };
+		F2D191F617035849004B8DCD /* CPParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPParser.h; sourceTree = "<group>"; };
+		F2D191F717035849004B8DCD /* CPParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPParser.m; sourceTree = "<group>"; };
+		F2D191F817035849004B8DCD /* CPShiftReduceParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPShiftReduceParser.h; sourceTree = "<group>"; };
+		F2D191F917035849004B8DCD /* CPShiftReduceParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPShiftReduceParser.m; sourceTree = "<group>"; };
+		F2D191FB17035849004B8DCD /* CPItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPItem.h; sourceTree = "<group>"; };
+		F2D191FC17035849004B8DCD /* CPItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPItem.m; sourceTree = "<group>"; };
+		F2D191FD17035849004B8DCD /* CPLALR1Parser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPLALR1Parser.h; sourceTree = "<group>"; };
+		F2D191FE17035849004B8DCD /* CPLALR1Parser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPLALR1Parser.m; sourceTree = "<group>"; };
+		F2D191FF17035849004B8DCD /* CPLR1Item.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPLR1Item.h; sourceTree = "<group>"; };
+		F2D1920017035849004B8DCD /* CPLR1Item.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPLR1Item.m; sourceTree = "<group>"; };
+		F2D1920117035849004B8DCD /* CPLR1Parser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPLR1Parser.h; sourceTree = "<group>"; };
+		F2D1920217035849004B8DCD /* CPLR1Parser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPLR1Parser.m; sourceTree = "<group>"; };
+		F2D1920317035849004B8DCD /* CPShiftAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPShiftAction.h; sourceTree = "<group>"; };
+		F2D1920417035849004B8DCD /* CPShiftAction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPShiftAction.m; sourceTree = "<group>"; };
+		F2D1920517035849004B8DCD /* CPShiftReduceAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPShiftReduceAction.h; sourceTree = "<group>"; };
+		F2D1920617035849004B8DCD /* CPShiftReduceAction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPShiftReduceAction.m; sourceTree = "<group>"; };
+		F2D1920717035849004B8DCD /* CPShiftReduceActionTable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPShiftReduceActionTable.h; sourceTree = "<group>"; };
+		F2D1920817035849004B8DCD /* CPShiftReduceActionTable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPShiftReduceActionTable.m; sourceTree = "<group>"; };
+		F2D1920917035849004B8DCD /* CPShiftReduceGotoTable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPShiftReduceGotoTable.h; sourceTree = "<group>"; };
+		F2D1920A17035849004B8DCD /* CPShiftReduceGotoTable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPShiftReduceGotoTable.m; sourceTree = "<group>"; };
+		F2D1920B17035849004B8DCD /* CPShiftReduceParserProtectedMethods.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPShiftReduceParserProtectedMethods.h; sourceTree = "<group>"; };
+		F2D1920C17035849004B8DCD /* CPShiftReduceState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPShiftReduceState.h; sourceTree = "<group>"; };
+		F2D1920D17035849004B8DCD /* CPShiftReduceState.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPShiftReduceState.m; sourceTree = "<group>"; };
+		F2D1920E17035849004B8DCD /* CPSLRParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPSLRParser.h; sourceTree = "<group>"; };
+		F2D1920F17035849004B8DCD /* CPSLRParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPSLRParser.m; sourceTree = "<group>"; };
+		F2D1921117035849004B8DCD /* CPRecoveryAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPRecoveryAction.h; sourceTree = "<group>"; };
+		F2D1921217035849004B8DCD /* CPRecoveryAction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPRecoveryAction.m; sourceTree = "<group>"; };
+		F2D1921417035849004B8DCD /* CPSyntaxTree.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPSyntaxTree.h; sourceTree = "<group>"; };
+		F2D1921517035849004B8DCD /* CPSyntaxTree.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPSyntaxTree.m; sourceTree = "<group>"; };
+		F2D1921717035849004B8DCD /* CPTokeniser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPTokeniser.h; sourceTree = "<group>"; };
+		F2D1921817035849004B8DCD /* CPTokeniser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPTokeniser.m; sourceTree = "<group>"; };
+		F2D1921917035849004B8DCD /* CPTokenStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPTokenStream.h; sourceTree = "<group>"; };
+		F2D1921A17035849004B8DCD /* CPTokenStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPTokenStream.m; sourceTree = "<group>"; };
+		F2D1921C17035849004B8DCD /* CPIdentifierRecogniser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPIdentifierRecogniser.h; sourceTree = "<group>"; };
+		F2D1921D17035849004B8DCD /* CPIdentifierRecogniser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPIdentifierRecogniser.m; sourceTree = "<group>"; };
+		F2D1921E17035849004B8DCD /* CPKeywordRecogniser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPKeywordRecogniser.h; sourceTree = "<group>"; };
+		F2D1921F17035849004B8DCD /* CPKeywordRecogniser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPKeywordRecogniser.m; sourceTree = "<group>"; };
+		F2D1922017035849004B8DCD /* CPNumberRecogniser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPNumberRecogniser.h; sourceTree = "<group>"; };
+		F2D1922117035849004B8DCD /* CPNumberRecogniser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPNumberRecogniser.m; sourceTree = "<group>"; };
+		F2D1922217035849004B8DCD /* CPQuotedRecogniser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPQuotedRecogniser.h; sourceTree = "<group>"; };
+		F2D1922317035849004B8DCD /* CPQuotedRecogniser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPQuotedRecogniser.m; sourceTree = "<group>"; };
+		F2D1922417035849004B8DCD /* CPTokenRecogniser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPTokenRecogniser.h; sourceTree = "<group>"; };
+		F2D1922517035849004B8DCD /* CPWhiteSpaceRecogniser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPWhiteSpaceRecogniser.h; sourceTree = "<group>"; };
+		F2D1922617035849004B8DCD /* CPWhiteSpaceRecogniser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPWhiteSpaceRecogniser.m; sourceTree = "<group>"; };
+		F2D1922817035849004B8DCD /* CPEOFToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPEOFToken.h; sourceTree = "<group>"; };
+		F2D1922917035849004B8DCD /* CPEOFToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPEOFToken.m; sourceTree = "<group>"; };
+		F2D1922A17035849004B8DCD /* CPErrorToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPErrorToken.h; sourceTree = "<group>"; };
+		F2D1922B17035849004B8DCD /* CPErrorToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPErrorToken.m; sourceTree = "<group>"; };
+		F2D1922C17035849004B8DCD /* CPIdentifierToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPIdentifierToken.h; sourceTree = "<group>"; };
+		F2D1922D17035849004B8DCD /* CPIdentifierToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPIdentifierToken.m; sourceTree = "<group>"; };
+		F2D1922E17035849004B8DCD /* CPKeywordToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPKeywordToken.h; sourceTree = "<group>"; };
+		F2D1922F17035849004B8DCD /* CPKeywordToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPKeywordToken.m; sourceTree = "<group>"; };
+		F2D1923017035849004B8DCD /* CPNumberToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPNumberToken.h; sourceTree = "<group>"; };
+		F2D1923117035849004B8DCD /* CPNumberToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPNumberToken.m; sourceTree = "<group>"; };
+		F2D1923217035849004B8DCD /* CPQuotedToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPQuotedToken.h; sourceTree = "<group>"; };
+		F2D1923317035849004B8DCD /* CPQuotedToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPQuotedToken.m; sourceTree = "<group>"; };
+		F2D1923417035849004B8DCD /* CPToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPToken.h; sourceTree = "<group>"; };
+		F2D1923517035849004B8DCD /* CPToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPToken.m; sourceTree = "<group>"; };
+		F2D1923617035849004B8DCD /* CPWhiteSpaceToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPWhiteSpaceToken.h; sourceTree = "<group>"; };
+		F2D1923717035849004B8DCD /* CPWhiteSpaceToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPWhiteSpaceToken.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +265,7 @@
 		F2D19188170341A8004B8DCD /* sightsnap */ = {
 			isa = PBXGroup;
 			children = (
+				F2D192381703585C004B8DCD /* 3rd Party */,
 				F2D19196170345D4004B8DCD /* Classes */,
 				F2D19189170341A8004B8DCD /* main.m */,
 				F2D1918D170341A8004B8DCD /* sightsnap.1 */,
@@ -103,6 +289,229 @@
 				F2D1919817034604004B8DCD /* TCMCaptureManager.m */,
 			);
 			name = Classes;
+			sourceTree = "<group>";
+		};
+		F2D1919A1703572A004B8DCD /* ArgumentParser */ = {
+			isa = PBXGroup;
+			children = (
+				F2D191BB1703572A004B8DCD /* LICENSE.md */,
+				F2D191C61703572A004B8DCD /* README.md */,
+				F2D1919C1703572A004B8DCD /* FSAliasRecognizer.h */,
+				F2D1919D1703572A004B8DCD /* FSAliasRecognizer.m */,
+				F2D1919E1703572A004B8DCD /* FSAliasToken.h */,
+				F2D1919F1703572A004B8DCD /* FSAliasToken.m */,
+				F2D191A01703572A004B8DCD /* FSArgsKonstants.h */,
+				F2D191A11703572A004B8DCD /* FSArgsKonstants.m */,
+				F2D191A21703572A004B8DCD /* FSArgumentPackage.h */,
+				F2D191A31703572A004B8DCD /* FSArgumentPackage.m */,
+				F2D191A41703572A004B8DCD /* FSArgumentPackage_Private.h */,
+				F2D191A51703572A004B8DCD /* FSArgumentParser.h */,
+				F2D191A61703572A004B8DCD /* FSArgumentParser.m */,
+				F2D191A71703572A004B8DCD /* FSArguments.h */,
+				F2D191A81703572A004B8DCD /* FSArguments_Coalescer_Internal.h */,
+				F2D191A91703572A004B8DCD /* FSArguments_Coalescer_Internal.m */,
+				F2D191AA1703572A004B8DCD /* FSArgumentSignature.h */,
+				F2D191AB1703572A004B8DCD /* FSArgumentSignature.m */,
+				F2D191AC1703572A004B8DCD /* FSArgumentSignature_Private.h */,
+				F2D191AD1703572A004B8DCD /* FSCountedArgument.h */,
+				F2D191AE1703572A004B8DCD /* FSCountedArgument.m */,
+				F2D191AF1703572A004B8DCD /* FSFormatCtorParserDelegate.h */,
+				F2D191B01703572A004B8DCD /* FSFormatCtorParserDelegate.m */,
+				F2D191B11703572A004B8DCD /* FSFormatCtorTokeniserDelegate.h */,
+				F2D191B21703572A004B8DCD /* FSFormatCtorTokeniserDelegate.m */,
+				F2D191B31703572A004B8DCD /* FSMutableAttributedArray.h */,
+				F2D191B41703572A004B8DCD /* FSMutableAttributedArray.m */,
+				F2D191B51703572A004B8DCD /* FSSwitchRecognizer.h */,
+				F2D191B61703572A004B8DCD /* FSSwitchRecognizer.m */,
+				F2D191B71703572A004B8DCD /* FSSwitchToken.h */,
+				F2D191B81703572A004B8DCD /* FSSwitchToken.m */,
+				F2D191B91703572A004B8DCD /* FSValuedArgument.h */,
+				F2D191BA1703572A004B8DCD /* FSValuedArgument.m */,
+				F2D191BC1703572A004B8DCD /* NSArray+FSArgumentsNormalizer.h */,
+				F2D191BD1703572A004B8DCD /* NSArray+FSArgumentsNormalizer.m */,
+				F2D191BE1703572A004B8DCD /* NSDictionary+RubyDescription.h */,
+				F2D191BF1703572A004B8DCD /* NSDictionary+RubyDescription.m */,
+				F2D191C01703572A004B8DCD /* NSProcessInfo+FSArgumentParser.h */,
+				F2D191C11703572A004B8DCD /* NSProcessInfo+FSArgumentParser.m */,
+				F2D191C21703572A004B8DCD /* NSScanner+EscapedScanning.h */,
+				F2D191C31703572A004B8DCD /* NSScanner+EscapedScanning.m */,
+				F2D191C41703572A004B8DCD /* NSString+Indenter.h */,
+				F2D191C51703572A004B8DCD /* NSString+Indenter.m */,
+			);
+			path = ArgumentParser;
+			sourceTree = "<group>";
+		};
+		F2D191DA17035848004B8DCD /* CoreParse */ = {
+			isa = PBXGroup;
+			children = (
+				F2D191DB17035848004B8DCD /* Built In Parsers */,
+				F2D191DE17035848004B8DCD /* CoreParse.h */,
+				F2D191DF17035848004B8DCD /* CPSenTestKitAssertions.h */,
+				F2D191E017035848004B8DCD /* Grammar */,
+				F2D191F117035849004B8DCD /* NSArray+Functional.h */,
+				F2D191F217035849004B8DCD /* NSArray+Functional.m */,
+				F2D191F317035849004B8DCD /* NSSetFunctional.h */,
+				F2D191F417035849004B8DCD /* NSSetFunctional.m */,
+				F2D191F517035849004B8DCD /* Parsers */,
+				F2D1921317035849004B8DCD /* Syntax Tree */,
+				F2D1921617035849004B8DCD /* Tokenisation */,
+			);
+			path = CoreParse;
+			sourceTree = "<group>";
+		};
+		F2D191DB17035848004B8DCD /* Built In Parsers */ = {
+			isa = PBXGroup;
+			children = (
+				F2D191DC17035848004B8DCD /* CPJSONParser.h */,
+				F2D191DD17035848004B8DCD /* CPJSONParser.m */,
+			);
+			path = "Built In Parsers";
+			sourceTree = "<group>";
+		};
+		F2D191E017035848004B8DCD /* Grammar */ = {
+			isa = PBXGroup;
+			children = (
+				F2D191E117035848004B8DCD /* CPGrammar.h */,
+				F2D191E217035848004B8DCD /* CPGrammar.m */,
+				F2D191E317035848004B8DCD /* CPGrammarInternal.h */,
+				F2D191E417035848004B8DCD /* CPGrammarInternal.m */,
+				F2D191E517035848004B8DCD /* CPGrammarPrivate.h */,
+				F2D191E617035848004B8DCD /* CPGrammarPrivate.m */,
+				F2D191E717035848004B8DCD /* CPGrammarSymbol.h */,
+				F2D191E817035848004B8DCD /* CPGrammarSymbol.m */,
+				F2D191E917035848004B8DCD /* CPRHSItem+Private.h */,
+				F2D191EA17035848004B8DCD /* CPRHSItem.h */,
+				F2D191EB17035848004B8DCD /* CPRHSItem.m */,
+				F2D191EC17035848004B8DCD /* CPRHSItemResult.h */,
+				F2D191ED17035849004B8DCD /* CPRHSItemResult.m */,
+				F2D191EE17035849004B8DCD /* CPRule+Internal.h */,
+				F2D191EF17035849004B8DCD /* CPRule.h */,
+				F2D191F017035849004B8DCD /* CPRule.m */,
+			);
+			path = Grammar;
+			sourceTree = "<group>";
+		};
+		F2D191F517035849004B8DCD /* Parsers */ = {
+			isa = PBXGroup;
+			children = (
+				F2D191F617035849004B8DCD /* CPParser.h */,
+				F2D191F717035849004B8DCD /* CPParser.m */,
+				F2D191F817035849004B8DCD /* CPShiftReduceParser.h */,
+				F2D191F917035849004B8DCD /* CPShiftReduceParser.m */,
+				F2D191FA17035849004B8DCD /* CPShiftReduceParsers */,
+				F2D1921017035849004B8DCD /* Error Recovery */,
+			);
+			path = Parsers;
+			sourceTree = "<group>";
+		};
+		F2D191FA17035849004B8DCD /* CPShiftReduceParsers */ = {
+			isa = PBXGroup;
+			children = (
+				F2D191FB17035849004B8DCD /* CPItem.h */,
+				F2D191FC17035849004B8DCD /* CPItem.m */,
+				F2D191FD17035849004B8DCD /* CPLALR1Parser.h */,
+				F2D191FE17035849004B8DCD /* CPLALR1Parser.m */,
+				F2D191FF17035849004B8DCD /* CPLR1Item.h */,
+				F2D1920017035849004B8DCD /* CPLR1Item.m */,
+				F2D1920117035849004B8DCD /* CPLR1Parser.h */,
+				F2D1920217035849004B8DCD /* CPLR1Parser.m */,
+				F2D1920317035849004B8DCD /* CPShiftAction.h */,
+				F2D1920417035849004B8DCD /* CPShiftAction.m */,
+				F2D1920517035849004B8DCD /* CPShiftReduceAction.h */,
+				F2D1920617035849004B8DCD /* CPShiftReduceAction.m */,
+				F2D1920717035849004B8DCD /* CPShiftReduceActionTable.h */,
+				F2D1920817035849004B8DCD /* CPShiftReduceActionTable.m */,
+				F2D1920917035849004B8DCD /* CPShiftReduceGotoTable.h */,
+				F2D1920A17035849004B8DCD /* CPShiftReduceGotoTable.m */,
+				F2D1920B17035849004B8DCD /* CPShiftReduceParserProtectedMethods.h */,
+				F2D1920C17035849004B8DCD /* CPShiftReduceState.h */,
+				F2D1920D17035849004B8DCD /* CPShiftReduceState.m */,
+				F2D1920E17035849004B8DCD /* CPSLRParser.h */,
+				F2D1920F17035849004B8DCD /* CPSLRParser.m */,
+			);
+			path = CPShiftReduceParsers;
+			sourceTree = "<group>";
+		};
+		F2D1921017035849004B8DCD /* Error Recovery */ = {
+			isa = PBXGroup;
+			children = (
+				F2D1921117035849004B8DCD /* CPRecoveryAction.h */,
+				F2D1921217035849004B8DCD /* CPRecoveryAction.m */,
+			);
+			path = "Error Recovery";
+			sourceTree = "<group>";
+		};
+		F2D1921317035849004B8DCD /* Syntax Tree */ = {
+			isa = PBXGroup;
+			children = (
+				F2D1921417035849004B8DCD /* CPSyntaxTree.h */,
+				F2D1921517035849004B8DCD /* CPSyntaxTree.m */,
+			);
+			path = "Syntax Tree";
+			sourceTree = "<group>";
+		};
+		F2D1921617035849004B8DCD /* Tokenisation */ = {
+			isa = PBXGroup;
+			children = (
+				F2D1921717035849004B8DCD /* CPTokeniser.h */,
+				F2D1921817035849004B8DCD /* CPTokeniser.m */,
+				F2D1921917035849004B8DCD /* CPTokenStream.h */,
+				F2D1921A17035849004B8DCD /* CPTokenStream.m */,
+				F2D1921B17035849004B8DCD /* Token Recognisers */,
+				F2D1922717035849004B8DCD /* Token Types */,
+			);
+			path = Tokenisation;
+			sourceTree = "<group>";
+		};
+		F2D1921B17035849004B8DCD /* Token Recognisers */ = {
+			isa = PBXGroup;
+			children = (
+				F2D1921C17035849004B8DCD /* CPIdentifierRecogniser.h */,
+				F2D1921D17035849004B8DCD /* CPIdentifierRecogniser.m */,
+				F2D1921E17035849004B8DCD /* CPKeywordRecogniser.h */,
+				F2D1921F17035849004B8DCD /* CPKeywordRecogniser.m */,
+				F2D1922017035849004B8DCD /* CPNumberRecogniser.h */,
+				F2D1922117035849004B8DCD /* CPNumberRecogniser.m */,
+				F2D1922217035849004B8DCD /* CPQuotedRecogniser.h */,
+				F2D1922317035849004B8DCD /* CPQuotedRecogniser.m */,
+				F2D1922417035849004B8DCD /* CPTokenRecogniser.h */,
+				F2D1922517035849004B8DCD /* CPWhiteSpaceRecogniser.h */,
+				F2D1922617035849004B8DCD /* CPWhiteSpaceRecogniser.m */,
+			);
+			path = "Token Recognisers";
+			sourceTree = "<group>";
+		};
+		F2D1922717035849004B8DCD /* Token Types */ = {
+			isa = PBXGroup;
+			children = (
+				F2D1922817035849004B8DCD /* CPEOFToken.h */,
+				F2D1922917035849004B8DCD /* CPEOFToken.m */,
+				F2D1922A17035849004B8DCD /* CPErrorToken.h */,
+				F2D1922B17035849004B8DCD /* CPErrorToken.m */,
+				F2D1922C17035849004B8DCD /* CPIdentifierToken.h */,
+				F2D1922D17035849004B8DCD /* CPIdentifierToken.m */,
+				F2D1922E17035849004B8DCD /* CPKeywordToken.h */,
+				F2D1922F17035849004B8DCD /* CPKeywordToken.m */,
+				F2D1923017035849004B8DCD /* CPNumberToken.h */,
+				F2D1923117035849004B8DCD /* CPNumberToken.m */,
+				F2D1923217035849004B8DCD /* CPQuotedToken.h */,
+				F2D1923317035849004B8DCD /* CPQuotedToken.m */,
+				F2D1923417035849004B8DCD /* CPToken.h */,
+				F2D1923517035849004B8DCD /* CPToken.m */,
+				F2D1923617035849004B8DCD /* CPWhiteSpaceToken.h */,
+				F2D1923717035849004B8DCD /* CPWhiteSpaceToken.m */,
+			);
+			path = "Token Types";
+			sourceTree = "<group>";
+		};
+		F2D192381703585C004B8DCD /* 3rd Party */ = {
+			isa = PBXGroup;
+			children = (
+				F2D191DA17035848004B8DCD /* CoreParse */,
+				F2D1919A1703572A004B8DCD /* ArgumentParser */,
+			);
+			name = "3rd Party";
+			path = 3rdParty;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -158,6 +567,64 @@
 			files = (
 				F2D1918A170341A8004B8DCD /* main.m in Sources */,
 				F2D1919917034604004B8DCD /* TCMCaptureManager.m in Sources */,
+				F2D191C71703576E004B8DCD /* FSAliasRecognizer.m in Sources */,
+				F2D191C81703576E004B8DCD /* FSAliasToken.m in Sources */,
+				F2D191C91703576E004B8DCD /* FSArgsKonstants.m in Sources */,
+				F2D191CA1703576E004B8DCD /* FSArgumentPackage.m in Sources */,
+				F2D191CB1703576E004B8DCD /* FSArgumentParser.m in Sources */,
+				F2D191CC1703576E004B8DCD /* FSArguments_Coalescer_Internal.m in Sources */,
+				F2D191CD1703576E004B8DCD /* FSArgumentSignature.m in Sources */,
+				F2D191CE1703576E004B8DCD /* FSCountedArgument.m in Sources */,
+				F2D191CF1703576E004B8DCD /* FSFormatCtorParserDelegate.m in Sources */,
+				F2D191D01703576E004B8DCD /* FSFormatCtorTokeniserDelegate.m in Sources */,
+				F2D191D11703576E004B8DCD /* FSMutableAttributedArray.m in Sources */,
+				F2D191D21703576E004B8DCD /* FSSwitchRecognizer.m in Sources */,
+				F2D191D31703576E004B8DCD /* FSSwitchToken.m in Sources */,
+				F2D191D41703576E004B8DCD /* FSValuedArgument.m in Sources */,
+				F2D191D51703576E004B8DCD /* NSArray+FSArgumentsNormalizer.m in Sources */,
+				F2D191D61703576E004B8DCD /* NSDictionary+RubyDescription.m in Sources */,
+				F2D191D71703576E004B8DCD /* NSProcessInfo+FSArgumentParser.m in Sources */,
+				F2D191D81703576E004B8DCD /* NSScanner+EscapedScanning.m in Sources */,
+				F2D191D91703576E004B8DCD /* NSString+Indenter.m in Sources */,
+				F2D19239170358A3004B8DCD /* NSArray+Functional.m in Sources */,
+				F2D1923A170358A3004B8DCD /* NSSetFunctional.m in Sources */,
+				F2D1923B170358A3004B8DCD /* CPParser.m in Sources */,
+				F2D1923C170358A3004B8DCD /* CPShiftReduceParser.m in Sources */,
+				F2D1923D170358A3004B8DCD /* CPSyntaxTree.m in Sources */,
+				F2D1923E170358A3004B8DCD /* CPTokeniser.m in Sources */,
+				F2D1923F170358A3004B8DCD /* CPTokenStream.m in Sources */,
+				F2D1924017035C3B004B8DCD /* CPJSONParser.m in Sources */,
+				F2D1924117035C3B004B8DCD /* CPGrammar.m in Sources */,
+				F2D1924217035C3B004B8DCD /* CPGrammarInternal.m in Sources */,
+				F2D1924317035C3B004B8DCD /* CPGrammarPrivate.m in Sources */,
+				F2D1924417035C3B004B8DCD /* CPGrammarSymbol.m in Sources */,
+				F2D1924517035C3B004B8DCD /* CPRHSItem.m in Sources */,
+				F2D1924617035C3B004B8DCD /* CPRHSItemResult.m in Sources */,
+				F2D1924717035C3B004B8DCD /* CPRule.m in Sources */,
+				F2D1924817035C3B004B8DCD /* CPItem.m in Sources */,
+				F2D1924917035C3B004B8DCD /* CPLALR1Parser.m in Sources */,
+				F2D1924A17035C3B004B8DCD /* CPLR1Item.m in Sources */,
+				F2D1924B17035C3B004B8DCD /* CPLR1Parser.m in Sources */,
+				F2D1924C17035C3B004B8DCD /* CPShiftAction.m in Sources */,
+				F2D1924D17035C3B004B8DCD /* CPShiftReduceAction.m in Sources */,
+				F2D1924E17035C3B004B8DCD /* CPShiftReduceActionTable.m in Sources */,
+				F2D1924F17035C3B004B8DCD /* CPShiftReduceGotoTable.m in Sources */,
+				F2D1925017035C3B004B8DCD /* CPShiftReduceState.m in Sources */,
+				F2D1925117035C3B004B8DCD /* CPSLRParser.m in Sources */,
+				F2D1925217035C3B004B8DCD /* CPRecoveryAction.m in Sources */,
+				F2D1925317035C3B004B8DCD /* CPIdentifierRecogniser.m in Sources */,
+				F2D1925417035C3B004B8DCD /* CPKeywordRecogniser.m in Sources */,
+				F2D1925517035C3B004B8DCD /* CPNumberRecogniser.m in Sources */,
+				F2D1925617035C3B004B8DCD /* CPQuotedRecogniser.m in Sources */,
+				F2D1925717035C3B004B8DCD /* CPWhiteSpaceRecogniser.m in Sources */,
+				F2D1925817035C3B004B8DCD /* CPEOFToken.m in Sources */,
+				F2D1925917035C3B004B8DCD /* CPErrorToken.m in Sources */,
+				F2D1925A17035C3B004B8DCD /* CPIdentifierToken.m in Sources */,
+				F2D1925B17035C3B004B8DCD /* CPKeywordToken.m in Sources */,
+				F2D1925C17035C3B004B8DCD /* CPNumberToken.m in Sources */,
+				F2D1925D17035C3B004B8DCD /* CPQuotedToken.m in Sources */,
+				F2D1925E17035C3B004B8DCD /* CPToken.m in Sources */,
+				F2D1925F17035C3B004B8DCD /* CPWhiteSpaceToken.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
