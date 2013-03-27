@@ -21,10 +21,6 @@ int main(int argc, const char * argv[]) {
         NSArray * signatures = @[list,device, help];
         FSArgumentPackage * package = [[NSProcessInfo processInfo] fsargs_parseArgumentsWithSignatures:signatures];
 
-        TCMCaptureManager *captureManager = [TCMCaptureManager captureManager];
-        if ([package booleanValueForSignature:list]) {
-            puts([[NSString stringWithFormat:@"Video Devices:\n%@",[captureManager.availableVideoDevices componentsJoinedByString:@"\n"]] UTF8String]);
-        }
         if ([package booleanValueForSignature:help]) {
             printf("sightsnap\n\n");
             printf("%s", [[list descriptionForHelp:2 terminalWidth:80] UTF8String]);
@@ -32,6 +28,15 @@ int main(int argc, const char * argv[]) {
             printf("%s", [[help descriptionForHelp:2 terminalWidth:80] UTF8String]);
             printf("\n");
             printf("created by @monkeydom\n");
+        } else {
+            TCMCaptureManager *captureManager = [TCMCaptureManager captureManager];
+            if ([package booleanValueForSignature:list]) {
+                puts([[NSString stringWithFormat:@"Video Devices:\n%@",[captureManager.availableVideoDevices componentsJoinedByString:@"\n"]] UTF8String]);
+            } else {
+                // snap snap
+                QTCaptureSession *session = [[QTCaptureSession alloc] init];
+                
+            }
         }
         
     }
