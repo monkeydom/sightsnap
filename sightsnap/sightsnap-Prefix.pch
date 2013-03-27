@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'sightsnap' target in the 'sightsnap' project
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+#endif
