@@ -11,6 +11,12 @@
 #import "TCMCaptureManager.h"
 #import "FSArguments.h"
 
+static BOOL shouldKeepRunning = YES;
+
+void TCMCauseRunLoopToStop() {
+    shouldKeepRunning = NO;
+}
+
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         // Arguments setup
@@ -20,7 +26,10 @@ int main(int argc, const char * argv[]) {
         *help = [FSArgumentSignature argumentSignatureWithFormat:@"[-h --help]"];
         NSArray * signatures = @[list,device, help];
         FSArgumentPackage * package = [[NSProcessInfo processInfo] fsargs_parseArgumentsWithSignatures:signatures];
-
+        NSString *outputFilename = @"sightsnap.jpg";
+        if ([[package uncapturedValues] count] > 0) {
+            outputFilename = [[package uncapturedValues] objectAtIndex:0];
+        }
         if ([package booleanValueForSignature:help]) {
             printf("sightsnap\n\n");
             printf("%s", [[list descriptionForHelp:2 terminalWidth:80] UTF8String]);
@@ -35,9 +44,11 @@ int main(int argc, const char * argv[]) {
             } else {
                 QTCaptureDevice *videoDevice = [captureManager.availableVideoDevices lastObject];
                 [captureManager setCurrentVideoDevice:videoDevice];
-                [captureManager saveFrameToURL:[NSURL fileURLWithPath:@"sightsnap.jpg"]];
+                [captureManager saveFrameToURL:[NSURL fileURLWithPath:outputFilename]];
             }
-            [[NSRunLoop currentRunLoop] run];
+ 
+            NSRunLoop *theRL = [NSRunLoop currentRunLoop];
+            while (shouldKeepRunning && [theRL runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
         }
         
     }

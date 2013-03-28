@@ -16,6 +16,7 @@ BOOL TCMCGImageWritePNGToURL(CGImageRef aCGImageRef, CFURLRef anURLRef) {
 	return result;
 }
 
+void TCMCauseRunLoopToStop();
 
 @interface TCMCaptureManager () {
     CVImageBufferRef _currentCVImageBuffer;
@@ -142,6 +143,7 @@ BOOL TCMCGImageWritePNGToURL(CGImageRef aCGImageRef, CFURLRef anURLRef) {
     CGContextRelease(cgContext);
     
     self.currentImageBuffer = nil;
+    TCMCauseRunLoopToStop();
 }
 
 // QTCapture delegate method, called when a frame has been loaded by the camera
