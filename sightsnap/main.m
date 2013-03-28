@@ -37,6 +37,7 @@ int main(int argc, const char * argv[]) {
                 [captureManager setCurrentVideoDevice:videoDevice];
                 [captureManager saveFrameToURL:[NSURL fileURLWithPath:@"sightsnap.jpg"]];
             }
+            [[NSRunLoop currentRunLoop] run];
         }
         
     }
