@@ -7,9 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <QTKit/QTKit.h>
 
 @interface TCMCaptureManager : NSObject
 + (instancetype)captureManager;
 
 - (NSArray *)availableVideoDevices;
+- (void)setCurrentVideoDevice:(QTCaptureDevice *)aVideoDevice;
+- (void)saveFrameToURL:(NSURL *)aFileURL;
 @end

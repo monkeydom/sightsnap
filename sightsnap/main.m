@@ -33,9 +33,9 @@ int main(int argc, const char * argv[]) {
             if ([package booleanValueForSignature:list]) {
                 puts([[NSString stringWithFormat:@"Video Devices:\n%@",[captureManager.availableVideoDevices componentsJoinedByString:@"\n"]] UTF8String]);
             } else {
-                // snap snap
-                QTCaptureSession *session = [[QTCaptureSession alloc] init];
-                
+                QTCaptureDevice *videoDevice = [captureManager.availableVideoDevices lastObject];
+                [captureManager setCurrentVideoDevice:videoDevice];
+                [captureManager saveFrameToURL:[NSURL fileURLWithPath:@"sightsnap.jpg"]];
             }
         }
         

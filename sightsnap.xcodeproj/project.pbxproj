@@ -70,6 +70,12 @@
 		F2D1925D17035C3B004B8DCD /* CPQuotedToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1923317035849004B8DCD /* CPQuotedToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F2D1925E17035C3B004B8DCD /* CPToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1923517035849004B8DCD /* CPToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F2D1925F17035C3B004B8DCD /* CPWhiteSpaceToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1923717035849004B8DCD /* CPWhiteSpaceToken.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		F2D192661704838E004B8DCD /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2D1926417047D26004B8DCD /* Quartz.framework */; };
+		F2D1926717048396004B8DCD /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2D1926217047D1F004B8DCD /* QuartzCore.framework */; };
+		F2D192681704839E004B8DCD /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2D1926017047D15004B8DCD /* CoreVideo.framework */; };
+		F2D1926A170483B7004B8DCD /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2D19269170483B7004B8DCD /* CoreGraphics.framework */; };
+		F2D1926C170483C5004B8DCD /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2D1926B170483C5004B8DCD /* ImageIO.framework */; };
+		F2D1926E170483E0004B8DCD /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2D1926D170483E0004B8DCD /* CoreServices.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -221,6 +227,12 @@
 		F2D1923517035849004B8DCD /* CPToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPToken.m; sourceTree = "<group>"; };
 		F2D1923617035849004B8DCD /* CPWhiteSpaceToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPWhiteSpaceToken.h; sourceTree = "<group>"; };
 		F2D1923717035849004B8DCD /* CPWhiteSpaceToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPWhiteSpaceToken.m; sourceTree = "<group>"; };
+		F2D1926017047D15004B8DCD /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		F2D1926217047D1F004B8DCD /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		F2D1926417047D26004B8DCD /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
+		F2D19269170483B7004B8DCD /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		F2D1926B170483C5004B8DCD /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		F2D1926D170483E0004B8DCD /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -228,6 +240,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F2D1926E170483E0004B8DCD /* CoreServices.framework in Frameworks */,
+				F2D1926C170483C5004B8DCD /* ImageIO.framework in Frameworks */,
+				F2D1926A170483B7004B8DCD /* CoreGraphics.framework in Frameworks */,
+				F2D192681704839E004B8DCD /* CoreVideo.framework in Frameworks */,
+				F2D1926717048396004B8DCD /* QuartzCore.framework in Frameworks */,
+				F2D192661704838E004B8DCD /* Quartz.framework in Frameworks */,
 				F2D19195170342C3004B8DCD /* QTKit.framework in Frameworks */,
 				F2D19187170341A8004B8DCD /* Foundation.framework in Frameworks */,
 			);
@@ -239,6 +257,7 @@
 		F2D1917A170341A7004B8DCD = {
 			isa = PBXGroup;
 			children = (
+				F2D1926D170483E0004B8DCD /* CoreServices.framework */,
 				F2D19188170341A8004B8DCD /* sightsnap */,
 				F2D19185170341A8004B8DCD /* Frameworks */,
 				F2D19184170341A8004B8DCD /* Products */,
@@ -256,6 +275,11 @@
 		F2D19185170341A8004B8DCD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F2D1926B170483C5004B8DCD /* ImageIO.framework */,
+				F2D19269170483B7004B8DCD /* CoreGraphics.framework */,
+				F2D1926417047D26004B8DCD /* Quartz.framework */,
+				F2D1926217047D1F004B8DCD /* QuartzCore.framework */,
+				F2D1926017047D15004B8DCD /* CoreVideo.framework */,
 				F2D19194170342C3004B8DCD /* QTKit.framework */,
 				F2D19186170341A8004B8DCD /* Foundation.framework */,
 			);
@@ -727,6 +751,7 @@
 				F2D19193170341A8004B8DCD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
