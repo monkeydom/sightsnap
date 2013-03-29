@@ -81,7 +81,9 @@
 
     unsigned char* md5_final = (unsigned char*)malloc(sizeof(unsigned char)*CC_MD5_DIGEST_LENGTH);
     CC_MD5_Final(md5_final, &md5);
-    return *((NSUInteger *)md5_final);
+    NSUInteger result = *((NSUInteger *)md5_final);
+    free(md5_final);
+    return result;
 }
 
 - (NSString *)description

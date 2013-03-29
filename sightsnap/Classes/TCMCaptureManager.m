@@ -141,7 +141,7 @@ void TCMCauseRunLoopToStop();
     CGImageRef cgImage = [context createCGImage:coreImage fromRect:coreImage.extent];
     
     TCMCGImageWritePNGToURL(cgImage, (__bridge CFURLRef)self.fileOutputURL);
-    
+    if (cgImage) CFRelease(cgImage);
     CGContextRelease(cgContext);
     
     self.currentImageBuffer = nil;
