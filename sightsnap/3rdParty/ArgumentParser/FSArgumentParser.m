@@ -89,7 +89,7 @@
             // skip the barrier
         } else {
             // unknown type
-            NSLog(@"Unknown type: %@", type);
+            //NSLog(@"Unknown type: %@", type);
         }
     }
     
@@ -124,7 +124,7 @@
         // pop forward to find possible arguments
         
         NSRange rangeOfValues = [self rangeOfValuesStartingFromIndex:index+1 tryFor:valuedSignature.valuesPerInvocation];
-        NSLog(@"Range of indexes for %@ is %@", valuedSignature, NSStringFromRange(rangeOfValues));
+//        NSLog(@"Range of indexes for %@ is %@", valuedSignature, NSStringFromRange(rangeOfValues));
         NSIndexSet * indexSetOfValues = [NSIndexSet indexSetWithIndexesInRange:rangeOfValues];
         [indexSetOfValues enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
             // grab that value
