@@ -13,6 +13,10 @@
 
 @interface TCMCommandLineUtility ()
 @property (nonatomic) BOOL keepRunLoopAlive;
+@property (nonatomic) NSTimeInterval grabInterval;
+@property (nonatomic) NSInteger frameIndex;
+@property (nonatomic) NSString *baseFilePath;
+@property (nonatomic, strong) NSDate *lastFrameFireDate;
 @end
 
 @implementation TCMCommandLineUtility
@@ -20,6 +24,15 @@
 + (int)runCommandLineUtility {
     int result = [[TCMCommandLineUtility new] run];
     return result;
+}
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        self.grabInterval = -1.0;
+        self.frameIndex = 0;
+    }
+    return self;
 }
 
 - (int)run {
@@ -35,6 +48,8 @@
     if ([[package uncapturedValues] count] > 0) {
         outputFilename = [[package uncapturedValues] objectAtIndex:0];
     }
+    self.baseFilePath = [outputFilename stringByStandardizingPath];
+    
     if ([package booleanValueForSignature:help]) {
         printf("sightsnap\n\n");
         printf("%s", [[list descriptionForHelp:2 terminalWidth:80] UTF8String]);
@@ -69,18 +84,45 @@
             }
             
             [captureManager setCurrentVideoDevice:videoDevice];
-            [captureManager saveFrameToURL:[NSURL fileURLWithPath:outputFilename] completion:^{
-                [self didCaptureImage];
-            }];
-
+            
+            id timeValue = [package firstObjectForSignature:time];
+            if (timeValue) {
+                self.grabInterval = [timeValue doubleValue];
+            }
+            
+            [self captureImage];
             [self startRunLoop];
         }
     }
     return 0;
 }
 
+- (NSURL *)nextFrameFileURL {
+    NSURL *result;
+    NSString *pathString = self.baseFilePath;
+    if (self.grabInterval >= 0.0) {
+        NSString *extension = [self.baseFilePath pathExtension];
+        pathString = [[NSString stringWithFormat:@"%@-%05ld", [pathString stringByDeletingPathExtension], self.frameIndex] stringByAppendingPathExtension:extension];
+    }
+    result = [NSURL fileURLWithPath:pathString];
+    return result;
+}
+
+- (void)captureImage {
+    self.lastFrameFireDate = [NSDate new];
+    [[TCMCaptureManager captureManager] saveFrameToURL:self.nextFrameFileURL completion:^{
+        [self didCaptureImage];
+    }];
+}
+
 - (void)didCaptureImage {
-    self.keepRunLoopAlive = NO;
+    self.frameIndex = self.frameIndex + 1;
+    if (self.grabInterval >= 0.0) {
+        NSTimeInterval timeInterval = [[self.lastFrameFireDate dateByAddingTimeInterval:self.grabInterval] timeIntervalSinceNow];
+        [self performSelector:@selector(captureImage) withObject:nil afterDelay:timeInterval];
+    } else {
+        self.keepRunLoopAlive = NO;
+    }
 }
 
 - (void)startRunLoop {
