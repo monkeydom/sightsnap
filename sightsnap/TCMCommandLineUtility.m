@@ -17,6 +17,7 @@
 @property (nonatomic) NSInteger frameIndex;
 @property (nonatomic) NSString *baseFilePath;
 @property (nonatomic, strong) NSDate *lastFrameFireDate;
+@property (nonatomic, strong) NSDate *lastFrameScheduledDate;
 @property (nonatomic) CGFloat fontSize;
 @end
 
@@ -98,7 +99,7 @@
             if (fontSizeValue) {
                 self.fontSize = [fontSizeValue doubleValue];
             }
-            
+            self.lastFrameScheduledDate = [NSDate new];
             [self captureImage];
             [self startRunLoop];
         }
@@ -122,7 +123,7 @@
     NSDateFormatter *dateFormatter = [NSDateFormatter new];
     dateFormatter.timeStyle = NSDateFormatterMediumStyle;
     dateFormatter.dateStyle = NSDateFormatterShortStyle;
-    NSString *dateString = [dateFormatter stringFromDate:self.lastFrameFireDate];
+    NSString *dateString = [dateFormatter stringFromDate:self.lastFrameScheduledDate];
     CGFloat fontSize = self.fontSize;
     CGFloat fontInset = 20.0;
     
@@ -159,7 +160,9 @@
 - (void)didCaptureImage {
     self.frameIndex = self.frameIndex + 1;
     if (self.grabInterval >= 0.0) {
-        NSTimeInterval timeInterval = [[self.lastFrameFireDate dateByAddingTimeInterval:self.grabInterval] timeIntervalSinceNow];
+        self.lastFrameScheduledDate = [self.lastFrameScheduledDate dateByAddingTimeInterval:self.grabInterval];
+        NSTimeInterval timeInterval = [self.lastFrameScheduledDate timeIntervalSinceNow];
+        if (timeInterval < 0) timeInterval = 0.0;
         [self performSelector:@selector(captureImage) withObject:nil afterDelay:timeInterval];
     } else {
         self.keepRunLoopAlive = NO;
