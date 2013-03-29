@@ -14,5 +14,5 @@
 
 - (NSArray *)availableVideoDevices;
 - (void)setCurrentVideoDevice:(QTCaptureDevice *)aVideoDevice;
-- (void)saveFrameToURL:(NSURL *)aFileURL;
+- (void)saveFrameToURL:(NSURL *)aFileURL completion:(void (^)())aCompletion;
 @end

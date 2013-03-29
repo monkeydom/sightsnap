@@ -24,6 +24,7 @@ void TCMCauseRunLoopToStop();
 @property (nonatomic, strong) QTCaptureSession *captureSession;
 @property (nonatomic, strong) QTCaptureDecompressedVideoOutput *videoOutput;
 @property (nonatomic, strong) NSURL *fileOutputURL;
+@property (nonatomic, copy) id completionBlock;
 @end
 
 @implementation TCMCaptureManager
@@ -110,8 +111,9 @@ void TCMCauseRunLoopToStop();
     }
 }
     
-- (void)saveFrameToURL:(NSURL *)aFileURL {
+- (void)saveFrameToURL:(NSURL *)aFileURL completion:(void (^)())aCompletion {
     self.fileOutputURL = aFileURL;
+    self.completionBlock = (id)aCompletion;
     [self.captureSession startRunning];
 }
 
@@ -143,7 +145,12 @@ void TCMCauseRunLoopToStop();
     CGContextRelease(cgContext);
     
     self.currentImageBuffer = nil;
-    TCMCauseRunLoopToStop();
+    
+    void (^completionBlock)() = self.completionBlock;
+    if (completionBlock) {
+        completionBlock();
+        self.completionBlock = nil;
+    }
 }
 
 // QTCapture delegate method, called when a frame has been loaded by the camera
