@@ -8,8 +8,15 @@
 
 #import "TCMCaptureManager.h"
 
-BOOL TCMCGImageWritePNGToURL(CGImageRef aCGImageRef, CFURLRef anURLRef) {
-	CGImageDestinationRef imageDestination = CGImageDestinationCreateWithURL(anURLRef, kUTTypeJPEG, 1, nil);
+
+
+BOOL TCMCGImageWriteToURL(CGImageRef aCGImageRef, CFURLRef anURLRef) {
+    NSString *extension = [(__bridge NSURL *)anURLRef pathExtension];
+    CFStringRef type = kUTTypeJPEG;
+    if ([@"png" caseInsensitiveCompare:extension] == NSOrderedSame) {
+        type = kUTTypePNG;
+    }
+	CGImageDestinationRef imageDestination = CGImageDestinationCreateWithURL(anURLRef, type, 1, nil);
 	CGImageDestinationAddImage(imageDestination, aCGImageRef, nil);
 	BOOL result = CGImageDestinationFinalize(imageDestination);
 	CFRelease(imageDestination);
@@ -25,6 +32,7 @@ void TCMCauseRunLoopToStop();
 @property (nonatomic, strong) QTCaptureDecompressedVideoOutput *videoOutput;
 @property (nonatomic, strong) NSURL *fileOutputURL;
 @property (nonatomic, copy) id completionBlock;
+@property (nonatomic, copy) id drawingBlock;
 @end
 
 @implementation TCMCaptureManager
@@ -136,11 +144,17 @@ void TCMCauseRunLoopToStop();
     if (!colorSpace) colorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef cgContext = CGBitmapContextCreate(nil, size.width, size.height, bitsPerComponent, rowbytes, colorSpace, kCGImageAlphaPremultipliedFirst);
     CIContext *context = [CIContext contextWithCGContext:cgContext options:nil];
-//    [context drawImage:coreImage inRect:contextRect fromRect:coreImage.extent];
+    [context drawImage:coreImage inRect:contextRect fromRect:coreImage.extent];
+    if (self.drawingBlock) {
+        CGContextSaveGState(cgContext);
+        ((TCMCaptureQuartzAction)self.drawingBlock)(cgContext, contextRect);
+        CGContextRestoreGState(cgContext);
+    }
     
-    CGImageRef cgImage = [context createCGImage:coreImage fromRect:coreImage.extent];
-    
-    TCMCGImageWritePNGToURL(cgImage, (__bridge CFURLRef)self.fileOutputURL);
+//    CGImageRef cgImage = [context createCGImage:coreImage fromRect:coreImage.extent];
+    CGImageRef cgImage = CGBitmapContextCreateImage(cgContext);
+  
+    TCMCGImageWriteToURL(cgImage, (__bridge CFURLRef)self.fileOutputURL);
     if (cgImage) CFRelease(cgImage);
     CGContextRelease(cgContext);
     
@@ -152,6 +166,11 @@ void TCMCauseRunLoopToStop();
         self.completionBlock = nil;
     }
 }
+
+- (void)setImageDrawingBlock:(TCMCaptureQuartzAction)drawingBlock {
+    self.drawingBlock = drawingBlock;
+}
+
 
 // QTCapture delegate method, called when a frame has been loaded by the camera
 - (void)captureOutput:(QTCaptureOutput *)aCaptureOutput didOutputVideoFrame:(CVImageBufferRef)aVideoFrame withSampleBuffer:(QTSampleBuffer *)aSampleBuffer fromConnection:(QTCaptureConnection *)aConnection {

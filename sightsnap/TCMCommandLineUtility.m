@@ -17,6 +17,7 @@
 @property (nonatomic) NSInteger frameIndex;
 @property (nonatomic) NSString *baseFilePath;
 @property (nonatomic, strong) NSDate *lastFrameFireDate;
+@property (nonatomic) CGFloat fontSize;
 @end
 
 @implementation TCMCommandLineUtility
@@ -31,6 +32,7 @@
     if (self) {
         self.grabInterval = -1.0;
         self.frameIndex = 0;
+        self.fontSize = 40;
     }
     return self;
 }
@@ -40,9 +42,10 @@
     FSArgumentSignature
     *list = [FSArgumentSignature argumentSignatureWithFormat:@"[-l --listDevices]"],
     *time = [FSArgumentSignature argumentSignatureWithFormat:@"[-t --time]="],
+    *fontSize = [FSArgumentSignature argumentSignatureWithFormat:@"[-s --fontSize]="],
     *device = [FSArgumentSignature argumentSignatureWithFormat:@"[-d --device]="],
     *help = [FSArgumentSignature argumentSignatureWithFormat:@"[-h --help]"];
-    NSArray * signatures = @[list,device,time,help];
+    NSArray * signatures = @[list,device,time,fontSize,help];
     FSArgumentPackage * package = [[NSProcessInfo processInfo] fsargs_parseArgumentsWithSignatures:signatures];
     NSString *outputFilename = @"sightsnap.jpg";
     if ([[package uncapturedValues] count] > 0) {
@@ -55,6 +58,7 @@
         printf("%s", [[list descriptionForHelp:2 terminalWidth:80] UTF8String]);
         printf("%s", [[device descriptionForHelp:2 terminalWidth:80] UTF8String]);
         printf("%s", [[time descriptionForHelp:2 terminalWidth:80] UTF8String]);
+        printf("%s", [[fontSize descriptionForHelp:2 terminalWidth:80] UTF8String]);
         printf("%s", [[help descriptionForHelp:2 terminalWidth:80] UTF8String]);
         printf("\n");
         printf("created by @monkeydom\n");
@@ -90,6 +94,11 @@
                 self.grabInterval = [timeValue doubleValue];
             }
             
+            id fontSizeValue = [package firstObjectForSignature:fontSize];
+            if (fontSizeValue) {
+                self.fontSize = [fontSizeValue doubleValue];
+            }
+            
             [self captureImage];
             [self startRunLoop];
         }
@@ -110,7 +119,39 @@
 
 - (void)captureImage {
     self.lastFrameFireDate = [NSDate new];
-    [[TCMCaptureManager captureManager] saveFrameToURL:self.nextFrameFileURL completion:^{
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    dateFormatter.timeStyle = NSDateFormatterMediumStyle;
+    dateFormatter.dateStyle = NSDateFormatterShortStyle;
+    NSString *dateString = [dateFormatter stringFromDate:self.lastFrameFireDate];
+    CGFloat fontSize = self.fontSize;
+    CGFloat fontInset = 20.0;
+    
+    TCMCaptureQuartzAction drawAction = ^(CGContextRef ctx, CGRect aFrame) {
+        CGColorRef whiteColor = CGColorCreateGenericRGB(1.0, 1.0, 1.0, 1.0);
+        CGColorRef blackColor = CGColorCreateGenericRGB(0.0, 0.0, 0.0, 0.9);
+        CGContextSetFillColorWithColor(ctx, whiteColor);
+        CGContextSetStrokeColorWithColor(ctx, blackColor);
+        CGContextSetLineWidth(ctx,fontSize/7.0);
+        
+        CGPoint textPoint = CGPointMake(fontInset, CGRectGetMaxY(aFrame) - fontInset - fontSize * 0.8);
+        const char *text = [dateString UTF8String];
+        size_t textLength = strlen(text);
+//        CGFontRef fontRef = CGFontCreateWithFontName((__bridge CFStringRef)@"HelveticaNeue-Bold");
+//        CGContextSetFontSize(ctx, 40);
+//        CGContextSetFont(ctx, fontRef);
+        CGContextSelectFont(ctx, "HelveticaNeue-Bold", fontSize, kCGEncodingMacRoman);
+        CGContextSetTextDrawingMode(ctx, kCGTextStroke);
+        CGContextShowTextAtPoint(ctx, textPoint.x, textPoint.y, text, textLength);
+        CGContextSetTextDrawingMode(ctx, kCGTextFill);
+        CGContextShowTextAtPoint(ctx, textPoint.x, textPoint.y, text, textLength);
+        
+        CFRelease(whiteColor);
+        CFRelease(blackColor);
+//        CFRelease(fontRef);
+    };
+    TCMCaptureManager *captureManager = [TCMCaptureManager captureManager];
+    [captureManager setImageDrawingBlock:drawAction];
+    [captureManager saveFrameToURL:self.nextFrameFileURL completion:^{
         [self didCaptureImage];
     }];
 }

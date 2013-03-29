@@ -9,10 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <QTKit/QTKit.h>
 
+typedef void (^TCMCaptureQuartzAction)(CGContextRef aContext, CGRect aFrame);
+
 @interface TCMCaptureManager : NSObject
 + (instancetype)captureManager;
 
 - (NSArray *)availableVideoDevices;
 - (void)setCurrentVideoDevice:(QTCaptureDevice *)aVideoDevice;
+- (void)setImageDrawingBlock:(TCMCaptureQuartzAction)drawingBlock;
 - (void)saveFrameToURL:(NSURL *)aFileURL completion:(void (^)())aCompletion;
 @end
