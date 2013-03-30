@@ -58,6 +58,10 @@
     NSString *outputFilename = @"sightsnap.jpg";
     if ([[package uncapturedValues] count] > 0) {
         outputFilename = [[package uncapturedValues] objectAtIndex:0];
+        NSString *extension = [outputFilename pathExtension];
+        if (extension.length < 3) {
+            outputFilename = [outputFilename stringByAppendingPathExtension:@"jpg"];
+        }
     }
     self.baseFilePath = [outputFilename stringByStandardizingPath];
     
