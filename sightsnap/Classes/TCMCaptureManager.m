@@ -127,9 +127,15 @@
         (__bridge NSString *)kCGImagePropertyExifMakerNote : self.selectedCaptureDevice.localizedDisplayName
     };
     
+    NSDictionary *tiffDictionary = @{
+        (__bridge NSString *)kCGImagePropertyTIFFModel : self.selectedCaptureDevice.localizedDisplayName,
+        (__bridge NSString *)kCGImagePropertyTIFFDateTime : EXIFFormattedCreatedDate
+    };
+    
     NSString *extension = [aFileURL pathExtension];
     CFStringRef type = kUTTypeJPEG;
     NSMutableDictionary *imageOptions = [@{(__bridge NSString *)kCGImagePropertyExifDictionary : exifDictionary,
+                                         (__bridge NSString *)kCGImagePropertyTIFFDictionary : tiffDictionary,
                                          (__bridge NSString *)kCGImageDestinationMergeMetadata : @(YES)} mutableCopy];
     if ([@"png" caseInsensitiveCompare:extension] == NSOrderedSame) {
         type = kUTTypePNG;
