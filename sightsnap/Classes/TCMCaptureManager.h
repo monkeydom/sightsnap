@@ -12,6 +12,8 @@
 typedef void (^TCMCaptureQuartzAction)(CGContextRef aContext, CGRect aFrame);
 
 @interface TCMCaptureManager : NSObject
+@property (nonatomic) CGFloat jpegQuality;
+
 + (instancetype)captureManager;
 
 - (NSArray *)availableVideoDevices;

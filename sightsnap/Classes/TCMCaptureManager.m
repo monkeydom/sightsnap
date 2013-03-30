@@ -10,27 +10,13 @@
 
 
 
-BOOL TCMCGImageWriteToURL(CGImageRef aCGImageRef, CFURLRef anURLRef) {
-    NSString *extension = [(__bridge NSURL *)anURLRef pathExtension];
-    CFStringRef type = kUTTypeJPEG;
-    if ([@"png" caseInsensitiveCompare:extension] == NSOrderedSame) {
-        type = kUTTypePNG;
-    }
-	CGImageDestinationRef imageDestination = CGImageDestinationCreateWithURL(anURLRef, type, 1, nil);
-	CGImageDestinationAddImage(imageDestination, aCGImageRef, nil);
-	BOOL result = CGImageDestinationFinalize(imageDestination);
-	CFRelease(imageDestination);
-	return result;
-}
-
-void TCMCauseRunLoopToStop();
-
 @interface TCMCaptureManager () {
     CVImageBufferRef _currentCVImageBuffer;
 }
 @property (nonatomic, strong) QTCaptureSession *captureSession;
 @property (nonatomic, strong) QTCaptureDecompressedVideoOutput *videoOutput;
 @property (nonatomic, strong) NSURL *fileOutputURL;
+@property (nonatomic, strong) QTCaptureDevice *selectedCaptureDevice;
 @property (nonatomic, copy) id completionBlock;
 @property (nonatomic, copy) id drawingBlock;
 @end
@@ -50,6 +36,7 @@ void TCMCauseRunLoopToStop();
     self = [super init];
     if (self) {
         self.captureSession = [[QTCaptureSession alloc] init];
+        self.jpegQuality = 0.8;
     }
     return self;
 }
@@ -87,6 +74,7 @@ void TCMCauseRunLoopToStop();
     if (!success) {
         NSLog(@"%s - error opening the video input device: %@",__FUNCTION__,error);
     } else {
+        self.selectedCaptureDevice = aVideoDevice;
         QTCaptureDeviceInput  *videoDeviceInput = [[QTCaptureDeviceInput alloc] initWithDevice:aVideoDevice];
         success = [session addInput:videoDeviceInput error:&error];
         if (!success) {
@@ -125,6 +113,34 @@ void TCMCauseRunLoopToStop();
     [self.captureSession startRunning];
 }
 
+- (BOOL)writeCGImage:(CGImageRef)aCGImageRef toURL:(NSURL *)aFileURL {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
+    [dateFormatter setFormatterBehavior:NSDateFormatterBehavior10_4];
+    [dateFormatter setDateFormat:@"yyyy:MM:dd HH:mm:ss"]; //the date format for EXIF dates as from http://www.abmt.unibas.ch/dokumente/ExIF.pdf
+    NSString *EXIFFormattedCreatedDate = [dateFormatter stringFromDate:[NSDate new]]; //use the date formatter to get a string from the date we were passed in the EXIF format
+
+    
+    NSDictionary *exifDictionary = @{
+        (__bridge NSString *)kCGImagePropertyExifDateTimeOriginal : EXIFFormattedCreatedDate,
+        (__bridge NSString *)kCGImagePropertyExifMakerNote : self.selectedCaptureDevice.localizedDisplayName
+    };
+    
+    NSString *extension = [aFileURL pathExtension];
+    CFStringRef type = kUTTypeJPEG;
+    NSMutableDictionary *imageOptions = [@{(__bridge NSString *)kCGImagePropertyExifDictionary : exifDictionary,
+                                         (__bridge NSString *)kCGImageDestinationMergeMetadata : @(YES)} mutableCopy];
+    if ([@"png" caseInsensitiveCompare:extension] == NSOrderedSame) {
+        type = kUTTypePNG;
+    } else {
+        imageOptions[(__bridge NSString *)kCGImageDestinationLossyCompressionQuality] =  @(self.jpegQuality);
+    }
+	CGImageDestinationRef imageDestination = CGImageDestinationCreateWithURL((__bridge CFURLRef)aFileURL, type, 1, nil);
+	CGImageDestinationAddImage(imageDestination, aCGImageRef, (__bridge CFDictionaryRef)imageOptions);
+	BOOL result = CGImageDestinationFinalize(imageDestination);
+	CFRelease(imageDestination);
+	return result;
+}
+
 - (void)didGrabImage {
     // Stop the session so we don't record anything more
     [self.captureSession stopRunning];
@@ -154,7 +170,7 @@ void TCMCauseRunLoopToStop();
 //    CGImageRef cgImage = [context createCGImage:coreImage fromRect:coreImage.extent];
     CGImageRef cgImage = CGBitmapContextCreateImage(cgContext);
   
-    TCMCGImageWriteToURL(cgImage, (__bridge CFURLRef)self.fileOutputURL);
+    [self writeCGImage:cgImage toURL:self.fileOutputURL];
     if (cgImage) CFRelease(cgImage);
     CGContextRelease(cgContext);
     
