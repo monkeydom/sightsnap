@@ -80,7 +80,13 @@
     } else {
         TCMCaptureManager *captureManager = [TCMCaptureManager captureManager];
         if ([package booleanValueForSignature:list]) {
-            puts([[NSString stringWithFormat:@"Video Devices:\n%@",[[captureManager.availableVideoDevices valueForKeyPath:@"localizedDisplayName"] componentsJoinedByString:@"\n"]] UTF8String]);
+            puts("Video Devices:");
+            for (QTCaptureDevice *device in captureManager.availableVideoDevices) {
+                puts([[NSString stringWithFormat:@" %@",device.localizedDisplayName] UTF8String]);
+                for (QTFormatDescription *format in device.formatDescriptions) {
+                    puts([[NSString stringWithFormat:@" - %@",format.localizedFormatSummary] UTF8String]);
+                }
+            }
         } else {
             
             QTCaptureDevice *videoDevice = [captureManager.availableVideoDevices lastObject];

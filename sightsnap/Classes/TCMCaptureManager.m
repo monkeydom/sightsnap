@@ -19,6 +19,7 @@
 @property (nonatomic, strong) QTCaptureDevice *selectedCaptureDevice;
 @property (nonatomic, copy) id completionBlock;
 @property (nonatomic, copy) id drawingBlock;
+@property (nonatomic) NSInteger framesToSkip;
 @end
 
 @implementation TCMCaptureManager
@@ -110,6 +111,7 @@
 - (void)saveFrameToURL:(NSURL *)aFileURL completion:(void (^)())aCompletion {
     self.fileOutputURL = aFileURL;
     self.completionBlock = (id)aCompletion;
+    self.framesToSkip = 6;
     [self.captureSession startRunning];
 }
 
@@ -190,6 +192,11 @@
 
 // QTCapture delegate method, called when a frame has been loaded by the camera
 - (void)captureOutput:(QTCaptureOutput *)aCaptureOutput didOutputVideoFrame:(CVImageBufferRef)aVideoFrame withSampleBuffer:(QTSampleBuffer *)aSampleBuffer fromConnection:(QTCaptureConnection *)aConnection {
+    // skip frames to give webcam time if needed
+    if (self.framesToSkip > 0) {
+        self.framesToSkip = self.framesToSkip - 1;
+        return;
+    }
     // If we already have an image we should use that instead
     if (self.currentImageBuffer) return;
     
