@@ -19,6 +19,8 @@
 @property (nonatomic, strong) NSDate *lastFrameFireDate;
 @property (nonatomic, strong) NSDate *lastFrameScheduledDate;
 @property (nonatomic) CGFloat fontSize;
+@property (nonatomic, strong) NSString *fontName;
+@property (nonatomic) BOOL shouldTimeStamp;
 @end
 
 @implementation TCMCommandLineUtility
@@ -34,6 +36,8 @@
         self.grabInterval = -1.0;
         self.frameIndex = 0;
         self.fontSize = 40;
+        self.fontName = @"HelveticaNeue-Bold";
+        self.shouldTimeStamp = NO;
     }
     return self;
 }
@@ -43,10 +47,12 @@
     FSArgumentSignature
     *list = [FSArgumentSignature argumentSignatureWithFormat:@"[-l --listDevices]"],
     *time = [FSArgumentSignature argumentSignatureWithFormat:@"[-t --time]="],
+    *stamp = [FSArgumentSignature argumentSignatureWithFormat:@"[-p --timeStamp]"],
+    *fontName = [FSArgumentSignature argumentSignatureWithFormat:@"[-f --fontName]="],
     *fontSize = [FSArgumentSignature argumentSignatureWithFormat:@"[-s --fontSize]="],
     *device = [FSArgumentSignature argumentSignatureWithFormat:@"[-d --device]="],
     *help = [FSArgumentSignature argumentSignatureWithFormat:@"[-h --help]"];
-    NSArray * signatures = @[list,device,time,fontSize,help];
+    NSArray * signatures = @[list,device,time,stamp,fontName,fontSize,help];
     FSArgumentPackage * package = [[NSProcessInfo processInfo] fsargs_parseArgumentsWithSignatures:signatures];
     NSString *outputFilename = @"sightsnap.jpg";
     if ([[package uncapturedValues] count] > 0) {
@@ -59,7 +65,9 @@
         printf("%s", [[list descriptionForHelp:2 terminalWidth:80] UTF8String]);
         printf("%s", [[device descriptionForHelp:2 terminalWidth:80] UTF8String]);
         printf("%s", [[time descriptionForHelp:2 terminalWidth:80] UTF8String]);
+        printf("%s", [[stamp descriptionForHelp:2 terminalWidth:80] UTF8String]);
         printf("%s", [[fontSize descriptionForHelp:2 terminalWidth:80] UTF8String]);
+        printf("%s", [[fontName descriptionForHelp:2 terminalWidth:80] UTF8String]);
         printf("%s", [[help descriptionForHelp:2 terminalWidth:80] UTF8String]);
         printf("\n");
         printf("created by @monkeydom\n");
@@ -95,6 +103,18 @@
                 self.grabInterval = [timeValue doubleValue];
             }
             
+            self.shouldTimeStamp = [package booleanValueForSignature:stamp];
+            
+            id fontNameValue = [package firstObjectForSignature:fontName];
+            if (fontNameValue) {
+                // test if font exists
+                CGFontRef fontRef = CGFontCreateWithFontName((__bridge CFStringRef)fontNameValue);
+                if (fontRef) {
+                    self.fontName = fontNameValue;
+                    CFRelease(fontRef);
+                }
+            }
+            
             id fontSizeValue = [package firstObjectForSignature:fontSize];
             if (fontSizeValue) {
                 self.fontSize = [fontSizeValue doubleValue];
@@ -120,38 +140,41 @@
 
 - (void)captureImage {
     self.lastFrameFireDate = [NSDate new];
-    NSDateFormatter *dateFormatter = [NSDateFormatter new];
-    dateFormatter.timeStyle = NSDateFormatterMediumStyle;
-    dateFormatter.dateStyle = NSDateFormatterShortStyle;
-    NSString *dateString = [dateFormatter stringFromDate:self.lastFrameScheduledDate];
-    CGFloat fontSize = self.fontSize;
-    CGFloat fontInset = 20.0;
-    
-    TCMCaptureQuartzAction drawAction = ^(CGContextRef ctx, CGRect aFrame) {
-        CGColorRef whiteColor = CGColorCreateGenericRGB(1.0, 1.0, 1.0, 1.0);
-        CGColorRef blackColor = CGColorCreateGenericRGB(0.0, 0.0, 0.0, 0.9);
-        CGContextSetFillColorWithColor(ctx, whiteColor);
-        CGContextSetStrokeColorWithColor(ctx, blackColor);
-        CGContextSetLineWidth(ctx,fontSize/7.0);
-        
-        CGPoint textPoint = CGPointMake(fontInset, CGRectGetMaxY(aFrame) - fontInset - fontSize * 0.8);
-        const char *text = [dateString UTF8String];
-        size_t textLength = strlen(text);
-//        CGFontRef fontRef = CGFontCreateWithFontName((__bridge CFStringRef)@"HelveticaNeue-Bold");
-//        CGContextSetFontSize(ctx, 40);
-//        CGContextSetFont(ctx, fontRef);
-        CGContextSelectFont(ctx, "HelveticaNeue-Bold", fontSize, kCGEncodingMacRoman);
-        CGContextSetTextDrawingMode(ctx, kCGTextStroke);
-        CGContextShowTextAtPoint(ctx, textPoint.x, textPoint.y, text, textLength);
-        CGContextSetTextDrawingMode(ctx, kCGTextFill);
-        CGContextShowTextAtPoint(ctx, textPoint.x, textPoint.y, text, textLength);
-        
-        CFRelease(whiteColor);
-        CFRelease(blackColor);
-//        CFRelease(fontRef);
-    };
+
     TCMCaptureManager *captureManager = [TCMCaptureManager captureManager];
-    [captureManager setImageDrawingBlock:drawAction];
+    if (self.shouldTimeStamp) {
+        NSDateFormatter *dateFormatter = [NSDateFormatter new];
+        dateFormatter.timeStyle = NSDateFormatterMediumStyle;
+        dateFormatter.dateStyle = NSDateFormatterShortStyle;
+        NSString *dateString = [dateFormatter stringFromDate:self.lastFrameScheduledDate];
+        CGFloat fontSize = self.fontSize;
+        CGFloat fontInset = 20.0;
+        
+        TCMCaptureQuartzAction drawAction = ^(CGContextRef ctx, CGRect aFrame) {
+            CGColorRef whiteColor = CGColorCreateGenericRGB(1.0, 1.0, 1.0, 1.0);
+            CGColorRef blackColor = CGColorCreateGenericRGB(0.0, 0.0, 0.0, 0.9);
+            CGContextSetFillColorWithColor(ctx, whiteColor);
+            CGContextSetStrokeColorWithColor(ctx, blackColor);
+            CGContextSetLineWidth(ctx,fontSize/7.0);
+            
+            CGPoint textPoint = CGPointMake(fontInset, CGRectGetMaxY(aFrame) - fontInset - fontSize * 0.8);
+            const char *text = [dateString UTF8String];
+            size_t textLength = strlen(text);
+    //        CGFontRef fontRef = CGFontCreateWithFontName((__bridge CFStringRef)@"HelveticaNeue-Bold");
+    //        CGContextSetFontSize(ctx, 40);
+    //        CGContextSetFont(ctx, fontRef);
+            CGContextSelectFont(ctx, [self.fontName UTF8String], fontSize, kCGEncodingMacRoman);
+            CGContextSetTextDrawingMode(ctx, kCGTextStroke);
+            CGContextShowTextAtPoint(ctx, textPoint.x, textPoint.y, text, textLength);
+            CGContextSetTextDrawingMode(ctx, kCGTextFill);
+            CGContextShowTextAtPoint(ctx, textPoint.x, textPoint.y, text, textLength);
+            
+            CFRelease(whiteColor);
+            CFRelease(blackColor);
+    //        CFRelease(fontRef);
+        };
+        [captureManager setImageDrawingBlock:drawAction];
+    }
     [captureManager saveFrameToURL:self.nextFrameFileURL completion:^{
         [self didCaptureImage];
     }];
