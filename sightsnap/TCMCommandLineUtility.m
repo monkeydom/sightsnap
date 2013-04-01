@@ -149,7 +149,7 @@
     NSString *pathString = self.baseFilePath;
     if (self.grabInterval >= 0.0) {
         NSString *extension = [self.baseFilePath pathExtension];
-        pathString = [[NSString stringWithFormat:@"%@-%05ld", [pathString stringByDeletingPathExtension], self.frameIndex] stringByAppendingPathExtension:extension];
+        pathString = [[NSString stringWithFormat:@"%@-%07ld", [pathString stringByDeletingPathExtension], self.frameIndex] stringByAppendingPathExtension:extension];
     }
     result = [NSURL fileURLWithPath:pathString];
     return result;
