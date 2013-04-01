@@ -13,6 +13,7 @@ typedef void (^TCMCaptureQuartzAction)(CGContextRef aContext, CGRect aFrame);
 
 @interface TCMCaptureManager : NSObject
 @property (nonatomic) CGFloat jpegQuality;
+@property (nonatomic) NSInteger skipFrames;
 
 + (instancetype)captureManager;
 

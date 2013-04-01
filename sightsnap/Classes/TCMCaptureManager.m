@@ -38,6 +38,7 @@
     if (self) {
         self.captureSession = [[QTCaptureSession alloc] init];
         self.jpegQuality = 0.8;
+		self.skipFrames = 6;
     }
     return self;
 }
@@ -119,7 +120,7 @@
 - (void)saveFrameToURL:(NSURL *)aFileURL completion:(void (^)())aCompletion {
     self.fileOutputURL = aFileURL;
     self.completionBlock = (id)aCompletion;
-    self.framesToSkip = 6;
+    self.framesToSkip = self.skipFrames;
     [self.captureSession startRunning];
 }
 

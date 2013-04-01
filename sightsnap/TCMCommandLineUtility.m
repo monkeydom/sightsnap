@@ -47,13 +47,14 @@
     FSArgumentSignature
     *list = [FSArgumentSignature argumentSignatureWithFormat:@"[-l --listDevices]"],
     *time = [FSArgumentSignature argumentSignatureWithFormat:@"[-t --time]="],
+    *skipframes = [FSArgumentSignature argumentSignatureWithFormat:@"[-k --skipframes]="],
     *jpegQuality = [FSArgumentSignature argumentSignatureWithFormat:@"[-j --jpegQuality]="],
     *stamp = [FSArgumentSignature argumentSignatureWithFormat:@"[-p --timeStamp]"],
     *fontName = [FSArgumentSignature argumentSignatureWithFormat:@"[-f --fontName]="],
     *fontSize = [FSArgumentSignature argumentSignatureWithFormat:@"[-s --fontSize]="],
     *device = [FSArgumentSignature argumentSignatureWithFormat:@"[-d --device]="],
     *help = [FSArgumentSignature argumentSignatureWithFormat:@"[-h --help]"];
-    NSArray * signatures = @[list,device,time,jpegQuality,stamp,fontName,fontSize,help];
+    NSArray * signatures = @[list,device,time,skipframes,jpegQuality,stamp,fontName,fontSize,help];
     FSArgumentPackage * package = [[NSProcessInfo processInfo] fsargs_parseArgumentsWithSignatures:signatures];
     NSString *outputFilename = @"sightsnap.jpg";
     if ([[package uncapturedValues] count] > 0) {
@@ -70,6 +71,7 @@
         printf("%s", [[list descriptionForHelp:2 terminalWidth:80] UTF8String]);
         printf("%s", [[device descriptionForHelp:2 terminalWidth:80] UTF8String]);
         printf("%s", [[time descriptionForHelp:2 terminalWidth:80] UTF8String]);
+        printf("%s", [[skipframes descriptionForHelp:2 terminalWidth:80] UTF8String]);
         printf("%s", [[jpegQuality descriptionForHelp:2 terminalWidth:80] UTF8String]);
         printf("%s", [[stamp descriptionForHelp:2 terminalWidth:80] UTF8String]);
         printf("%s", [[fontSize descriptionForHelp:2 terminalWidth:80] UTF8String]);
@@ -116,6 +118,11 @@
                 self.grabInterval = [timeValue doubleValue];
             }
             
+			id skipFramesValue = [package firstObjectForSignature:skipframes];
+			if (skipFramesValue) {
+				captureManager.skipFrames = MAX(0,[skipFramesValue integerValue]);
+			}
+			
             id jpegQualityValue = [package firstObjectForSignature:jpegQuality];
             if (jpegQualityValue) {
                 captureManager.jpegQuality = [jpegQualityValue doubleValue];
