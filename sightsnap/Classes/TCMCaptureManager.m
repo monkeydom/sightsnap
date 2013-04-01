@@ -60,6 +60,14 @@
     return _currentCVImageBuffer;
 }
 
+- (QTCaptureDevice *)defaultVideoDevice {
+	QTCaptureDevice *result = [QTCaptureDevice defaultInputDeviceWithMediaType:QTMediaTypeVideo];
+	if (!result) {
+		result = [QTCaptureDevice defaultInputDeviceWithMediaType:QTMediaTypeMuxed];
+	}
+	return result;
+}
+
 - (NSArray *)availableVideoDevices {
     NSMutableArray *videoDevices = [NSMutableArray new];
     [videoDevices addObjectsFromArray:[QTCaptureDevice inputDevicesWithMediaType:QTMediaTypeVideo]];

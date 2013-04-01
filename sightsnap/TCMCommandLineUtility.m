@@ -79,17 +79,18 @@
         printf("created by @monkeydom\n");
     } else {
         TCMCaptureManager *captureManager = [TCMCaptureManager captureManager];
+		QTCaptureDevice *defaultDevice = captureManager.defaultVideoDevice;
         if ([package booleanValueForSignature:list]) {
             puts("Video Devices:");
             for (QTCaptureDevice *device in captureManager.availableVideoDevices) {
-                puts([[NSString stringWithFormat:@" %@",device.localizedDisplayName] UTF8String]);
+                puts([[NSString stringWithFormat:@"%@ %@",[device isEqual:defaultDevice] ?@"*":@" ",device.localizedDisplayName] UTF8String]);
                 for (QTFormatDescription *format in device.formatDescriptions) {
-                    puts([[NSString stringWithFormat:@" - %@",format.localizedFormatSummary] UTF8String]);
+                    puts([[NSString stringWithFormat:@"   - %@",format.localizedFormatSummary] UTF8String]);
                 }
             }
         } else {
             
-            QTCaptureDevice *videoDevice = [captureManager.availableVideoDevices lastObject];
+            QTCaptureDevice *videoDevice = defaultDevice;
             NSString *deviceString = [package firstObjectForSignature:device];
             if (deviceString) {
                 NSString *searchString = deviceString.lowercaseString;

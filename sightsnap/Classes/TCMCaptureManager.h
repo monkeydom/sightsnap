@@ -16,6 +16,8 @@ typedef void (^TCMCaptureQuartzAction)(CGContextRef aContext, CGRect aFrame);
 
 + (instancetype)captureManager;
 
+
+- (QTCaptureDevice *)defaultVideoDevice;
 - (NSArray *)availableVideoDevices;
 - (void)setCurrentVideoDevice:(QTCaptureDevice *)aVideoDevice;
 - (void)setImageDrawingBlock:(TCMCaptureQuartzAction)drawingBlock;
