@@ -10,6 +10,9 @@
 #import <QTKit/QTKit.h>
 #import "TCMCaptureManager.h"
 #import "FSArguments.h"
+#import "FSArguments_Coalescer_Internal.h"
+
+typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUInteger aIndentLevel, NSUInteger aTerminalWidth);
 
 @interface TCMCommandLineUtility ()
 @property (nonatomic) BOOL keepRunLoopAlive;
@@ -21,6 +24,7 @@
 @property (nonatomic) CGFloat fontSize;
 @property (nonatomic, strong) NSString *fontName;
 @property (nonatomic) BOOL shouldTimeStamp;
+@property (nonatomic) NSInteger helpFirstTabPosition;
 @end
 
 @implementation TCMCommandLineUtility
@@ -38,8 +42,41 @@
         self.fontSize = 40;
         self.fontName = @"HelveticaNeue-Bold";
         self.shouldTimeStamp = NO;
+		self.helpFirstTabPosition = 30;
     }
     return self;
+}
+
+- (FSDescriptionHelper)descriptionHelperWithHelpText:(NSString *)aHelpText {
+	return [self descriptionHelperWithHelpText:aHelpText valueName:nil];
+}
+
+- (FSDescriptionHelper)descriptionHelperWithHelpText:(NSString *)aHelpText valueName:(NSString *)aValueName {
+	NSInteger aFirstTabPosition = self.helpFirstTabPosition;
+	FSDescriptionHelper result = ^(FSArgumentSignature *aSignature, NSUInteger aIndentLevel, NSUInteger aTerminalWidth) {
+		NSArray *expandedSwitches = __fsargs_expandAllSwitches(aSignature.switches);
+		NSString *firstLinePrefix = [@"" stringByPaddingToLength:aIndentLevel withString:@" " startingAtIndex:0];
+		NSString *followingLinesPrefix = [@"" stringByPaddingToLength:aIndentLevel + aFirstTabPosition withString:@" " startingAtIndex:0];
+		NSString *argumentPart = [expandedSwitches componentsJoinedByString:@", "];
+		if ([aSignature isKindOfClass:[FSValuedArgument class]]) {
+			argumentPart = [@[argumentPart, [NSString stringWithFormat:@"<%@>", aValueName]] componentsJoinedByString:@" "];
+		}
+		argumentPart = [firstLinePrefix stringByAppendingString:argumentPart];
+		NSInteger tabLength = aFirstTabPosition + aIndentLevel - argumentPart.length;
+		if (tabLength > 0) {
+			argumentPart = [argumentPart stringByAppendingString:[@"" stringByPaddingToLength:tabLength withString:@" " startingAtIndex:0]];
+		}
+		NSArray *helpTextComponents = [aHelpText componentsSeparatedByString:@"\n"];
+		NSMutableString *result = [[[argumentPart stringByAppendingString:helpTextComponents[0]] stringByAppendingString:@"\n"] mutableCopy];
+		for (int index=1; index < helpTextComponents.count; index++) {
+			[result appendString:followingLinesPrefix];
+			[result appendString:helpTextComponents[index]];
+			[result appendString:@"\n"];
+		}
+		return result;
+	};
+	
+	return result;
 }
 
 - (int)run {
@@ -56,7 +93,23 @@
     *fontSize = [FSArgumentSignature argumentSignatureWithFormat:@"[-s --fontSize]="],
     *device = [FSArgumentSignature argumentSignatureWithFormat:@"[-d --device]="],
     *help = [FSArgumentSignature argumentSignatureWithFormat:@"[-h --help]"];
-    NSArray * signatures = @[list,device,time,skipframes,maxWidth,maxHeight,jpegQuality,stamp,fontName,fontSize,help];
+    NSArray *signatures = @[list,device,time,skipframes,jpegQuality,maxWidth,maxHeight,stamp,fontName,fontSize,help];
+	
+	
+	self.helpFirstTabPosition = 28;
+	[list setDescriptionHelper:[self descriptionHelperWithHelpText:@"List all available video devices and their formats."]];
+	[device setDescriptionHelper:[self descriptionHelperWithHelpText:@"Use this <videoDevice>. First partial case-insensitive name match is taken." valueName:@"videoDevice"]];
+	[time setDescriptionHelper:[self descriptionHelperWithHelpText:@"Takes a frame every <delay> seconds and saves as outputfilename-XXXXXXX.jpg continuously." valueName:@"delay"]];
+	[skipframes setDescriptionHelper:[self descriptionHelperWithHelpText:@"Skips <n> frames before taking a picture. Gives cam warmup time.\n(default is 3, frames are @15fps)" valueName:@"n"]];
+	[maxWidth  setDescriptionHelper:[self descriptionHelperWithHelpText:@"If captured image is wider than <w> px, scale it down to fit." valueName:@"w"]];
+	[maxHeight setDescriptionHelper:[self descriptionHelperWithHelpText:@"If captured image is higher than <h> px, scale it down to fit." valueName:@"h"]];
+	[jpegQuality setDescriptionHelper:[self descriptionHelperWithHelpText:@"JPEG image quality from 0.0 to 1.0 (default is 0.8)." valueName:@"q"]];
+	[help setDescriptionHelper:[self descriptionHelperWithHelpText:@"Shows this help."]];
+	[stamp setDescriptionHelper:[self descriptionHelperWithHelpText:@"Adds a Timestamp to the captured image."]];
+	[fontSize setDescriptionHelper:[self descriptionHelperWithHelpText:@"Font size for timestamp in <size> px. (default is 40)" valueName:@"size"]];
+	[fontName setDescriptionHelper:[self descriptionHelperWithHelpText:@"Postscript font name to use. Use FontBook.app->Font Info to find out about \nthe available fonts on your system (default is 'HelveticaNeue-Bold')" valueName:@"font"]];
+	
+	
     FSArgumentPackage * package = [[NSProcessInfo processInfo] fsargs_parseArgumentsWithSignatures:signatures];
     NSString *outputFilename = @"sightsnap.jpg";
     if ([[package uncapturedValues] count] > 0) {
@@ -68,22 +121,17 @@
     }
     self.baseFilePath = [outputFilename stringByStandardizingPath];
     
+	NSInteger terminalWidth = 80;
     if ([package booleanValueForSignature:help]) {
-        printf("sightsnap\n\n");
-        printf("%s", [[list descriptionForHelp:2 terminalWidth:80] UTF8String]);
-        printf("%s", [[device descriptionForHelp:2 terminalWidth:80] UTF8String]);
-        printf("%s", [[time descriptionForHelp:2 terminalWidth:80] UTF8String]);
-        printf("%s", [[maxWidth descriptionForHelp:2 terminalWidth:80] UTF8String]);
-        printf("%s", [[maxHeight descriptionForHelp:2 terminalWidth:80] UTF8String]);
-        printf("%s", [[skipframes descriptionForHelp:2 terminalWidth:80] UTF8String]);
-        printf("%s", [[jpegQuality descriptionForHelp:2 terminalWidth:80] UTF8String]);
-        printf("%s", [[stamp descriptionForHelp:2 terminalWidth:80] UTF8String]);
-        printf("%s", [[fontSize descriptionForHelp:2 terminalWidth:80] UTF8String]);
-        printf("%s", [[fontName descriptionForHelp:2 terminalWidth:80] UTF8String]);
-        printf("%s", [[help descriptionForHelp:2 terminalWidth:80] UTF8String]);
+		puts("sightsnap v0.1 by @monkeydom");
+        puts("usage: sightsnap [options] [outputfilename[.jpg|.png]] [options]");
+		puts("");
+		puts("Default output filename is signtsnap.jpg");
+		for (FSArgumentSignature *option in signatures) {
+			printf("%s",[[option descriptionForHelp:2 terminalWidth:terminalWidth] UTF8String]);
+		}
+		puts("");
 		puts("To make timelapse videos use ffmpeg like this:\n  ffmpeg -r 15 -i 'sightsnap-\%07d.jpg' sightsnap.mp4");
-        printf("\n");
-        printf("created by @monkeydom\n");
     } else {
         TCMCaptureManager *captureManager = [TCMCaptureManager captureManager];
 		QTCaptureDevice *defaultDevice = captureManager.defaultVideoDevice;
