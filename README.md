@@ -7,6 +7,9 @@
 ## Requirements
 * Mac OS X 10.8 or higher, 64-bit only
 
+## Download Binary
+* [sightsnap v0.1](http://cl.ly/Nz2O)
+
 ## License
 
 * [MIT](http://www.opensource.org/licenses/mit-license.php)
