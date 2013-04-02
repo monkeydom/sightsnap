@@ -38,7 +38,7 @@
     if (self) {
         self.captureSession = [[QTCaptureSession alloc] init];
         self.jpegQuality = 0.8;
-		self.skipFrames = 6;
+		self.skipFrames = 3; // with a frame cap of 15 pre sec, this should be enough for the average cam
     }
     return self;
 }
