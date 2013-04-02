@@ -97,6 +97,10 @@
             // some data, which will in turn send this to the output
             // object, which has a delegate that you defined
             QTCaptureDecompressedVideoOutput *output = [[QTCaptureDecompressedVideoOutput alloc] init];
+			
+			// adjustments because we only take stills
+			output.automaticallyDropsLateVideoFrames = YES; // we don't care if they drop if we are slow, we only want stills anyway
+			output.minimumVideoFrameInterval = 1.0 / 15; // don't do more than 15 frames to cap load we generate
             
             // This is the delegate. Note the
             // captureOutput:didOutputVideoFrame...-method of this
