@@ -2,7 +2,6 @@
 
 ## Design Goals
 * no memory leaks - suitable for long time time lapsing
-* provide access to quality control of camera
 * add text overlays or timestamps
 
 ## Requirements
