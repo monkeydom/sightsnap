@@ -174,12 +174,26 @@
     CIImage *coreImage = [CIImage imageWithCVImageBuffer:self.currentImageBuffer];
     CGRect contextRect = CGRectZero;
     CGSize size = coreImage.extent.size;
-    contextRect.size = size;
+	
+	CGSize scaledSize = size;
+	double scale = 1.0;
+	if (self.maxWidth > 0 && scaledSize.width > self.maxWidth) {
+		scale = self.maxWidth / scaledSize.width;
+		scaledSize = CGSizeMake(ceil(scaledSize.width * scale), ceil(scaledSize.height * scale));
+	}
+	if (self.maxHeight > 0 && scaledSize.height > self.maxHeight) {
+		scale = self.maxHeight / size.height;
+		scaledSize = CGSizeMake(ceil(size.width * scale), ceil(size.height * scale));
+	}
+    contextRect.size = scaledSize;
+
     size_t bitsPerComponent = 8;
-    size_t rowbytes = 4 * size.width * bitsPerComponent / 8;
+    size_t rowbytes = 4 * contextRect.size.width * bitsPerComponent / 8;
     static CGColorSpaceRef colorSpace = nil;
     if (!colorSpace) colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef cgContext = CGBitmapContextCreate(nil, size.width, size.height, bitsPerComponent, rowbytes, colorSpace, kCGImageAlphaPremultipliedFirst);
+    CGContextRef cgContext = CGBitmapContextCreate(nil, CGRectGetWidth(contextRect),CGRectGetHeight(contextRect), bitsPerComponent, rowbytes, colorSpace, kCGImageAlphaPremultipliedFirst);
+	CGContextSetInterpolationQuality(cgContext, kCGInterpolationHigh);
+	// todo: investigate nice CI scale filter instead
     CIContext *context = [CIContext contextWithCGContext:cgContext options:nil];
     [context drawImage:coreImage inRect:contextRect fromRect:coreImage.extent];
     if (self.drawingBlock) {
