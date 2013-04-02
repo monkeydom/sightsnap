@@ -77,7 +77,7 @@
         printf("%s", [[fontSize descriptionForHelp:2 terminalWidth:80] UTF8String]);
         printf("%s", [[fontName descriptionForHelp:2 terminalWidth:80] UTF8String]);
         printf("%s", [[help descriptionForHelp:2 terminalWidth:80] UTF8String]);
-		printf("To make timelapse videos use ffmpeg like this:\n  ffmpeg -r 15 -i 'sightsnap-\%07d.jpg' sightsnap.mp4");
+		puts("To make timelapse videos use ffmpeg like this:\n  ffmpeg -r 15 -i 'sightsnap-\%07d.jpg' sightsnap.mp4");
         printf("\n");
         printf("created by @monkeydom\n");
     } else {
