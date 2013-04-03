@@ -12,6 +12,18 @@
 #import "FSArguments.h"
 #import "FSArguments_Coalescer_Internal.h"
 
+@interface QTCaptureDevice (SightSnapAdditions)
+- (NSString *)localizedUniqueDisplayName;
+@end
+
+@implementation QTCaptureDevice (SightSnapAdditions)
+- (NSString *)localizedUniqueDisplayName {
+	NSString *result = [NSString stringWithFormat:@"%@ [%@ - %@]", self.localizedDisplayName, self.modelUniqueID, self.uniqueID];
+	return result;
+}
+
+@end
+
 typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUInteger aIndentLevel, NSUInteger aTerminalWidth);
 
 @interface TCMCommandLineUtility ()
@@ -96,18 +108,18 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
     NSArray *signatures = @[list,device,time,skipframes,jpegQuality,maxWidth,maxHeight,stamp,fontName,fontSize,help];
 	
 	
-	self.helpFirstTabPosition = 28;
-	[list setDescriptionHelper:[self descriptionHelperWithHelpText:@"List all available video devices and their formats."]];
-	[device setDescriptionHelper:[self descriptionHelperWithHelpText:@"Use this <videoDevice>. First partial case-insensitive name match is taken." valueName:@"videoDevice"]];
-	[time setDescriptionHelper:[self descriptionHelperWithHelpText:@"Takes a frame every <delay> seconds and saves as outputfilename-XXXXXXX.jpg continuously." valueName:@"delay"]];
-	[skipframes setDescriptionHelper:[self descriptionHelperWithHelpText:@"Skips <n> frames before taking a picture. Gives cam warmup time.\n(default is 3, frames are @15fps)" valueName:@"n"]];
-	[maxWidth  setDescriptionHelper:[self descriptionHelperWithHelpText:@"If captured image is wider than <w> px, scale it down to fit." valueName:@"w"]];
-	[maxHeight setDescriptionHelper:[self descriptionHelperWithHelpText:@"If captured image is higher than <h> px, scale it down to fit." valueName:@"h"]];
+	self.helpFirstTabPosition = 26;
+	[list setDescriptionHelper:       [self descriptionHelperWithHelpText:@"List all available video devices and their formats."]];
+	[device setDescriptionHelper:     [self descriptionHelperWithHelpText:@"Use this <device>. First partial case-insensitive\nname match is taken." valueName:@"device"]];
+	[time setDescriptionHelper:       [self descriptionHelperWithHelpText:@"Takes a frame every <delay> seconds and saves it as\noutputfilename-XXXXXXX.jpg continuously." valueName:@"delay"]];
+	[skipframes setDescriptionHelper: [self descriptionHelperWithHelpText:@"Skips <n> frames before taking a picture. Gives cam\nwarmup time. (default is 3, frames are @15fps)" valueName:@"n"]];
+	[maxWidth  setDescriptionHelper:  [self descriptionHelperWithHelpText:@"If image is wider than <w> px, scale it down to fit." valueName:@"w"]];
+	[maxHeight setDescriptionHelper:  [self descriptionHelperWithHelpText:@"If image is higher than <h> px, scale it down to fit." valueName:@"h"]];
 	[jpegQuality setDescriptionHelper:[self descriptionHelperWithHelpText:@"JPEG image quality from 0.0 to 1.0 (default is 0.8)." valueName:@"q"]];
-	[help setDescriptionHelper:[self descriptionHelperWithHelpText:@"Shows this help."]];
-	[stamp setDescriptionHelper:[self descriptionHelperWithHelpText:@"Adds a Timestamp to the captured image."]];
-	[fontSize setDescriptionHelper:[self descriptionHelperWithHelpText:@"Font size for timestamp in <size> px. (default is 40)" valueName:@"size"]];
-	[fontName setDescriptionHelper:[self descriptionHelperWithHelpText:@"Postscript font name to use. Use FontBook.app->Font Info to find out about \nthe available fonts on your system (default is 'HelveticaNeue-Bold')" valueName:@"font"]];
+	[help setDescriptionHelper:       [self descriptionHelperWithHelpText:@"Shows this help."]];
+	[stamp setDescriptionHelper:      [self descriptionHelperWithHelpText:@"Adds a Timestamp to the captured image."]];
+	[fontSize setDescriptionHelper:   [self descriptionHelperWithHelpText:@"Font size for timestamp in <size> px. (default is 40)" valueName:@"size"]];
+	[fontName setDescriptionHelper:   [self descriptionHelperWithHelpText:@"Postscript font name to use. Use FontBook.app->Font Info\nto find out about the available fonts on your system\n(default is 'HelveticaNeue-Bold')" valueName:@"font"]];
 	
 	
     FSArgumentPackage * package = [[NSProcessInfo processInfo] fsargs_parseArgumentsWithSignatures:signatures];
@@ -123,7 +135,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
     
 	NSInteger terminalWidth = 80;
     if ([package booleanValueForSignature:help]) {
-		puts("sightsnap v0.1 by @monkeydom");
+		puts("sightsnap v0.2 by @monkeydom");
         puts("usage: sightsnap [options] [outputfilename[.jpg|.png]] [options]");
 		puts("");
 		puts("Default output filename is signtsnap.jpg");
@@ -138,7 +150,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
         if ([package booleanValueForSignature:list]) {
             puts("Video Devices:");
             for (QTCaptureDevice *device in captureManager.availableVideoDevices) {
-                puts([[NSString stringWithFormat:@"%@ %@",[device isEqual:defaultDevice] ?@"*":@" ",device.localizedDisplayName] UTF8String]);
+                puts([[NSString stringWithFormat:@"%@ %@",[device isEqual:defaultDevice] ?@"*":@" ",device.localizedUniqueDisplayName] UTF8String]);
                 for (QTFormatDescription *format in device.formatDescriptions) {
                     puts([[NSString stringWithFormat:@"   - %@",format.localizedFormatSummary] UTF8String]);
                 }
@@ -151,7 +163,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
                 NSString *searchString = deviceString.lowercaseString;
                 BOOL foundDevice = NO;
                 for (QTCaptureDevice *device in captureManager.availableVideoDevices) {
-                    NSString *candidateString = [device.localizedDisplayName lowercaseString];
+                    NSString *candidateString = [device.localizedUniqueDisplayName lowercaseString];
                     if ([candidateString rangeOfString:searchString].location != NSNotFound) {
                         foundDevice = YES;
                         videoDevice = device;
