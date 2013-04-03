@@ -8,7 +8,7 @@
 * Mac OS X 10.8 or higher, 64-bit only
 
 ## Download Binary
-* [sightsnap v0.1](http://cl.ly/Nz2O)
+* [sightsnap v0.2](http://cl.ly/O0n1)
 
 ## License
 
@@ -17,23 +17,26 @@
 ## Usage
 
 <pre>
-sightsnap v0.1 by @monkeydom
+sightsnap v0.2 by @monkeydom
 usage: sightsnap [options] [outputfilename[.jpg|.png]] [options]
 
 Default output filename is signtsnap.jpg
-  -l, --listDevices           List all available video devices and their formats.
-  -d, --device <videoDevice>  Use this <videoDevice>. First partial case-insensitive name match is taken.
-  -t, --time <delay>          Takes a frame every <delay> seconds and saves as outputfilename-XXXXXXX.jpg continuously.
-  -k, --skipframes <n>        Skips <n> frames before taking a picture. Gives cam warmup time.
-                              (default is 3, frames are @15fps)
-  -j, --jpegQuality <q>       JPEG image quality from 0.0 to 1.0 (default is 0.8).
-  -x, --maxwidth <w>          If captured image is wider than <w> px, scale it down to fit.
-  -y, --maxheight <h>         If captured image is higher than <h> px, scale it down to fit.
-  -p, --timeStamp             Adds a Timestamp to the captured image.
-  -f, --fontName <font>       Postscript font name to use. Use FontBook.app->Font Info to find out about 
-                              the available fonts on your system (default is 'HelveticaNeue-Bold')
-  -s, --fontSize <size>       Font size for timestamp in <size> px. (default is 40)
-  -h, --help                  Shows this help.
+  -l, --listDevices         List all available video devices and their formats.
+  -d, --device <device>     Use this <device>. First partial case-insensitive
+                            name match is taken.
+  -t, --time <delay>        Takes a frame every <delay> seconds and saves it as
+                            outputfilename-XXXXXXX.jpg continuously.
+  -k, --skipframes <n>      Skips <n> frames before taking a picture. Gives cam
+                            warmup time. (default is 3, frames are @15fps)
+  -j, --jpegQuality <q>     JPEG image quality from 0.0 to 1.0 (default is 0.8).
+  -x, --maxwidth <w>        If image is wider than <w> px, scale it down to fit.
+  -y, --maxheight <h>       If image is higher than <h> px, scale it down to fit.
+  -p, --timeStamp           Adds a Timestamp to the captured image.
+  -f, --fontName <font>     Postscript font name to use. Use FontBook.app->Font Info
+                            to find out about the available fonts on your system
+                            (default is 'HelveticaNeue-Bold')
+  -s, --fontSize <size>     Font size for timestamp in <size> px. (default is 40)
+  -h, --help                Shows this help.
 
 To make timelapse videos use ffmpeg like this:
   ffmpeg -r 15 -i 'sightsnap-%07d.jpg' sightsnap.mp4</pre>
