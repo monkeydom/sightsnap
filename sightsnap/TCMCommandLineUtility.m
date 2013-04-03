@@ -12,6 +12,18 @@
 #import "FSArguments.h"
 #import "FSArguments_Coalescer_Internal.h"
 
+@interface QTCaptureDevice (SightSnapAdditions)
+- (NSString *)localizedUniqueDisplayName;
+@end
+
+@implementation QTCaptureDevice (SightSnapAdditions)
+- (NSString *)localizedUniqueDisplayName {
+	NSString *result = [NSString stringWithFormat:@"%@ [%@]", self.localizedDisplayName, self.uniqueID];
+	return result;
+}
+
+@end
+
 typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUInteger aIndentLevel, NSUInteger aTerminalWidth);
 
 @interface TCMCommandLineUtility ()
@@ -138,7 +150,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
         if ([package booleanValueForSignature:list]) {
             puts("Video Devices:");
             for (QTCaptureDevice *device in captureManager.availableVideoDevices) {
-                puts([[NSString stringWithFormat:@"%@ %@",[device isEqual:defaultDevice] ?@"*":@" ",device.localizedDisplayName] UTF8String]);
+                puts([[NSString stringWithFormat:@"%@ %@",[device isEqual:defaultDevice] ?@"*":@" ",device.localizedUniqueDisplayName] UTF8String]);
                 for (QTFormatDescription *format in device.formatDescriptions) {
                     puts([[NSString stringWithFormat:@"   - %@",format.localizedFormatSummary] UTF8String]);
                 }
@@ -151,7 +163,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
                 NSString *searchString = deviceString.lowercaseString;
                 BOOL foundDevice = NO;
                 for (QTCaptureDevice *device in captureManager.availableVideoDevices) {
-                    NSString *candidateString = [device.localizedDisplayName lowercaseString];
+                    NSString *candidateString = [device.localizedUniqueDisplayName lowercaseString];
                     if ([candidateString rangeOfString:searchString].location != NSNotFound) {
                         foundDevice = YES;
                         videoDevice = device;
