@@ -18,7 +18,7 @@
 
 @implementation QTCaptureDevice (SightSnapAdditions)
 - (NSString *)localizedUniqueDisplayName {
-	NSString *result = [NSString stringWithFormat:@"%@ [%@]", self.localizedDisplayName, self.uniqueID];
+	NSString *result = [NSString stringWithFormat:@"%@ [%@ - %@]", self.localizedDisplayName, self.modelUniqueID, self.uniqueID];
 	return result;
 }
 
