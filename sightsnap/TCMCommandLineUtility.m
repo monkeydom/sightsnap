@@ -149,13 +149,14 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
         }
     }
     self.baseFilePath = [outputFilename stringByStandardizingPath];
+	
     
 	NSInteger terminalWidth = 80;
     if ([package booleanValueForSignature:help]) {
 		puts("sightsnap v0.2 by @monkeydom");
-        puts("usage: sightsnap [options] [outputfilename[.jpg|.png]] [options]");
+        puts("usage: sightsnap [options] [output[.jpg|.png]] [options]");
 		puts("");
-		puts("Default output filename is signtsnap.jpg");
+		puts("Default output filename is signtsnap.jpg - if no extension is given, jpg is used.\nIf you add directory in front, it will be created.");
 		for (FSArgumentSignature *option in signatures) {
 			printf("%s",[[option descriptionForHelp:2 terminalWidth:terminalWidth] UTF8String]);
 		}
@@ -173,6 +174,19 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
                 }
             }
         } else {
+			// ensure directory
+			NSFileManager *fileManager = [NSFileManager defaultManager];
+			NSString *baseDirectory = [self.baseFilePath stringByDeletingLastPathComponent];
+			if (baseDirectory.length) {
+				if (![fileManager fileExistsAtPath:baseDirectory isDirectory:NULL]) {
+					NSError *error;
+					if (![fileManager createDirectoryAtPath:baseDirectory withIntermediateDirectories:YES attributes:nil error:&error]) {
+						NSLog(@"Could not create directory at %@. \n%@",baseDirectory, error);
+					}
+				}
+				
+			}
+
             
             QTCaptureDevice *videoDevice = defaultDevice;
             NSString *deviceString = [package firstObjectForSignature:device];
