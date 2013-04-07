@@ -246,7 +246,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
         NSDateFormatter *dateFormatter = [NSDateFormatter new];
         dateFormatter.timeStyle = NSDateFormatterMediumStyle;
         dateFormatter.dateStyle = NSDateFormatterShortStyle;
-        NSString *dateString = [dateFormatter stringFromDate:self.lastFrameScheduledDate];
+        NSString *dateString = [dateFormatter stringFromDate:self.lastFrameFireDate];
         CGFloat fontSize = self.fontSize;
         CGFloat fontInset = 20.0;
         
