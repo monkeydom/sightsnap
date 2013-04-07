@@ -39,7 +39,7 @@
     self = [super init];
     if (self) {
         self.jpegQuality = 0.8;
-		self.skipFrames = 3; // with a frame cap of 15 pre sec, this should be enough for the average cam
+		self.skipFrames = 2; // with a frame cap of 6 per sec, this should be enough for the average cam
     }
     return self;
 }
@@ -81,7 +81,14 @@
 		
 		// adjustments because we only take stills
 		output.automaticallyDropsLateVideoFrames = YES; // we don't care if they drop if we are slow, we only want stills anyway
-		output.minimumVideoFrameInterval = 1.0 / 15; // don't do more than 15 frames to cap load we generate
+		output.minimumVideoFrameInterval = 1.0 / 6; // don't do more than 6 frames to cap load we generate and also to allow to captures stills from more than one cam!
+		
+		if (self.maxWidth > 0 && self.maxHeight > 0) {
+			[output setPixelBufferAttributes:@{
+					(id)kCVPixelBufferWidthKey : @(self.maxWidth),
+					(id)kCVPixelBufferHeightKey : @(self.maxHeight)
+			 }];
+		}
 		
 		// This is the delegate. Note the
 		// captureOutput:didOutputVideoFrame...-method of this

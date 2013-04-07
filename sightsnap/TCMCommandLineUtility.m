@@ -129,9 +129,9 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
 	[list setDescriptionHelper:       [self descriptionHelperWithHelpText:@"List all available video devices and their formats."]];
 	[device setDescriptionHelper:     [self descriptionHelperWithHelpText:@"Use this <device>. First partial case-insensitive\nname match is taken." valueName:@"device"]];
 	[time setDescriptionHelper:       [self descriptionHelperWithHelpText:@"Takes a frame every <delay> seconds and saves it as\noutputfilename-XXXXXXX.jpg continuously." valueName:@"delay"]];
-	[skipframes setDescriptionHelper: [self descriptionHelperWithHelpText:@"Skips <n> frames before taking a picture. Gives cam\nwarmup time. (default is 3, frames are @15fps)" valueName:@"n"]];
+	[skipframes setDescriptionHelper: [self descriptionHelperWithHelpText:@"Skips <n> frames before taking a picture. Gives cam\nwarmup time. (default is 2, frames are @6fps)" valueName:@"n"]];
 	[maxWidth  setDescriptionHelper:  [self descriptionHelperWithHelpText:@"If image is wider than <w> px, scale it down to fit." valueName:@"w"]];
-	[maxHeight setDescriptionHelper:  [self descriptionHelperWithHelpText:@"If image is higher than <h> px, scale it down to fit." valueName:@"h"]];
+	[maxHeight setDescriptionHelper:  [self descriptionHelperWithHelpText:@"If image is higher than <h> px, scale it down to fit.\n" valueName:@"h"]];
 	[jpegQuality setDescriptionHelper:[self descriptionHelperWithHelpText:@"JPEG image quality from 0.0 to 1.0 (default is 0.8)." valueName:@"q"]];
 	[help setDescriptionHelper:       [self descriptionHelperWithHelpText:@"Shows this help."]];
 	[stamp setDescriptionHelper:      [self descriptionHelperWithHelpText:@"Adds a Timestamp to the captured image."]];
@@ -149,13 +149,14 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
         }
     }
     self.baseFilePath = [outputFilename stringByStandardizingPath];
+	
     
 	NSInteger terminalWidth = 80;
     if ([package booleanValueForSignature:help]) {
 		puts("sightsnap v0.2 by @monkeydom");
-        puts("usage: sightsnap [options] [outputfilename[.jpg|.png]] [options]");
+        puts("usage: sightsnap [options] [output[.jpg|.png]] [options]");
 		puts("");
-		puts("Default output filename is signtsnap.jpg");
+		puts("Default output filename is signtsnap.jpg - if no extension is given, jpg is used.\nIf you add directory in front, it will be created.");
 		for (FSArgumentSignature *option in signatures) {
 			printf("%s",[[option descriptionForHelp:2 terminalWidth:terminalWidth] UTF8String]);
 		}
@@ -173,6 +174,19 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
                 }
             }
         } else {
+			// ensure directory
+			NSFileManager *fileManager = [NSFileManager defaultManager];
+			NSString *baseDirectory = [self.baseFilePath stringByDeletingLastPathComponent];
+			if (baseDirectory.length) {
+				if (![fileManager fileExistsAtPath:baseDirectory isDirectory:NULL]) {
+					NSError *error;
+					if (![fileManager createDirectoryAtPath:baseDirectory withIntermediateDirectories:YES attributes:nil error:&error]) {
+						NSLog(@"Could not create directory at %@. \n%@",baseDirectory, error);
+					}
+				}
+				
+			}
+
             
             QTCaptureDevice *videoDevice = defaultDevice;
             NSString *deviceString = [package firstObjectForSignature:device];
