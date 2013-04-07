@@ -129,7 +129,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
 	[list setDescriptionHelper:       [self descriptionHelperWithHelpText:@"List all available video devices and their formats."]];
 	[device setDescriptionHelper:     [self descriptionHelperWithHelpText:@"Use this <device>. First partial case-insensitive\nname match is taken." valueName:@"device"]];
 	[time setDescriptionHelper:       [self descriptionHelperWithHelpText:@"Takes a frame every <delay> seconds and saves it as\noutputfilename-XXXXXXX.jpg continuously." valueName:@"delay"]];
-	[skipframes setDescriptionHelper: [self descriptionHelperWithHelpText:@"Skips <n> frames before taking a picture. Gives cam\nwarmup time. (default is 3, frames are @15fps)" valueName:@"n"]];
+	[skipframes setDescriptionHelper: [self descriptionHelperWithHelpText:@"Skips <n> frames before taking a picture. Gives cam\nwarmup time. (default is 2, frames are @6fps)" valueName:@"n"]];
 	[maxWidth  setDescriptionHelper:  [self descriptionHelperWithHelpText:@"If image is wider than <w> px, scale it down to fit." valueName:@"w"]];
 	[maxHeight setDescriptionHelper:  [self descriptionHelperWithHelpText:@"If image is higher than <h> px, scale it down to fit.\n" valueName:@"h"]];
 	[jpegQuality setDescriptionHelper:[self descriptionHelperWithHelpText:@"JPEG image quality from 0.0 to 1.0 (default is 0.8)." valueName:@"q"]];
