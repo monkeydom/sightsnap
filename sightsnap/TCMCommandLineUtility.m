@@ -121,14 +121,16 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
     *fontName = [FSArgumentSignature argumentSignatureWithFormat:@"[-f --fontName]="],
     *fontSize = [FSArgumentSignature argumentSignatureWithFormat:@"[-s --fontSize]="],
     *device = [FSArgumentSignature argumentSignatureWithFormat:@"[-d --device]="],
+    *zeroStart = [FSArgumentSignature argumentSignatureWithFormat:@"[-z --startAtZero]"],
     *help = [FSArgumentSignature argumentSignatureWithFormat:@"[-h --help]"];
-    NSArray *signatures = @[list,device,time,skipframes,jpegQuality,maxWidth,maxHeight,stamp,fontName,fontSize,help];
+    NSArray *signatures = @[list,device,time,zeroStart,skipframes,jpegQuality,maxWidth,maxHeight,stamp,fontName,fontSize,help];
 	
 	
 	self.helpFirstTabPosition = 26;
 	[list setDescriptionHelper:       [self descriptionHelperWithHelpText:@"List all available video devices and their formats."]];
 	[device setDescriptionHelper:     [self descriptionHelperWithHelpText:@"Use this <device>. First partial case-insensitive\nname match is taken." valueName:@"device"]];
 	[time setDescriptionHelper:       [self descriptionHelperWithHelpText:@"Takes a frame every <delay> seconds and saves it as\noutputfilename-XXXXXXX.jpg continuously." valueName:@"delay"]];
+	[zeroStart setDescriptionHelper:  [self descriptionHelperWithHelpText:@"Start at frame number 0 and overwrite - otherwise start\nwith next free frame number. Time mode only."]];
 	[skipframes setDescriptionHelper: [self descriptionHelperWithHelpText:@"Skips <n> frames before taking a picture. Gives cam\nwarmup time. (default is 2, frames are @6fps)" valueName:@"n"]];
 	[maxWidth  setDescriptionHelper:  [self descriptionHelperWithHelpText:@"If image is wider than <w> px, scale it down to fit." valueName:@"w"]];
 	[maxHeight setDescriptionHelper:  [self descriptionHelperWithHelpText:@"If image is higher than <h> px, scale it down to fit.\n" valueName:@"h"]];
@@ -251,8 +253,29 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
                 self.fontSize = [fontSizeValue doubleValue];
             }
             self.lastFrameScheduledDate = [NSDate new];
-			if (self.grabInterval >= 0.0 && self.grabInterval <= 2.0) {
-				captureManager.shouldKeepCaptureSessionOpen = YES;
+			if (self.grabInterval >= 0.0) {
+				if (self.grabInterval <= 2.0) {
+					captureManager.shouldKeepCaptureSessionOpen = YES;
+				}
+				
+				if (![package booleanValueForSignature:zeroStart]) {
+					// find out frameindex
+					NSFileManager *fileManager = [NSFileManager defaultManager];
+					NSInteger maxFrame = 0;
+					NSString *filenamebase = [[[self.baseFilePath lastPathComponent] stringByDeletingPathExtension] stringByAppendingString:@"-"];
+					NSString *containingDir = [self.baseFilePath stringByDeletingLastPathComponent];
+					if (containingDir.length == 0) containingDir = @".";
+					NSArray *filenames = [fileManager contentsOfDirectoryAtURL:[NSURL fileURLWithPath:containingDir] includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles | NSDirectoryEnumerationSkipsSubdirectoryDescendants error:nil];
+					for (NSURL *fileURL in [filenames sortedArrayUsingDescriptors:@[[[NSSortDescriptor alloc] initWithKey:@"path" ascending:NO]]]) {
+						NSString *fileName = [[[fileURL path] lastPathComponent] stringByDeletingPathExtension];
+						if ([fileName hasPrefix:filenamebase]) {
+							maxFrame = [[fileName substringFromIndex:filenamebase.length] integerValue];
+							self.frameIndex = maxFrame + 1;
+							break;
+						}
+					}
+				}
+				printf("Starting with %s.\n",[[[self.nextFrameFileURL path] lastPathComponent] UTF8String]);
 			}
             [self captureImage];
             [self startRunLoop];
