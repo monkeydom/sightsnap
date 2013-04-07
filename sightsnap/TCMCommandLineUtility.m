@@ -220,6 +220,9 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
                 self.fontSize = [fontSizeValue doubleValue];
             }
             self.lastFrameScheduledDate = [NSDate new];
+			if (self.grabInterval >= 0.0 && self.grabInterval <= 2.0) {
+				captureManager.shouldKeepCaptureSessionOpen = YES;
+			}
             [self captureImage];
             [self startRunLoop];
         }

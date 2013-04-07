@@ -16,6 +16,7 @@ typedef void (^TCMCaptureQuartzAction)(CGContextRef aContext, CGRect aFrame);
 @property (nonatomic) NSInteger skipFrames;
 @property (nonatomic) NSInteger maxWidth;
 @property (nonatomic) NSInteger maxHeight;
+@property (nonatomic) BOOL shouldKeepCaptureSessionOpen;
 
 + (instancetype)captureManager;
 
