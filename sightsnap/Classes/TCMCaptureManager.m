@@ -82,6 +82,12 @@
 		// adjustments because we only take stills
 		output.automaticallyDropsLateVideoFrames = YES; // we don't care if they drop if we are slow, we only want stills anyway
 		output.minimumVideoFrameInterval = 1.0 / 15; // don't do more than 15 frames to cap load we generate
+		if (self.maxWidth > 0 && self.maxHeight > 0) {
+			[output setPixelBufferAttributes:@{
+					(id)kCVPixelBufferWidthKey : @(self.maxWidth),
+					(id)kCVPixelBufferHeightKey : @(self.maxHeight)
+			 }];
+		}
 		
 		// This is the delegate. Note the
 		// captureOutput:didOutputVideoFrame...-method of this
