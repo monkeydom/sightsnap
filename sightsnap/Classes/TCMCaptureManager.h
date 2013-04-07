@@ -20,6 +20,7 @@ typedef void (^TCMCaptureQuartzAction)(CGContextRef aContext, CGRect aFrame);
 
 + (instancetype)captureManager;
 
+- (void)teardownCaptureSession;
 
 - (QTCaptureDevice *)defaultVideoDevice;
 - (NSArray *)availableVideoDevices;

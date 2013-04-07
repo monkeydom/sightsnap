@@ -12,6 +12,20 @@
 #import "FSArguments.h"
 #import "FSArguments_Coalescer_Internal.h"
 
+static NSUncaughtExceptionHandler *S_defaultHandler;
+
+static void signal_handler(int signal)
+{
+	[[TCMCaptureManager captureManager] teardownCaptureSession];
+	exit(0);
+}
+
+
+static void exception_handler(NSException *anException) {
+	NSLog(@"%s %@",__FUNCTION__,anException);
+	S_defaultHandler(anException);
+}
+
 @interface QTCaptureDevice (SightSnapAdditions)
 - (NSString *)localizedUniqueDisplayName;
 @end
@@ -42,6 +56,9 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
 @implementation TCMCommandLineUtility
 
 + (int)runCommandLineUtility {
+	S_defaultHandler = NSGetUncaughtExceptionHandler();
+	NSSetUncaughtExceptionHandler(exception_handler);
+	signal(SIGINT, signal_handler);
     int result = [[TCMCommandLineUtility new] run];
     return result;
 }
