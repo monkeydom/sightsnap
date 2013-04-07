@@ -12,6 +12,20 @@
 #import "FSArguments.h"
 #import "FSArguments_Coalescer_Internal.h"
 
+static NSUncaughtExceptionHandler *S_defaultHandler;
+
+static void signal_handler(int signal)
+{
+	[[TCMCaptureManager captureManager] teardownCaptureSession];
+	exit(0);
+}
+
+
+static void exception_handler(NSException *anException) {
+	NSLog(@"%s %@",__FUNCTION__,anException);
+	S_defaultHandler(anException);
+}
+
 @interface QTCaptureDevice (SightSnapAdditions)
 - (NSString *)localizedUniqueDisplayName;
 @end
@@ -42,6 +56,9 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
 @implementation TCMCommandLineUtility
 
 + (int)runCommandLineUtility {
+	S_defaultHandler = NSGetUncaughtExceptionHandler();
+	NSSetUncaughtExceptionHandler(exception_handler);
+	signal(SIGINT, signal_handler);
     int result = [[TCMCommandLineUtility new] run];
     return result;
 }
@@ -220,6 +237,9 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
                 self.fontSize = [fontSizeValue doubleValue];
             }
             self.lastFrameScheduledDate = [NSDate new];
+			if (self.grabInterval >= 0.0 && self.grabInterval <= 2.0) {
+				captureManager.shouldKeepCaptureSessionOpen = YES;
+			}
             [self captureImage];
             [self startRunLoop];
         }
@@ -246,7 +266,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
         NSDateFormatter *dateFormatter = [NSDateFormatter new];
         dateFormatter.timeStyle = NSDateFormatterMediumStyle;
         dateFormatter.dateStyle = NSDateFormatterShortStyle;
-        NSString *dateString = [dateFormatter stringFromDate:self.lastFrameScheduledDate];
+        NSString *dateString = [dateFormatter stringFromDate:self.lastFrameFireDate];
         CGFloat fontSize = self.fontSize;
         CGFloat fontInset = 20.0;
         
