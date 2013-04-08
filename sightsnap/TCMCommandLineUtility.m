@@ -64,10 +64,21 @@ typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 	return result;
 }
 
+- (CTLineRef)createLineWithString:(NSString *)aTextString attributes:(NSDictionary *)anAttributeDictionary {
+	CFAttributedStringRef attributedString = CFAttributedStringCreate(nil, (__bridge CFStringRef)aTextString, (__bridge CFDictionaryRef)anAttributeDictionary);
+	CTLineRef result = CTLineCreateWithAttributedString(attributedString);
+	CFRelease(attributedString);
+	return result;
+}
+
 - (NSArray *)text:(NSString *)aText wrappedToMaxWidth:(CGFloat)aMaxWidth inContext:(CGContextRef)aCGContext {
 	NSMutableArray *result = [NSMutableArray array];
+	NSDictionary *strokeAttributes = [self strokeAttributes];
 	// first quick check
-	CGFloat width = [self widthOfText:aText inContext:aCGContext];
+	CTLineRef line = [self createLineWithString:aText attributes:strokeAttributes];
+	CGRect measuredBounds = CTLineGetImageBounds(line, aCGContext);
+	CFRelease(line);
+	CGFloat width = CGRectGetWidth(measuredBounds);
 	if (width < aMaxWidth) {
 		[result addObject:@{@"text" : aText, @"width":@(width)}];
 	} else {
@@ -79,7 +90,11 @@ typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 			for (NSString *component in components) {
 				[lineComponents addObject:component];
 				NSString *combinedLineText = [lineComponents componentsJoinedByString:@" "];
-				CGFloat combinedWidth = [self widthOfText:combinedLineText inContext:aCGContext];
+				
+				line = [self createLineWithString:combinedLineText attributes:strokeAttributes];
+				CGRect measuredBounds = CTLineGetImageBounds(line, aCGContext);
+				CGFloat combinedWidth = CGRectGetWidth(measuredBounds);
+				CFRelease(line);
 				if (combinedWidth < aMaxWidth || lineComponents.count <= 1) {
 					currentLineText = combinedLineText;
 					currentLineWidth = combinedWidth;
@@ -88,7 +103,10 @@ typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 					[lineComponents removeAllObjects];
 					[lineComponents addObject:component];
 					currentLineText = component;
-					currentLineWidth = [self widthOfText:currentLineText inContext:aCGContext];
+					line = [self createLineWithString:aText attributes:strokeAttributes];
+					measuredBounds = CTLineGetImageBounds(line, aCGContext);
+					CFRelease(line);
+					currentLineWidth = CGRectGetWidth(measuredBounds);
 				}
 			}
 			if (currentLineText.length > 0) {
@@ -99,6 +117,26 @@ typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 	return result;
 }
 
+- (NSDictionary *)strokeAttributes {
+	CTFontRef font = CTFontCreateWithName((__bridge CFStringRef)self.fontName, self.fontSize, NULL);
+	CGColorRef blackColor = CGColorCreateGenericRGB(0.0, 0.0, 0.0, 0.9);
+	NSDictionary *result = @{
+	   (id)kCTFontAttributeName : (__bridge id)font,
+	   (id)kCTForegroundColorFromContextAttributeName : @(YES),
+	   (id)kCTStrokeWidthAttributeName : @(15.0),
+	   (id)kCTStrokeColorAttributeName : (__bridge id)blackColor
+	   };
+	CFRelease(blackColor);
+	CFRelease(font);
+	return result;
+}
+
+- (NSDictionary *)fillAttributes {
+	NSMutableDictionary *result = [[self strokeAttributes] mutableCopy];
+	result[(id)kCTStrokeWidthAttributeName] = @(0.0);
+	return result;
+}
+
 - (void)drawInContext:(CGContextRef)aCGContext frame:(CGRect)aFrame {
 
 	CGFloat fontInset = ceil(self.fontSize * 0.4);
@@ -106,11 +144,9 @@ typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 	CGFloat lineHeight = self.fontSize;
 	CGContextRef ctx = aCGContext;
 	CGColorRef whiteColor = CGColorCreateGenericRGB(1.0, 1.0, 1.0, 1.0);
-	CGColorRef blackColor = CGColorCreateGenericRGB(0.0, 0.0, 0.0, 0.9);
 	CGColorRef transparentColor = CGColorCreateGenericRGB(1.0, 1.0, 1.0, 0.0);
 	CGContextSetFillColorWithColor(ctx, whiteColor);
 	CGContextSetLineWidth(ctx,ceil(self.fontSize/7.0));
-	CGContextSelectFont(ctx, [self.fontName UTF8String], self.fontSize, kCGEncodingMacRoman);
 	CGContextSetLineCap(ctx, kCGLineCapRound);
 	CGContextSetLineJoin(ctx, kCGLineJoinRound);
 	
@@ -136,7 +172,6 @@ typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 		textPoint.y = CGRectGetMaxY(aFrame) - fontInset - firstLineHeight;
 	}
 	
-	CTFontRef font = CTFontCreateWithName((__bridge CFStringRef)self.fontName, self.fontSize, NULL);
 
 	
 	for (NSDictionary *textLine in textLines) {
@@ -145,16 +180,8 @@ typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 			xOffset = [textLine[@"width"] doubleValue];
 		}
 		{
-			NSDictionary *strokeAttributes = @{
-			  (id)kCTFontAttributeName : (__bridge id)font,
-			  (id)kCTForegroundColorFromContextAttributeName : @(YES),
-			  (id)kCTStrokeWidthAttributeName : @(15.0),
-			  (id)kCTStrokeColorAttributeName : (__bridge id)blackColor
-			};
-			NSMutableDictionary *fillAttributes = [strokeAttributes mutableCopy];
-			fillAttributes[(id)kCTStrokeColorAttributeName] = (__bridge id)transparentColor;
-			fillAttributes[(id)kCTStrokeWidthAttributeName] = @(0.0);
-			
+			NSDictionary *strokeAttributes = [self strokeAttributes];
+			NSDictionary *fillAttributes = [self fillAttributes];
 			
 			CFAttributedStringRef attributedString = NULL;
 			CTLineRef thisLine = NULL;
@@ -175,9 +202,7 @@ typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 		textPoint.y -= lineHeight;
 	}
 	
-	if (font) CFRelease(font);
 	CFRelease(whiteColor);
-	CFRelease(blackColor);
     CFRelease(transparentColor);
 }
 
