@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 # to install simply copy to .git/hooks/post-commit in your repository
+# and make sure sightsnap is in your path e.g. /usr/local/bin
 
 # single character escaping
 class String
