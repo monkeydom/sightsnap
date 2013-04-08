@@ -110,6 +110,8 @@ typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 	CGContextSetFillColorWithColor(ctx, whiteColor);
 	CGContextSetLineWidth(ctx,ceil(self.fontSize/7.0));
 	CGContextSelectFont(ctx, [self.fontName UTF8String], self.fontSize, kCGEncodingMacRoman);
+	CGContextSetLineCap(ctx, kCGLineCapRound);
+	CGContextSetLineJoin(ctx, kCGLineJoinRound);
 	
 	NSArray *textLines = [self text:self.text wrappedToMaxWidth:CGRectGetWidth(aFrame) - 2 * fontInset inContext:ctx];
 	
