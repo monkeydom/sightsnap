@@ -8,7 +8,7 @@
 * Mac OS X 10.8 or higher, 64-bit only
 
 ## Download Binary
-* [sightsnap v0.3](http://cl.ly/O7ML)
+* [sightsnap v0.4](http://cl.ly/O88U)
 
 ## License
 
@@ -17,7 +17,7 @@
 ## Usage
 
 <pre>
-sightsnap v0.3 by @monkeydom
+sightsnap v0.4 by @monkeydom
 usage: sightsnap [options] [output[.jpg|.png]] [options]
 
 Default output filename is signtsnap.jpg - if no extension is given, jpg is used.
