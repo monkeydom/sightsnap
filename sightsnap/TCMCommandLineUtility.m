@@ -286,7 +286,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
 	[zeroStart setDescriptionHelper:  [self descriptionHelperWithHelpText:@"Start at frame number 0 and overwrite - otherwise start\nwith next free frame number. Time mode only."]];
 	[skipframes setDescriptionHelper: [self descriptionHelperWithHelpText:@"Skips <n> frames before taking a picture. Gives cam\nwarmup time. (default is 2, frames are @6fps)" valueName:@"n"]];
 	[maxWidth  setDescriptionHelper:  [self descriptionHelperWithHelpText:@"If image is wider than <w> px, scale it down to fit." valueName:@"w"]];
-	[maxHeight setDescriptionHelper:  [self descriptionHelperWithHelpText:@"If image is higher than <h> px, scale it down to fit.\n" valueName:@"h"]];
+	[maxHeight setDescriptionHelper:  [self descriptionHelperWithHelpText:@"If image is higher than <h> px, scale it down to fit.\nWhen <w> and <h> are given, the camera format used is optimized." valueName:@"h"]];
 	[jpegQuality setDescriptionHelper:[self descriptionHelperWithHelpText:@"JPEG image quality from 0.0 to 1.0 (default is 0.8)." valueName:@"q"]];
 	[help setDescriptionHelper:       [self descriptionHelperWithHelpText:@"Shows this help."]];
 	[stamp setDescriptionHelper:      [self descriptionHelperWithHelpText:@"Adds a Timestamp to the captured image."]];
@@ -310,7 +310,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
     
 	NSInteger terminalWidth = 80;
     if ([package booleanValueForSignature:help]) {
-		puts("sightsnap v0.2 by @monkeydom");
+		puts("sightsnap v0.3 by @monkeydom");
         puts("usage: sightsnap [options] [output[.jpg|.png]] [options]");
 		puts("");
 		puts("Default output filename is signtsnap.jpg - if no extension is given, jpg is used.\nIf you add directory in front, it will be created.");
@@ -318,7 +318,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
 			printf("%s",[[option descriptionForHelp:2 terminalWidth:terminalWidth] UTF8String]);
 		}
 		puts("");
-		puts("To make timelapse videos use ffmpeg like this:\n  ffmpeg -r 15 -i 'sightsnap-\%07d.jpg' sightsnap.mp4");
+		puts("To make timelapse videos use ffmpeg like this:\n  ffmpeg -i 'sightsnap-\%07d.jpg' sightsnap.mp4");
     } else {
         TCMCaptureManager *captureManager = [TCMCaptureManager captureManager];
 		QTCaptureDevice *defaultDevice = captureManager.defaultVideoDevice;
