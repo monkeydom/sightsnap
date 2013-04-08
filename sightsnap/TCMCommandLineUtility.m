@@ -11,6 +11,7 @@
 #import "TCMCaptureManager.h"
 #import "FSArguments.h"
 #import "FSArguments_Coalescer_Internal.h"
+#import <CoreText/CoreText.h>
 
 typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 	kSIGHTCaptionPositionTopLeft,
@@ -135,26 +136,46 @@ typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 		textPoint.y = CGRectGetMaxY(aFrame) - fontInset - firstLineHeight;
 	}
 	
+	CTFontRef font = CTFontCreateWithName((__bridge CFStringRef)self.fontName, self.fontSize, NULL);
+
+	
 	for (NSDictionary *textLine in textLines) {
 		CGFloat xOffset = 0;
 		if (!isLeft) {
 			xOffset = [textLine[@"width"] doubleValue];
 		}
 		{
-			const char *text = [textLine[@"text"] UTF8String];
-			size_t textLength = strlen(text);
-			CGContextSetStrokeColorWithColor(ctx, blackColor);
-			CGContextSetTextDrawingMode(ctx, kCGTextStroke);
-			CGContextShowTextAtPoint(ctx, textPoint.x - xOffset, textPoint.y, text, textLength);
+			NSDictionary *strokeAttributes = @{
+			  (id)kCTFontAttributeName : (__bridge id)font,
+			  (id)kCTForegroundColorFromContextAttributeName : @(YES),
+			  (id)kCTStrokeWidthAttributeName : @(15.0),
+			  (id)kCTStrokeColorAttributeName : (__bridge id)blackColor
+			};
+			NSMutableDictionary *fillAttributes = [strokeAttributes mutableCopy];
+			fillAttributes[(id)kCTStrokeColorAttributeName] = (__bridge id)transparentColor;
+			fillAttributes[(id)kCTStrokeWidthAttributeName] = @(0.0);
 			
-			CGContextSetTextDrawingMode(ctx, kCGTextFillStroke);
-			CGContextSetStrokeColorWithColor(ctx, transparentColor); // important to not have misalignment
-			CGContextShowTextAtPoint(ctx, textPoint.x - xOffset, textPoint.y, text, textLength);
+			
+			CFAttributedStringRef attributedString = NULL;
+			CTLineRef thisLine = NULL;
+			
+			CGContextSetTextPosition(ctx, textPoint.x - xOffset, textPoint.y);
+			attributedString = CFAttributedStringCreate(nil, (__bridge CFStringRef)textLine[@"text"], (__bridge CFDictionaryRef)strokeAttributes);
+			thisLine = CTLineCreateWithAttributedString(attributedString);
+			CTLineDraw(thisLine, ctx);
+			CFRelease(attributedString);
+
+			CGContextSetTextPosition(ctx, textPoint.x - xOffset, textPoint.y);
+			attributedString = CFAttributedStringCreate(nil, (__bridge CFStringRef)textLine[@"text"], (__bridge CFDictionaryRef)fillAttributes);
+			thisLine = CTLineCreateWithAttributedString(attributedString);
+			CTLineDraw(thisLine, ctx);
+			CFRelease(attributedString);
+
 		}
 		textPoint.y -= lineHeight;
 	}
 	
-	
+	if (font) CFRelease(font);
 	CFRelease(whiteColor);
 	CFRelease(blackColor);
     CFRelease(transparentColor);
