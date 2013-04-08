@@ -8,7 +8,7 @@
 * Mac OS X 10.8 or higher, 64-bit only
 
 ## Download Binary
-* [sightsnap v0.2](http://cl.ly/O0n1)
+* [sightsnap v0.3](http://cl.ly/O7ML)
 
 ## License
 
