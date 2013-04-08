@@ -260,7 +260,6 @@
 		F2D1917A170341A7004B8DCD = {
 			isa = PBXGroup;
 			children = (
-				F2D1926D170483E0004B8DCD /* CoreServices.framework */,
 				F2D19188170341A8004B8DCD /* sightsnap */,
 				F2D19185170341A8004B8DCD /* Frameworks */,
 				F2D19184170341A8004B8DCD /* Products */,
@@ -278,6 +277,7 @@
 		F2D19185170341A8004B8DCD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F2D1926D170483E0004B8DCD /* CoreServices.framework */,
 				F2D1926B170483C5004B8DCD /* ImageIO.framework */,
 				F2D19269170483B7004B8DCD /* CoreGraphics.framework */,
 				F2D1926417047D26004B8DCD /* Quartz.framework */,
