@@ -12,6 +12,168 @@
 #import "FSArguments.h"
 #import "FSArguments_Coalescer_Internal.h"
 
+typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
+	kSIGHTCaptionPositionTopLeft,
+	kSIGHTCaptionPositionTopRight,
+	kSIGHTCaptionPositionBottomLeft,
+	kSIGHTCaptionPositionBottomRight
+};
+
+@interface SIGHTCaption : NSObject
+@property (nonatomic, strong) NSString *text;
+@property (nonatomic, strong) NSString *fontName;
+@property (nonatomic) CGFloat fontSize;
+@property (nonatomic) SIGHTCaptionPosition position;
+
++ (instancetype)captionWithText:(NSString *)aText position:(SIGHTCaptionPosition)aPosition fontName:(NSString *)aFontName fontSize:(CGFloat) aFontSize;
+
+@end
+
+@implementation SIGHTCaption
+- (id)init {
+	self = [super init];
+	if (self) {
+		self.fontName = @"HelveticaNeue-Bold";
+		self.fontSize = 40.0;
+		self.position = kSIGHTCaptionPositionTopLeft;
+	}
+	return self;
+}
+
++ (instancetype)captionWithText:(NSString *)aText position:(SIGHTCaptionPosition)aPosition fontName:(NSString *)aFontName fontSize:(CGFloat) aFontSize {
+	SIGHTCaption *result = [[SIGHTCaption alloc] init];
+	result.text = aText;
+	result.position = aPosition;
+	if (aFontName) result.fontName = aFontName;
+	result.fontSize = aFontSize;
+	return result;
+}
+
+- (CGFloat)widthOfText:(NSString *)aText inContext:(CGContextRef)aCGContext {
+	CGFloat result = 0.0;
+	CGPoint startPoint = CGContextGetTextPosition(aCGContext);
+	CGContextSaveGState(aCGContext);
+	CGContextSetTextDrawingMode(aCGContext, kCGTextInvisible);
+	const char *text = [aText UTF8String];
+	size_t textLength = strlen(text);
+	CGContextShowText(aCGContext, text, textLength);
+	CGPoint endPoint = CGContextGetTextPosition(aCGContext);
+	result = endPoint.x - startPoint.x;
+	CGContextRestoreGState(aCGContext);
+	return result;
+}
+
+- (NSArray *)text:(NSString *)aText wrappedToMaxWidth:(CGFloat)aMaxWidth inContext:(CGContextRef)aCGContext {
+	NSMutableArray *result = [NSMutableArray array];
+	// first quick check
+	CGFloat width = [self widthOfText:aText inContext:aCGContext];
+	if (width < aMaxWidth) {
+		[result addObject:@{@"text" : aText, @"width":@(width)}];
+	} else {
+		@autoreleasepool {
+			NSArray *components = [aText componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+			CGFloat currentLineWidth = 0.0;
+			NSString *currentLineText = @"";
+			NSMutableArray *lineComponents = [NSMutableArray new];
+			for (NSString *component in components) {
+				[lineComponents addObject:component];
+				NSString *combinedLineText = [lineComponents componentsJoinedByString:@" "];
+				CGFloat combinedWidth = [self widthOfText:combinedLineText inContext:aCGContext];
+				if (combinedWidth < aMaxWidth || lineComponents.count <= 1) {
+					currentLineText = combinedLineText;
+					currentLineWidth = combinedWidth;
+				} else {
+					[result addObject:@{@"text":currentLineText, @"width":@(currentLineWidth)}];
+					[lineComponents removeAllObjects];
+					[lineComponents addObject:component];
+					currentLineText = component;
+					currentLineWidth = [self widthOfText:currentLineText inContext:aCGContext];
+				}
+			}
+			if (currentLineText.length > 0) {
+				[result addObject:@{@"text":currentLineText, @"width":@(currentLineWidth)}];
+			}
+		}
+	}
+	return result;
+}
+
+- (void)drawInContext:(CGContextRef)aCGContext frame:(CGRect)aFrame {
+
+	CGFloat fontInset = ceil(self.fontSize * 0.4);
+	CGFloat firstLineHeight = ceil(self.fontSize * 0.8);
+	CGFloat lineHeight = self.fontSize;
+	CGContextRef ctx = aCGContext;
+	CGColorRef whiteColor = CGColorCreateGenericRGB(1.0, 1.0, 1.0, 1.0);
+	CGColorRef blackColor = CGColorCreateGenericRGB(0.0, 0.0, 0.0, 0.9);
+	CGColorRef transparentColor = CGColorCreateGenericRGB(1.0, 1.0, 1.0, 0.0);
+	CGContextSetFillColorWithColor(ctx, whiteColor);
+	CGContextSetLineWidth(ctx,ceil(self.fontSize/7.0));
+	CGContextSelectFont(ctx, [self.fontName UTF8String], self.fontSize, kCGEncodingMacRoman);
+	
+	NSArray *textLines = [self text:self.text wrappedToMaxWidth:CGRectGetWidth(aFrame) - 2 * fontInset inContext:ctx];
+	
+	CGPoint textPoint = CGPointZero;
+	BOOL isLeft = (self.position == kSIGHTCaptionPositionBottomLeft ||
+				   self.position == kSIGHTCaptionPositionTopLeft);
+	BOOL isBottom = (self.position == kSIGHTCaptionPositionBottomLeft ||
+					 self.position == kSIGHTCaptionPositionBottomRight);
+	if (isLeft) {
+		textPoint.x = CGRectGetMinX(aFrame)+fontInset;
+	} else {
+		textPoint.x = CGRectGetMaxX(aFrame)-fontInset;
+	}
+	
+	if (isBottom) {
+		textPoint.y = CGRectGetMinY(aFrame) + fontInset;
+		if (textLines.count > 1) {
+			textPoint.y += lineHeight * (textLines.count-1);
+		}
+	} else {
+		textPoint.y = CGRectGetMaxY(aFrame) - fontInset - firstLineHeight;
+	}
+	
+	for (NSDictionary *textLine in textLines) {
+		CGFloat xOffset = 0;
+		if (!isLeft) {
+			xOffset = [textLine[@"width"] doubleValue];
+		}
+		{
+			const char *text = [textLine[@"text"] UTF8String];
+			size_t textLength = strlen(text);
+			CGContextSetStrokeColorWithColor(ctx, blackColor);
+			CGContextSetTextDrawingMode(ctx, kCGTextStroke);
+			CGContextShowTextAtPoint(ctx, textPoint.x - xOffset, textPoint.y, text, textLength);
+			
+			CGContextSetTextDrawingMode(ctx, kCGTextFillStroke);
+			CGContextSetStrokeColorWithColor(ctx, transparentColor); // important to not have misalignment
+			CGContextShowTextAtPoint(ctx, textPoint.x - xOffset, textPoint.y, text, textLength);
+		}
+		textPoint.y -= lineHeight;
+	}
+	
+	
+	CFRelease(whiteColor);
+	CFRelease(blackColor);
+    CFRelease(transparentColor);
+}
+
+@end
+
+static NSUncaughtExceptionHandler *S_defaultHandler;
+
+static void signal_handler(int signal)
+{
+	[[TCMCaptureManager captureManager] teardownCaptureSession];
+	exit(0);
+}
+
+
+static void exception_handler(NSException *anException) {
+	NSLog(@"%s %@",__FUNCTION__,anException);
+	S_defaultHandler(anException);
+}
+
 @interface QTCaptureDevice (SightSnapAdditions)
 - (NSString *)localizedUniqueDisplayName;
 @end
@@ -36,12 +198,18 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
 @property (nonatomic) CGFloat fontSize;
 @property (nonatomic, strong) NSString *fontName;
 @property (nonatomic) BOOL shouldTimeStamp;
+@property (nonatomic, strong) NSString *topLeftText;
+@property (nonatomic, strong) NSString *titleText;
+@property (nonatomic, strong) NSString *commentText;
 @property (nonatomic) NSInteger helpFirstTabPosition;
 @end
 
 @implementation TCMCommandLineUtility
 
 + (int)runCommandLineUtility {
+	S_defaultHandler = NSGetUncaughtExceptionHandler();
+	NSSetUncaughtExceptionHandler(exception_handler);
+	signal(SIGINT, signal_handler);
     int result = [[TCMCommandLineUtility new] run];
     return result;
 }
@@ -101,23 +269,29 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
     *maxHeight = [FSArgumentSignature argumentSignatureWithFormat:@"[-y --maxheight]="],
     *jpegQuality = [FSArgumentSignature argumentSignatureWithFormat:@"[-j --jpegQuality]="],
     *stamp = [FSArgumentSignature argumentSignatureWithFormat:@"[-p --timeStamp]"],
+    *title = [FSArgumentSignature argumentSignatureWithFormat:@"[-T --title]="],
+    *comment = [FSArgumentSignature argumentSignatureWithFormat:@"[-C --comment]="],
     *fontName = [FSArgumentSignature argumentSignatureWithFormat:@"[-f --fontName]="],
     *fontSize = [FSArgumentSignature argumentSignatureWithFormat:@"[-s --fontSize]="],
     *device = [FSArgumentSignature argumentSignatureWithFormat:@"[-d --device]="],
+    *zeroStart = [FSArgumentSignature argumentSignatureWithFormat:@"[-z --startAtZero]"],
     *help = [FSArgumentSignature argumentSignatureWithFormat:@"[-h --help]"];
-    NSArray *signatures = @[list,device,time,skipframes,jpegQuality,maxWidth,maxHeight,stamp,fontName,fontSize,help];
+    NSArray *signatures = @[list,device,time,zeroStart,skipframes,jpegQuality,maxWidth,maxHeight,stamp,title,comment,fontName,fontSize,help];
 	
 	
 	self.helpFirstTabPosition = 26;
 	[list setDescriptionHelper:       [self descriptionHelperWithHelpText:@"List all available video devices and their formats."]];
 	[device setDescriptionHelper:     [self descriptionHelperWithHelpText:@"Use this <device>. First partial case-insensitive\nname match is taken." valueName:@"device"]];
 	[time setDescriptionHelper:       [self descriptionHelperWithHelpText:@"Takes a frame every <delay> seconds and saves it as\noutputfilename-XXXXXXX.jpg continuously." valueName:@"delay"]];
-	[skipframes setDescriptionHelper: [self descriptionHelperWithHelpText:@"Skips <n> frames before taking a picture. Gives cam\nwarmup time. (default is 3, frames are @15fps)" valueName:@"n"]];
+	[zeroStart setDescriptionHelper:  [self descriptionHelperWithHelpText:@"Start at frame number 0 and overwrite - otherwise start\nwith next free frame number. Time mode only."]];
+	[skipframes setDescriptionHelper: [self descriptionHelperWithHelpText:@"Skips <n> frames before taking a picture. Gives cam\nwarmup time. (default is 2, frames are @6fps)" valueName:@"n"]];
 	[maxWidth  setDescriptionHelper:  [self descriptionHelperWithHelpText:@"If image is wider than <w> px, scale it down to fit." valueName:@"w"]];
-	[maxHeight setDescriptionHelper:  [self descriptionHelperWithHelpText:@"If image is higher than <h> px, scale it down to fit." valueName:@"h"]];
+	[maxHeight setDescriptionHelper:  [self descriptionHelperWithHelpText:@"If image is higher than <h> px, scale it down to fit.\nWhen <w> and <h> are given, the camera format used is optimized." valueName:@"h"]];
 	[jpegQuality setDescriptionHelper:[self descriptionHelperWithHelpText:@"JPEG image quality from 0.0 to 1.0 (default is 0.8)." valueName:@"q"]];
 	[help setDescriptionHelper:       [self descriptionHelperWithHelpText:@"Shows this help."]];
 	[stamp setDescriptionHelper:      [self descriptionHelperWithHelpText:@"Adds a Timestamp to the captured image."]];
+	[title setDescriptionHelper:      [self descriptionHelperWithHelpText:@"Adds <text> to the upper right of the image." valueName:@"text"]];
+	[comment setDescriptionHelper:    [self descriptionHelperWithHelpText:@"Adds <text> to the lower left of the image."  valueName:@"text"]];
 	[fontSize setDescriptionHelper:   [self descriptionHelperWithHelpText:@"Font size for timestamp in <size> px. (default is 40)" valueName:@"size"]];
 	[fontName setDescriptionHelper:   [self descriptionHelperWithHelpText:@"Postscript font name to use. Use FontBook.app->Font Info\nto find out about the available fonts on your system\n(default is 'HelveticaNeue-Bold')" valueName:@"font"]];
 	
@@ -132,18 +306,19 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
         }
     }
     self.baseFilePath = [outputFilename stringByStandardizingPath];
+	
     
 	NSInteger terminalWidth = 80;
     if ([package booleanValueForSignature:help]) {
-		puts("sightsnap v0.2 by @monkeydom");
-        puts("usage: sightsnap [options] [outputfilename[.jpg|.png]] [options]");
+		puts("sightsnap v0.3 by @monkeydom");
+        puts("usage: sightsnap [options] [output[.jpg|.png]] [options]");
 		puts("");
-		puts("Default output filename is signtsnap.jpg");
+		puts("Default output filename is signtsnap.jpg - if no extension is given, jpg is used.\nIf you add directory in front, it will be created.");
 		for (FSArgumentSignature *option in signatures) {
 			printf("%s",[[option descriptionForHelp:2 terminalWidth:terminalWidth] UTF8String]);
 		}
 		puts("");
-		puts("To make timelapse videos use ffmpeg like this:\n  ffmpeg -r 15 -i 'sightsnap-\%07d.jpg' sightsnap.mp4");
+		puts("To make timelapse videos use ffmpeg like this:\n  ffmpeg -i 'sightsnap-\%07d.jpg' sightsnap.mp4");
     } else {
         TCMCaptureManager *captureManager = [TCMCaptureManager captureManager];
 		QTCaptureDevice *defaultDevice = captureManager.defaultVideoDevice;
@@ -156,6 +331,19 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
                 }
             }
         } else {
+			// ensure directory
+			NSFileManager *fileManager = [NSFileManager defaultManager];
+			NSString *baseDirectory = [self.baseFilePath stringByDeletingLastPathComponent];
+			if (baseDirectory.length) {
+				if (![fileManager fileExistsAtPath:baseDirectory isDirectory:NULL]) {
+					NSError *error;
+					if (![fileManager createDirectoryAtPath:baseDirectory withIntermediateDirectories:YES attributes:nil error:&error]) {
+						NSLog(@"Could not create directory at %@. \n%@",baseDirectory, error);
+					}
+				}
+				
+			}
+
             
             QTCaptureDevice *videoDevice = defaultDevice;
             NSString *deviceString = [package firstObjectForSignature:device];
@@ -204,6 +392,17 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
             }
             
             self.shouldTimeStamp = [package booleanValueForSignature:stamp];
+			
+			id titleValue = [package firstObjectForSignature:title];
+			if (titleValue) {
+				self.titleText = titleValue;
+			}
+			
+			id commentValue = [package firstObjectForSignature:comment];
+			if (commentValue) {
+				self.commentText = commentValue;
+			}
+
             
             id fontNameValue = [package firstObjectForSignature:fontName];
             if (fontNameValue) {
@@ -220,6 +419,30 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
                 self.fontSize = [fontSizeValue doubleValue];
             }
             self.lastFrameScheduledDate = [NSDate new];
+			if (self.grabInterval >= 0.0) {
+				if (self.grabInterval <= 2.0) {
+					captureManager.shouldKeepCaptureSessionOpen = YES;
+				}
+				
+				if (![package booleanValueForSignature:zeroStart]) {
+					// find out frameindex
+					NSFileManager *fileManager = [NSFileManager defaultManager];
+					NSInteger maxFrame = 0;
+					NSString *filenamebase = [[[self.baseFilePath lastPathComponent] stringByDeletingPathExtension] stringByAppendingString:@"-"];
+					NSString *containingDir = [self.baseFilePath stringByDeletingLastPathComponent];
+					if (containingDir.length == 0) containingDir = @".";
+					NSArray *filenames = [fileManager contentsOfDirectoryAtURL:[NSURL fileURLWithPath:containingDir] includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles | NSDirectoryEnumerationSkipsSubdirectoryDescendants error:nil];
+					for (NSURL *fileURL in [filenames sortedArrayUsingDescriptors:@[[[NSSortDescriptor alloc] initWithKey:@"path" ascending:NO]]]) {
+						NSString *fileName = [[[fileURL path] lastPathComponent] stringByDeletingPathExtension];
+						if ([fileName hasPrefix:filenamebase]) {
+							maxFrame = [[fileName substringFromIndex:filenamebase.length] integerValue];
+							self.frameIndex = maxFrame + 1;
+							break;
+						}
+					}
+				}
+				printf("Starting with %s.\n",[[[self.nextFrameFileURL path] lastPathComponent] UTF8String]);
+			}
             [self captureImage];
             [self startRunLoop];
         }
@@ -242,36 +465,32 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
     self.lastFrameFireDate = [NSDate new];
 
     TCMCaptureManager *captureManager = [TCMCaptureManager captureManager];
-    if (self.shouldTimeStamp) {
+	if (self.shouldTimeStamp) {
         NSDateFormatter *dateFormatter = [NSDateFormatter new];
         dateFormatter.timeStyle = NSDateFormatterMediumStyle;
         dateFormatter.dateStyle = NSDateFormatterShortStyle;
-        NSString *dateString = [dateFormatter stringFromDate:self.lastFrameScheduledDate];
-        CGFloat fontSize = self.fontSize;
-        CGFloat fontInset = 20.0;
-        
+		self.topLeftText = [dateFormatter stringFromDate:self.lastFrameFireDate];
+	}
+    if (self.topLeftText || self.titleText || self.commentText) {
+		
+		NSMutableArray *captionArray = [NSMutableArray new];
+		if (self.topLeftText) {
+			SIGHTCaption *caption = [SIGHTCaption captionWithText:self.topLeftText position:kSIGHTCaptionPositionTopLeft fontName:self.fontName fontSize:self.fontSize];
+			[captionArray addObject:caption];
+		}
+		if (self.titleText) {
+			SIGHTCaption *caption = [SIGHTCaption captionWithText:self.titleText position:kSIGHTCaptionPositionTopRight fontName:self.fontName fontSize:self.fontSize];
+			[captionArray addObject:caption];
+		}
+		if (self.commentText) {
+			SIGHTCaption *caption = [SIGHTCaption captionWithText:self.commentText position:kSIGHTCaptionPositionBottomLeft fontName:self.fontName fontSize:self.fontSize];
+			[captionArray addObject:caption];
+		}
+		        
         TCMCaptureQuartzAction drawAction = ^(CGContextRef ctx, CGRect aFrame) {
-            CGColorRef whiteColor = CGColorCreateGenericRGB(1.0, 1.0, 1.0, 1.0);
-            CGColorRef blackColor = CGColorCreateGenericRGB(0.0, 0.0, 0.0, 0.9);
-            CGContextSetFillColorWithColor(ctx, whiteColor);
-            CGContextSetStrokeColorWithColor(ctx, blackColor);
-            CGContextSetLineWidth(ctx,fontSize/7.0);
-            
-            CGPoint textPoint = CGPointMake(fontInset, CGRectGetMaxY(aFrame) - fontInset - fontSize * 0.8);
-            const char *text = [dateString UTF8String];
-            size_t textLength = strlen(text);
-    //        CGFontRef fontRef = CGFontCreateWithFontName((__bridge CFStringRef)@"HelveticaNeue-Bold");
-    //        CGContextSetFontSize(ctx, 40);
-    //        CGContextSetFont(ctx, fontRef);
-            CGContextSelectFont(ctx, [self.fontName UTF8String], fontSize, kCGEncodingMacRoman);
-            CGContextSetTextDrawingMode(ctx, kCGTextStroke);
-            CGContextShowTextAtPoint(ctx, textPoint.x, textPoint.y, text, textLength);
-            CGContextSetTextDrawingMode(ctx, kCGTextFill);
-            CGContextShowTextAtPoint(ctx, textPoint.x, textPoint.y, text, textLength);
-            
-            CFRelease(whiteColor);
-            CFRelease(blackColor);
-    //        CFRelease(fontRef);
+			for (SIGHTCaption *caption in captionArray) {
+				[caption drawInContext:ctx frame:aFrame];
+			}
         };
         [captureManager setImageDrawingBlock:drawAction];
     }

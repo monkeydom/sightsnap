@@ -17,9 +17,11 @@
 @property (nonatomic, strong) QTCaptureDecompressedVideoOutput *videoOutput;
 @property (nonatomic, strong) NSURL *fileOutputURL;
 @property (nonatomic, strong) QTCaptureDevice *selectedCaptureDevice;
+@property (nonatomic, strong) QTCaptureDeviceInput *videoInput;
 @property (nonatomic, copy) id completionBlock;
 @property (nonatomic, copy) id drawingBlock;
 @property (nonatomic) NSInteger framesToSkip;
+@property (nonatomic) BOOL grabNextArrivingImage;
 @end
 
 @implementation TCMCaptureManager
@@ -36,14 +38,79 @@
 - (id)init {
     self = [super init];
     if (self) {
-        self.captureSession = [[QTCaptureSession alloc] init];
         self.jpegQuality = 0.8;
-		self.skipFrames = 3; // with a frame cap of 15 pre sec, this should be enough for the average cam
+		self.skipFrames = 2; // with a frame cap of 6 per sec, this should be enough for the average cam
     }
     return self;
 }
 
+- (void)teardownCaptureSession {
+	[self.captureSession stopRunning];
+	if (self.videoOutput) {
+		[self.captureSession removeOutput:self.videoOutput];
+		self.videoOutput.delegate = nil;
+		self.videoOutput = nil;
+	}
+	if (self.videoInput) {
+		[self.captureSession removeInput:self.videoInput];
+		[self.videoInput.device close];
+	}
+	self.captureSession = nil;
+}
+
+- (void)bringUpCaptureSession {
+	QTCaptureSession *session;
+	session = [[QTCaptureSession alloc] init];
+	self.captureSession = session;
+	
+	NSError *error;
+	BOOL success;
+	QTCaptureDeviceInput  *videoDeviceInput = [[QTCaptureDeviceInput alloc] initWithDevice:self.selectedCaptureDevice];
+	success = [session addInput:videoDeviceInput error:&error];
+	if (!success) {
+		NSLog(@"%s - error adding the video input: %@",__FUNCTION__,error);
+		[self.selectedCaptureDevice close];
+	} else {
+		self.videoInput = videoDeviceInput;
+		
+		// Create an object for outputing the video
+		// The input will tell the session object that it has taken
+		// some data, which will in turn send this to the output
+		// object, which has a delegate that you defined
+		QTCaptureDecompressedVideoOutput *output = [[QTCaptureDecompressedVideoOutput alloc] init];
+		
+		// adjustments because we only take stills
+		output.automaticallyDropsLateVideoFrames = YES; // we don't care if they drop if we are slow, we only want stills anyway
+		output.minimumVideoFrameInterval = 1.0 / 6; // don't do more than 6 frames to cap load we generate and also to allow to captures stills from more than one cam!
+		
+		if (self.maxWidth > 0 && self.maxHeight > 0) {
+			[output setPixelBufferAttributes:@{
+					(id)kCVPixelBufferWidthKey : @(self.maxWidth),
+					(id)kCVPixelBufferHeightKey : @(self.maxHeight)
+			 }];
+		}
+		
+		// This is the delegate. Note the
+		// captureOutput:didOutputVideoFrame...-method of this
+		// object. That is the method which will be called when
+		// a photo has been taken.
+		[output setDelegate:self];
+		
+		// Add the output-object for the session
+		success = [session addOutput:output error:&error];
+		
+		if (!success) {
+			NSLog(@"Did succeed in connecting output to session: %d", success);
+			NSLog(@"Error: %@", [error localizedDescription]);
+		} else {
+			self.videoOutput = output;
+			self.currentImageBuffer = nil;
+		}
+	}
+}
+
 - (void)dealloc {
+	[self teardownCaptureSession];
     self.currentImageBuffer = nil;
 }
 
@@ -79,53 +146,29 @@
 - (void)setCurrentVideoDevice:(QTCaptureDevice *)aVideoDevice {
     BOOL success = NO;
     NSError *error;
-    QTCaptureSession *session = self.captureSession;
+	
+	if (self.captureSession) {
+		[self teardownCaptureSession];
+	}
+	
     success = [aVideoDevice open:&error];
     if (!success) {
         NSLog(@"%s - error opening the video input device: %@",__FUNCTION__,error);
     } else {
         self.selectedCaptureDevice = aVideoDevice;
-        QTCaptureDeviceInput  *videoDeviceInput = [[QTCaptureDeviceInput alloc] initWithDevice:aVideoDevice];
-        success = [session addInput:videoDeviceInput error:&error];
-        if (!success) {
-            NSLog(@"%s - error adding the video input: %@",__FUNCTION__,error);
-            [aVideoDevice close];
-        } else {
-            
-            // Create an object for outputing the video
-            // The input will tell the session object that it has taken
-            // some data, which will in turn send this to the output
-            // object, which has a delegate that you defined
-            QTCaptureDecompressedVideoOutput *output = [[QTCaptureDecompressedVideoOutput alloc] init];
-			
-			// adjustments because we only take stills
-			output.automaticallyDropsLateVideoFrames = YES; // we don't care if they drop if we are slow, we only want stills anyway
-			output.minimumVideoFrameInterval = 1.0 / 15; // don't do more than 15 frames to cap load we generate
-            
-            // This is the delegate. Note the
-            // captureOutput:didOutputVideoFrame...-method of this
-            // object. That is the method which will be called when
-            // a photo has been taken.
-            [output setDelegate:self];
-            
-            // Add the output-object for the session
-            success = [session addOutput:output error:&error];
-            
-            if (!success) {
-                NSLog(@"Did succeed in connecting output to session: %d", success);
-                NSLog(@"Error: %@", [error localizedDescription]);
-            } else {
-                self.currentImageBuffer = nil;
-            }
-        }
+		[self bringUpCaptureSession];
     }
 }
     
 - (void)saveFrameToURL:(NSURL *)aFileURL completion:(void (^)())aCompletion {
     self.fileOutputURL = aFileURL;
     self.completionBlock = (id)aCompletion;
-    self.framesToSkip = self.skipFrames;
-    [self.captureSession startRunning];
+	self.grabNextArrivingImage = YES;
+
+	if (!self.captureSession.isRunning) {
+		self.framesToSkip = self.skipFrames;
+		[self.captureSession startRunning];
+	}
 }
 
 - (BOOL)writeCGImage:(CGImageRef)aCGImageRef toURL:(NSURL *)aFileURL {
@@ -164,7 +207,9 @@
 
 - (void)didGrabImage {
     // Stop the session so we don't record anything more
-    [self.captureSession stopRunning];
+	if (!self.shouldKeepCaptureSessionOpen) {
+		[self.captureSession stopRunning];
+	}
     
     // Convert the image to a NSImage with JPEG representation
     // This is a bit tricky and involves taking the raw data
@@ -225,15 +270,20 @@
 
 // QTCapture delegate method, called when a frame has been loaded by the camera
 - (void)captureOutput:(QTCaptureOutput *)aCaptureOutput didOutputVideoFrame:(CVImageBufferRef)aVideoFrame withSampleBuffer:(QTSampleBuffer *)aSampleBuffer fromConnection:(QTCaptureConnection *)aConnection {
-    // skip frames to give webcam time if needed
+
+	// only grab the image if we are interested
+	if (!self.grabNextArrivingImage) {
+		return;
+	}
+	
+	// skip frames to give webcam time if needed
     if (self.framesToSkip > 0) {
         self.framesToSkip = self.framesToSkip - 1;
         return;
     }
-    // If we already have an image we should use that instead
-    if (self.currentImageBuffer) return;
-    
+	    
     self.currentImageBuffer = aVideoFrame;
+	self.grabNextArrivingImage = NO; // we have our frame
     
     // As stated above, this method will be called on another thread, so
     // we perform the selector that handles the image on the main thread
