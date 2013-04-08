@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F23D89461712ED3900BCDCAE /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F23D89451712ED3900BCDCAE /* CoreText.framework */; };
 		F29C65831705A3A0003D2B24 /* TCMCommandLineUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = F29C65821705A3A0003D2B24 /* TCMCommandLineUtility.m */; };
 		F2D19187170341A8004B8DCD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2D19186170341A8004B8DCD /* Foundation.framework */; };
 		F2D1918A170341A8004B8DCD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D19189170341A8004B8DCD /* main.m */; };
@@ -93,6 +94,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F23D89451712ED3900BCDCAE /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		F29C65811705A3A0003D2B24 /* TCMCommandLineUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCMCommandLineUtility.h; sourceTree = "<group>"; };
 		F29C65821705A3A0003D2B24 /* TCMCommandLineUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCMCommandLineUtility.m; sourceTree = "<group>"; };
 		F2D19183170341A8004B8DCD /* sightsnap */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sightsnap; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -243,6 +245,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F23D89461712ED3900BCDCAE /* CoreText.framework in Frameworks */,
 				F2D1926E170483E0004B8DCD /* CoreServices.framework in Frameworks */,
 				F2D1926C170483C5004B8DCD /* ImageIO.framework in Frameworks */,
 				F2D1926A170483B7004B8DCD /* CoreGraphics.framework in Frameworks */,
@@ -277,6 +280,7 @@
 		F2D19185170341A8004B8DCD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F23D89451712ED3900BCDCAE /* CoreText.framework */,
 				F2D1926D170483E0004B8DCD /* CoreServices.framework */,
 				F2D1926B170483C5004B8DCD /* ImageIO.framework */,
 				F2D19269170483B7004B8DCD /* CoreGraphics.framework */,
