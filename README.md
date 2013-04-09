@@ -51,4 +51,4 @@ To make timelapse videos use ffmpeg like this:
 * uses [ArgumentParser](https://github.com/NSError/ArgumentParser)
 
 ## Created by
-@monkeydom [twitter](http://twitter.com/monkeydom) [adn](http://app.net/monkeydom)
+@monkeydom [twitter](http://twitter.com/monkeydom) [adn](http://alpha.app.net/monkeydom)
