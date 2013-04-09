@@ -50,20 +50,6 @@ typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 	return result;
 }
 
-- (CGFloat)widthOfText:(NSString *)aText inContext:(CGContextRef)aCGContext {
-	CGFloat result = 0.0;
-	CGPoint startPoint = CGContextGetTextPosition(aCGContext);
-	CGContextSaveGState(aCGContext);
-	CGContextSetTextDrawingMode(aCGContext, kCGTextInvisible);
-	const char *text = [aText UTF8String];
-	size_t textLength = strlen(text);
-	CGContextShowText(aCGContext, text, textLength);
-	CGPoint endPoint = CGContextGetTextPosition(aCGContext);
-	result = endPoint.x - startPoint.x;
-	CGContextRestoreGState(aCGContext);
-	return result;
-}
-
 - (CTLineRef)createLineWithString:(NSString *)aTextString attributes:(NSDictionary *)anAttributeDictionary {
 	CFAttributedStringRef attributedString = CFAttributedStringCreate(nil, (__bridge CFStringRef)aTextString, (__bridge CFDictionaryRef)anAttributeDictionary);
 	CTLineRef result = CTLineCreateWithAttributedString(attributedString);
@@ -71,7 +57,7 @@ typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 	return result;
 }
 
-- (NSArray *)text:(NSString *)aText wrappedToMaxWidth:(CGFloat)aMaxWidth inContext:(CGContextRef)aCGContext {
+- (NSArray *)text:(NSString *)aText wrappedToMaxWidth:(CGFloat)aMaxWidth inContext:(CGContextRef)aCGContext firstLineLessWidth:(CGFloat)aFirstLineLessWidth {
 	NSMutableArray *result = [NSMutableArray array];
 	NSDictionary *strokeAttributes = [self strokeAttributes];
 	// first quick check
@@ -79,9 +65,10 @@ typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 	CGRect measuredBounds = CTLineGetImageBounds(line, aCGContext);
 	CFRelease(line);
 	CGFloat width = CGRectGetWidth(measuredBounds);
-	if (width < aMaxWidth) {
+	if (width < aMaxWidth - aFirstLineLessWidth) {
 		[result addObject:@{@"text" : aText, @"width":@(width)}];
 	} else {
+		CGFloat lessWidth = aFirstLineLessWidth;
 		@autoreleasepool {
 			NSArray *components = [aText componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 			CGFloat currentLineWidth = 0.0;
@@ -95,15 +82,16 @@ typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 				CGRect measuredBounds = CTLineGetImageBounds(line, aCGContext);
 				CGFloat combinedWidth = CGRectGetWidth(measuredBounds);
 				CFRelease(line);
-				if (combinedWidth < aMaxWidth || lineComponents.count <= 1) {
+				if (combinedWidth < (aMaxWidth - lessWidth) || lineComponents.count <= 1) {
 					currentLineText = combinedLineText;
 					currentLineWidth = combinedWidth;
 				} else {
+					lessWidth = 0.0; // only first line should be affected - resetting it now
 					[result addObject:@{@"text":currentLineText, @"width":@(currentLineWidth)}];
 					[lineComponents removeAllObjects];
 					[lineComponents addObject:component];
 					currentLineText = component;
-					line = [self createLineWithString:aText attributes:strokeAttributes];
+					line = [self createLineWithString:currentLineText attributes:strokeAttributes];
 					measuredBounds = CTLineGetImageBounds(line, aCGContext);
 					CFRelease(line);
 					currentLineWidth = CGRectGetWidth(measuredBounds);
@@ -137,11 +125,11 @@ typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 	return result;
 }
 
-- (void)drawInContext:(CGContextRef)aCGContext frame:(CGRect)aFrame {
-
+- (CGFloat)drawInContext:(CGContextRef)aCGContext frame:(CGRect)aFrame firstLineLessWidth:(CGFloat)aFirstLineLessWidth {
+	CGFloat maxWidth = 0.0;
 	CGFloat fontInset = ceil(self.fontSize * 0.4);
 	CGFloat firstLineHeight = ceil(self.fontSize * 0.8);
-	CGFloat lineHeight = self.fontSize;
+	CGFloat lineHeight = self.fontSize * 1.15;
 	CGContextRef ctx = aCGContext;
 	CGColorRef whiteColor = CGColorCreateGenericRGB(1.0, 1.0, 1.0, 1.0);
 	CGColorRef transparentColor = CGColorCreateGenericRGB(1.0, 1.0, 1.0, 0.0);
@@ -150,7 +138,7 @@ typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 	CGContextSetLineCap(ctx, kCGLineCapRound);
 	CGContextSetLineJoin(ctx, kCGLineJoinRound);
 	
-	NSArray *textLines = [self text:self.text wrappedToMaxWidth:CGRectGetWidth(aFrame) - 2 * fontInset inContext:ctx];
+	NSArray *textLines = [self text:self.text wrappedToMaxWidth:CGRectGetWidth(aFrame) - 2 * fontInset inContext:ctx firstLineLessWidth:aFirstLineLessWidth];
 	
 	CGPoint textPoint = CGPointZero;
 	BOOL isLeft = (self.position == kSIGHTCaptionPositionBottomLeft ||
@@ -176,6 +164,7 @@ typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 	
 	for (NSDictionary *textLine in textLines) {
 		CGFloat xOffset = 0;
+		maxWidth = MAX(maxWidth,[textLine[@"width"] doubleValue]);
 		if (!isLeft) {
 			xOffset = [textLine[@"width"] doubleValue];
 		}
@@ -204,6 +193,7 @@ typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 	
 	CFRelease(whiteColor);
     CFRelease(transparentColor);
+	return maxWidth;
 }
 
 @end
@@ -521,23 +511,32 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
 	}
     if (self.topLeftText || self.titleText || self.commentText) {
 		
-		NSMutableArray *captionArray = [NSMutableArray new];
+		SIGHTCaption *topLeftCaption;
 		if (self.topLeftText) {
 			SIGHTCaption *caption = [SIGHTCaption captionWithText:self.topLeftText position:kSIGHTCaptionPositionTopLeft fontName:self.fontName fontSize:self.fontSize];
-			[captionArray addObject:caption];
+			topLeftCaption = caption;
 		}
+		SIGHTCaption *topRightCaption;
 		if (self.titleText) {
 			SIGHTCaption *caption = [SIGHTCaption captionWithText:self.titleText position:kSIGHTCaptionPositionTopRight fontName:self.fontName fontSize:self.fontSize];
-			[captionArray addObject:caption];
+			topRightCaption = caption;
 		}
+		
+		SIGHTCaption *bottomLeftCaption;
 		if (self.commentText) {
 			SIGHTCaption *caption = [SIGHTCaption captionWithText:self.commentText position:kSIGHTCaptionPositionBottomLeft fontName:self.fontName fontSize:self.fontSize];
-			[captionArray addObject:caption];
+			bottomLeftCaption = caption;
 		}
-		        
         TCMCaptureQuartzAction drawAction = ^(CGContextRef ctx, CGRect aFrame) {
-			for (SIGHTCaption *caption in captionArray) {
-				[caption drawInContext:ctx frame:aFrame];
+			CGFloat topRightCaptionFirstLineMargin = 0.0;
+			if (topLeftCaption) {
+				topRightCaptionFirstLineMargin = [topLeftCaption drawInContext:ctx frame:aFrame firstLineLessWidth:0];
+			}
+			if (topRightCaption) {
+				[topRightCaption drawInContext:ctx frame:aFrame firstLineLessWidth:topRightCaptionFirstLineMargin];
+			}
+			if (bottomLeftCaption) {
+				[bottomLeftCaption drawInContext:ctx frame:aFrame firstLineLessWidth:0];
 			}
         };
         [captureManager setImageDrawingBlock:drawAction];
