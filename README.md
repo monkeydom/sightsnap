@@ -8,16 +8,20 @@
 * Mac OS X 10.8 or higher, 64-bit only
 
 ## Download Binary
-* [sightsnap v0.4](http://cl.ly/O88U)
+* [sightsnap v0.5](http://cl.ly/OE1U)
 
+## Examples
+### Lol-Commits including emojiis and repo information
+![Lolcommit](http://cl.ly/OAF1/2013-04-09_11-41-04_domtina.local.jpg)
+* [lolcommit-hook.rb](https://github.com/monkeydom/sightsnap/blob/develop/examples/lolsnapcommit-hook.rb)
 ## License
 
 * [MIT](http://www.opensource.org/licenses/mit-license.php)
 
 ## Usage
 
-<pre>
-sightsnap v0.4 by @monkeydom
+```
+sightsnap v0.5 by @monkeydom
 usage: sightsnap [options] [output[.jpg|.png]] [options]
 
 Default output filename is signtsnap.jpg - if no extension is given, jpg is used.
@@ -45,10 +49,11 @@ If you add directory in front, it will be created.
   -h, --help                Shows this help.
 
 To make timelapse videos use ffmpeg like this:
-  ffmpeg -i 'sightsnap-%07d.jpg' sightsnap.mp4</pre>
+  ffmpeg -i 'sightsnap-%07d.jpg' sightsnap.mp4
+```
 
 ## Acknowledgements
 * uses [ArgumentParser](https://github.com/NSError/ArgumentParser)
 
 ## Created by
-@monkeydom [twitter](http://twitter.com/monkeydom) [adn](http://app.net/monkeydom)
+@monkeydom [twitter](http://twitter.com/monkeydom) [adn](http://alpha.app.net/monkeydom)
