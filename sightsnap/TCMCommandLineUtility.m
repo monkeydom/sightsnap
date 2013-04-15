@@ -180,12 +180,14 @@ typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 			thisLine = CTLineCreateWithAttributedString(attributedString);
 			CTLineDraw(thisLine, ctx);
 			CFRelease(attributedString);
+			CFRelease(thisLine);
 
 			CGContextSetTextPosition(ctx, textPoint.x - xOffset, textPoint.y);
 			attributedString = CFAttributedStringCreate(nil, (__bridge CFStringRef)textLine[@"text"], (__bridge CFDictionaryRef)fillAttributes);
 			thisLine = CTLineCreateWithAttributedString(attributedString);
 			CTLineDraw(thisLine, ctx);
 			CFRelease(attributedString);
+			CFRelease(thisLine);
 
 		}
 		textPoint.y -= lineHeight;
