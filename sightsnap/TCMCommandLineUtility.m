@@ -27,6 +27,7 @@ typedef NS_ENUM(NSInteger, SIGHTCaptionPosition) {
 @property (nonatomic) SIGHTCaptionPosition position;
 
 + (instancetype)captionWithText:(NSString *)aText position:(SIGHTCaptionPosition)aPosition fontName:(NSString *)aFontName fontSize:(CGFloat) aFontSize;
+- (CTLineRef)createLineWithString:(NSString *)aTextString attributes:(NSDictionary *)anAttributeDictionary CF_RETURNS_RETAINED;
 
 @end
 
