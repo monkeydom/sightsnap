@@ -196,6 +196,9 @@
     if ([@"png" caseInsensitiveCompare:extension] == NSOrderedSame) {
         type = kUTTypePNG;
     } else {
+		if ([@"jp2" caseInsensitiveCompare:extension] == NSOrderedSame) {
+			type = kUTTypeJPEG2000;
+		}
         imageOptions[(__bridge NSString *)kCGImageDestinationLossyCompressionQuality] =  @(self.jpegQuality);
     }
 	CGImageDestinationRef imageDestination = CGImageDestinationCreateWithURL((__bridge CFURLRef)aFileURL, type, 1, nil);
