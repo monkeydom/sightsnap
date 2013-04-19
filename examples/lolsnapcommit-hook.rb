@@ -59,4 +59,4 @@ font_size = 40
 
 snap_path = File.join(base_snap_path,"#{repo_name}/#{repo_name}_#{short_commit}.jpg")
 
-%x[#{sightsnap} -p -T '#{title.escape_single}' -C '#{commit_message.escape_single}' -j 0.6 -f '#{font}' -s '#{font_size}' '#{snap_path.escape_single}' && open '#{snap_path.escape_single}']
+%x[#{sightsnap} -p -T='#{title.escape_single}' -C='#{commit_message.escape_single}' -j 0.6 -f '#{font}' -s '#{font_size}' '#{snap_path.escape_single}' && open '#{snap_path.escape_single}']
