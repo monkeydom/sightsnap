@@ -52,6 +52,8 @@ To make timelapse videos use ffmpeg like this:
   ffmpeg -i 'sightsnap-%07d.jpg' sightsnap.mp4
 ```
 
+**Special consideration**: if your texts might start with a '-' then you need to use the alternative syntax. E.g. for the comment area `-C='-text that starts with a hyphen'`
+
 ## Acknowledgements
 * uses [ArgumentParser](https://github.com/NSError/ArgumentParser)
 
