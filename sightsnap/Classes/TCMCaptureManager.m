@@ -23,6 +23,11 @@
 @property (nonatomic, strong) AVCaptureDevice *selectedCaptureDevice;
 @property (nonatomic, strong) AVCaptureDeviceInput *videoInput;
 @property (nonatomic, strong) AVCaptureVideoDataOutput *videoDataOutput;
+
+@property (nonatomic, strong) AVAssetWriter *assetWriter;
+@property (nonatomic, strong) AVAssetWriterInput *assetWriterInput;
+@property (nonatomic) CMTime nextFrameTime;
+
 @end
 
 @implementation TCMCaptureManager
@@ -55,6 +60,7 @@
 	if (self.videoInput) {
 		[self.captureSession removeInput:self.videoInput];
 	}
+    [self teardownAssetWriter];
 	self.captureSession = nil;
 }
 
@@ -140,6 +146,32 @@
 		self.framesToSkip = self.skipFrames;
 		[self.captureSession startRunning];
 	}
+}
+
+- (void)setupAssetsWriterForURL:(NSURL *)aFileURL {
+    NSError *error;
+    AVAssetWriter *assetWriter = [AVAssetWriter assetWriterWithURL:aFileURL fileType:AVFileTypeQuickTimeMovie error:&error];
+    if (!assetWriter) {
+        NSLog(@"%s %@",__FUNCTION__,error);
+    } else {
+        AVAssetWriterInput *input = [[AVAssetWriterInput alloc] initWithMediaType:AVMediaTypeVideo outputSettings:nil];
+        [input setExpectsMediaDataInRealTime:YES];
+        [assetWriter addInput:input];
+        self.assetWriter = assetWriter;
+        self.assetWriterInput = input;
+        self.nextFrameTime = kCMTimeZero;
+        [assetWriter startWriting];
+        [assetWriter startSessionAtSourceTime:self.nextFrameTime];
+    }
+}
+
+- (void)teardownAssetWriter {
+    if (self.assetWriter) {
+        [self.assetWriterInput markAsFinished];
+        [self.assetWriter finishWriting];
+        self.assetWriter = nil;
+        self.assetWriterInput = nil;
+    }
 }
 
 - (BOOL)writeCGImage:(CGImageRef)aCGImageRef toURL:(NSURL *)aFileURL {
@@ -241,6 +273,20 @@
     self.drawingBlock = drawingBlock;
 }
 
+- (void)writeSampleBuffer:(CMSampleBufferRef)aSampleBuffer {
+    if (self.assetWriter) {
+        // retime sample info
+        CMSampleTimingInfo timingInfo = kCMTimingInfoInvalid;
+        CMTime frameDuration = CMTimeMakeWithSeconds(1./25, 1000);
+        timingInfo.duration = frameDuration;
+        timingInfo.presentationTimeStamp = self.nextFrameTime;
+        CMSampleBufferRef stampedSampleBuffer = NULL;
+        OSStatus err = CMSampleBufferCreateCopyWithNewTiming(kCFAllocatorDefault, aSampleBuffer, 1, &timingInfo, &stampedSampleBuffer);
+        if (err) return;
+        [self.assetWriterInput appendSampleBuffer:stampedSampleBuffer];
+        self.nextFrameTime = CMTimeAdd(self.nextFrameTime, frameDuration);
+    }
+}
 
 // avcapture output method
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
@@ -258,6 +304,7 @@
 	CVImageBufferRef aVideoFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
     self.currentImageBuffer = aVideoFrame;
 	self.grabNextArrivingImage = NO; // we have our frame
+    [self writeSampleBuffer:sampleBuffer];
     
     // As stated above, this method will be called on another thread, so
     // we perform the selector that handles the image on the main thread

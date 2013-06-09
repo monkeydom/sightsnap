@@ -27,4 +27,7 @@ typedef void (^TCMCaptureQuartzAction)(CGContextRef aContext, CGRect aFrame);
 - (void)setCurrentVideoDevice:(AVCaptureDevice *)aVideoDevice;
 - (void)setImageDrawingBlock:(TCMCaptureQuartzAction)drawingBlock;
 - (void)saveFrameToURL:(NSURL *)aFileURL completion:(void (^)())aCompletion;
+
+- (void)setupAssetsWriterForURL:(NSURL *)aFileURL;
+
 @end

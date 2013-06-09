@@ -394,7 +394,6 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
 						NSLog(@"Could not create directory at %@. \n%@",baseDirectory, error);
 					}
 				}
-				
 			}
 
             
@@ -473,6 +472,8 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
             }
             self.lastFrameScheduledDate = [NSDate new];
 			if (self.grabInterval >= 0.0) {
+                [captureManager setupAssetsWriterForURL:[NSURL fileURLWithPath:[[self.baseFilePath stringByDeletingPathExtension] stringByAppendingPathExtension:@"mov"]]];
+                
 				if (self.grabInterval <= 2.0) {
 					captureManager.shouldKeepCaptureSessionOpen = YES;
 				}
