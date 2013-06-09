@@ -79,12 +79,14 @@
     NSMutableArray *ranges = [NSMutableArray new];
     for (AVFrameRateRange *range in self.videoSupportedFrameRateRanges) {
         if (range.minFrameRate == range.maxFrameRate) {
-            [ranges addObject:[NSString stringWithFormat:@"%0.2ffps (%0.3f s)",range.minFrameRate,CMTimeGetSeconds(range.minFrameDuration)]];
+            [ranges addObject:[NSString stringWithFormat:@"%0.2ffps[%0.1fms]",range.minFrameRate,CMTimeGetSeconds(range.minFrameDuration) * 1000]];
         } else {
-            [ranges addObject:[NSString stringWithFormat:@"%0.2f-%0.2ffps (%0.3f-%0.3f s)",range.minFrameRate, range.maxFrameRate,CMTimeGetSeconds(range.minFrameDuration),CMTimeGetSeconds(range.maxFrameDuration)]];
+            [ranges addObject:[NSString stringWithFormat:@"%0.2f-%0.2ffps[%0.1f-%0.1fms]",range.minFrameRate, range.maxFrameRate,CMTimeGetSeconds(range.minFrameDuration) * 1000,CMTimeGetSeconds(range.maxFrameDuration) * 1000]];
         }
     }
-    
+    if (ranges.count > 0) {
+        localizedName = [localizedName stringByAppendingFormat:@" (%@)",[ranges componentsJoinedByString:@", "]];
+    }
 	return localizedName;
 }
 
