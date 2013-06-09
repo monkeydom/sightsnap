@@ -154,7 +154,10 @@
     if (!assetWriter) {
         NSLog(@"%s %@",__FUNCTION__,error);
     } else {
-        AVAssetWriterInput *input = [[AVAssetWriterInput alloc] initWithMediaType:AVMediaTypeVideo outputSettings:nil];
+//        assetWriter.shouldOptimizeForNetworkUse = YES;
+        assetWriter.movieFragmentInterval = CMTimeMakeWithSeconds(1.0, 1000.);
+        
+        AVAssetWriterInput *input = [[AVAssetWriterInput alloc] initWithMediaType:AVMediaTypeVideo outputSettings:@{AVVideoCodecKey:AVVideoCodecH264, AVVideoHeightKey : @(720), AVVideoWidthKey: @(1280), AVVideoScalingModeKey : AVVideoScalingModeResizeAspect}];
         [input setExpectsMediaDataInRealTime:YES];
         [assetWriter addInput:input];
         self.assetWriter = assetWriter;
