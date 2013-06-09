@@ -76,7 +76,15 @@
 		default:
 			break;
 	}
-	
+    NSMutableArray *ranges = [NSMutableArray new];
+    for (AVFrameRateRange *range in self.videoSupportedFrameRateRanges) {
+        if (range.minFrameRate == range.maxFrameRate) {
+            [ranges addObject:[NSString stringWithFormat:@"%0.2ffps (%0.3f s)",range.minFrameRate,CMTimeGetSeconds(range.minFrameDuration)]];
+        } else {
+            [ranges addObject:[NSString stringWithFormat:@"%0.2f-%0.2ffps (%0.3f-%0.3f s)",range.minFrameRate, range.maxFrameRate,CMTimeGetSeconds(range.minFrameDuration),CMTimeGetSeconds(range.maxFrameDuration)]];
+        }
+    }
+    
 	return localizedName;
 }
 
