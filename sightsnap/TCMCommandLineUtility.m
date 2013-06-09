@@ -472,7 +472,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
             }
             self.lastFrameScheduledDate = [NSDate new];
 			if (self.grabInterval >= 0.0) {
-                [captureManager setupAssetsWriterForURL:[NSURL fileURLWithPath:[[self.baseFilePath stringByDeletingPathExtension] stringByAppendingPathExtension:@"mov"]]];
+                [captureManager setupAssetsWriterForURL:[NSURL fileURLWithPath:[[self.baseFilePath stringByDeletingPathExtension] stringByAppendingPathExtension:@"mp4"]]];
                 
 				if (self.grabInterval <= 2.0) {
 					captureManager.shouldKeepCaptureSessionOpen = YES;

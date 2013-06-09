@@ -150,7 +150,7 @@
 
 - (void)setupAssetsWriterForURL:(NSURL *)aFileURL {
     NSError *error;
-    AVAssetWriter *assetWriter = [AVAssetWriter assetWriterWithURL:aFileURL fileType:AVFileTypeQuickTimeMovie error:&error];
+    AVAssetWriter *assetWriter = [AVAssetWriter assetWriterWithURL:aFileURL fileType:AVFileTypeMPEG4 error:&error];
     if (!assetWriter) {
         NSLog(@"%s %@",__FUNCTION__,error);
     } else {
