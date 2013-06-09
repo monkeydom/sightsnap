@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <QTKit/QTKit.h>
 #import <AVFoundation/AVFoundation.h>
 
 typedef void (^TCMCaptureQuartzAction)(CGContextRef aContext, CGRect aFrame);
@@ -23,9 +22,9 @@ typedef void (^TCMCaptureQuartzAction)(CGContextRef aContext, CGRect aFrame);
 
 - (void)teardownCaptureSession;
 
-- (QTCaptureDevice *)defaultVideoDevice;
+- (AVCaptureDevice *)defaultVideoDevice;
 - (NSArray *)availableVideoDevices;
-- (void)setCurrentVideoDevice:(QTCaptureDevice *)aVideoDevice;
+- (void)setCurrentVideoDevice:(AVCaptureDevice *)aVideoDevice;
 - (void)setImageDrawingBlock:(TCMCaptureQuartzAction)drawingBlock;
 - (void)saveFrameToURL:(NSURL *)aFileURL completion:(void (^)())aCompletion;
 @end

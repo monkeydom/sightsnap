@@ -90,4 +90,23 @@
 	return localizedName;
 }
 
+- (CMTime)maxFrameDurationLessThanTimeInterval:(NSTimeInterval)aTimeinterval {
+    BOOL first = YES;
+    CMTime result;
+    for (AVFrameRateRange *range in self.videoSupportedFrameRateRanges) {
+        if (first) {
+            result = range.minFrameDuration;
+            first = NO;
+        }
+        
+        if (CMTimeGetSeconds(range.maxFrameDuration) < aTimeinterval) {
+            if (CMTimeCompare(result, range.maxFrameDuration) == NSOrderedAscending) {
+                result = range.maxFrameDuration;
+            }
+        }
+    }
+    return result;
+}
+
+
 @end

@@ -373,21 +373,14 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
 		puts("To make timelapse videos use ffmpeg like this:\n  ffmpeg -i 'sightsnap-\%07d.jpg' sightsnap.mp4");
     } else {
         TCMCaptureManager *captureManager = [TCMCaptureManager captureManager];
-		QTCaptureDevice *defaultDevice = captureManager.defaultVideoDevice;
+		AVCaptureDevice *defaultDevice = captureManager.defaultVideoDevice;
         if ([package booleanValueForSignature:list]) {
             puts("Video Devices:");
-            for (QTCaptureDevice *device in captureManager.availableVideoDevices) {
-                if ([device isKindOfClass:[AVCaptureDevice class]]) {
-                    AVCaptureDevice *avDevice = (AVCaptureDevice *)device;
-                    puts([[NSString stringWithFormat:@"  %@", avDevice.localizedUniqueDisplayName] UTF8String]);
-                    for (AVCaptureDeviceFormat *format in avDevice.formats) {
-                        puts([[NSString stringWithFormat:@"   - %@",format.localizedName] UTF8String]);
-                    }
-                } else {
-                    puts([[NSString stringWithFormat:@"%@ %@",[device isEqual:defaultDevice] ?@"*":@" ",device.localizedUniqueDisplayName] UTF8String]);
-                    for (QTFormatDescription *format in device.formatDescriptions) {
-                        puts([[NSString stringWithFormat:@"   - %@",format.localizedFormatSummary] UTF8String]);
-                    }
+            for (AVCaptureDevice *device in captureManager.availableVideoDevices) {
+                puts([[NSString stringWithFormat:@"%@ %@", [device isEqual:defaultDevice] ?@"*":@" ", device.localizedUniqueDisplayName] UTF8String]);
+                for (AVCaptureDeviceFormat *format in device.formats) {
+                    
+                    puts([[NSString stringWithFormat:@" %@ - %@",[device.activeFormat isEqual:format] ? @"*":@" ",format.localizedName] UTF8String]);
                 }
             }
         } else {
@@ -405,12 +398,12 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
 			}
 
             
-            QTCaptureDevice *videoDevice = defaultDevice;
+            AVCaptureDevice *videoDevice = defaultDevice;
             NSString *deviceString = [package firstObjectForSignature:device];
             if (deviceString) {
                 NSString *searchString = deviceString.lowercaseString;
                 BOOL foundDevice = NO;
-                for (QTCaptureDevice *device in captureManager.availableVideoDevices) {
+                for (AVCaptureDevice *device in captureManager.availableVideoDevices) {
                     NSString *candidateString = [device.localizedUniqueDisplayName lowercaseString];
                     if ([candidateString rangeOfString:searchString].location != NSNotFound) {
                         foundDevice = YES;

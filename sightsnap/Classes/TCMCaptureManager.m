@@ -10,20 +10,19 @@
 
 
 
-@interface TCMCaptureManager () {
+@interface TCMCaptureManager () <AVCaptureVideoDataOutputSampleBufferDelegate> {
     CVImageBufferRef _currentCVImageBuffer;
 }
-@property (nonatomic, strong) QTCaptureSession *captureSession;
-@property (nonatomic, strong) QTCaptureDecompressedVideoOutput *videoOutput;
 @property (nonatomic, strong) NSURL *fileOutputURL;
-@property (nonatomic, strong) QTCaptureDevice *selectedCaptureDevice;
-@property (nonatomic, strong) QTCaptureDeviceInput *videoInput;
 @property (nonatomic, copy) id completionBlock;
 @property (nonatomic, copy) id drawingBlock;
 @property (nonatomic) NSInteger framesToSkip;
 @property (nonatomic) BOOL grabNextArrivingImage;
 
-@property (nonatomic, strong) AVCaptureSession *avCaptureSession;
+@property (nonatomic, strong) AVCaptureSession *captureSession;
+@property (nonatomic, strong) AVCaptureDevice *selectedCaptureDevice;
+@property (nonatomic, strong) AVCaptureDeviceInput *videoInput;
+@property (nonatomic, strong) AVCaptureVideoDataOutput *videoDataOutput;
 @end
 
 @implementation TCMCaptureManager
@@ -48,67 +47,45 @@
 
 - (void)teardownCaptureSession {
 	[self.captureSession stopRunning];
-	if (self.videoOutput) {
-		[self.captureSession removeOutput:self.videoOutput];
-		self.videoOutput.delegate = nil;
-		self.videoOutput = nil;
+	if (self.videoDataOutput) {
+		[self.captureSession removeOutput:self.videoDataOutput];
+        [self.videoDataOutput setSampleBufferDelegate:nil queue:nil];
+		self.videoDataOutput = nil;
 	}
 	if (self.videoInput) {
 		[self.captureSession removeInput:self.videoInput];
-		[self.videoInput.device close];
 	}
 	self.captureSession = nil;
 }
 
 - (void)bringUpCaptureSession {
-	QTCaptureSession *session;
-	session = [[QTCaptureSession alloc] init];
+	AVCaptureSession *session;
+	session = [[AVCaptureSession alloc] init];
 	self.captureSession = session;
 	
 	NSError *error;
-	BOOL success;
-	QTCaptureDeviceInput  *videoDeviceInput = [[QTCaptureDeviceInput alloc] initWithDevice:self.selectedCaptureDevice];
-	success = [session addInput:videoDeviceInput error:&error];
-	if (!success) {
-		NSLog(@"%s - error adding the video input: %@",__FUNCTION__,error);
-		[self.selectedCaptureDevice close];
-	} else {
-		self.videoInput = videoDeviceInput;
+
+    // config
+    if ([self.selectedCaptureDevice lockForConfiguration:NULL]) {
+        [self.selectedCaptureDevice setActiveVideoMinFrameDuration:[self.selectedCaptureDevice.activeFormat maxFrameDurationLessThanTimeInterval:1.0 / 6.0]];
+        [self.selectedCaptureDevice unlockForConfiguration];
+    }
+
+    AVCaptureDeviceInput  *videoDeviceInput = [[AVCaptureDeviceInput alloc] initWithDevice:self.selectedCaptureDevice error:&error];
+    
+	[session addInput:videoDeviceInput];
+    
+    self.videoInput = videoDeviceInput;
 		
-		// Create an object for outputing the video
-		// The input will tell the session object that it has taken
-		// some data, which will in turn send this to the output
-		// object, which has a delegate that you defined
-		QTCaptureDecompressedVideoOutput *output = [[QTCaptureDecompressedVideoOutput alloc] init];
-		
-		// adjustments because we only take stills
-		output.automaticallyDropsLateVideoFrames = YES; // we don't care if they drop if we are slow, we only want stills anyway
-		output.minimumVideoFrameInterval = 1.0 / 6; // don't do more than 6 frames to cap load we generate and also to allow to captures stills from more than one cam!
-		
-		if (self.maxWidth > 0 && self.maxHeight > 0) {
-			[output setPixelBufferAttributes:@{
-					(id)kCVPixelBufferWidthKey : @(self.maxWidth),
-					(id)kCVPixelBufferHeightKey : @(self.maxHeight)
-			 }];
-		}
-		
-		// This is the delegate. Note the
-		// captureOutput:didOutputVideoFrame...-method of this
-		// object. That is the method which will be called when
-		// a photo has been taken.
-		[output setDelegate:self];
-		
-		// Add the output-object for the session
-		success = [session addOutput:output error:&error];
-		
-		if (!success) {
-			NSLog(@"Did succeed in connecting output to session: %d", success);
-			NSLog(@"Error: %@", [error localizedDescription]);
-		} else {
-			self.videoOutput = output;
-			self.currentImageBuffer = nil;
-		}
-	}
+    // Create an object for outputing the video
+    // The input will tell the session object that it has taken
+    // some data, which will in turn send this to the output
+    // object, which has a delegate that you defined
+    AVCaptureVideoDataOutput *output = [[AVCaptureVideoDataOutput alloc] init];
+    [output setSampleBufferDelegate:self queue:dispatch_queue_create("buffer_capture_queue",DISPATCH_QUEUE_SERIAL)];
+	[session addOutput:output];
+    self.videoDataOutput = output;
+    self.currentImageBuffer = nil;
 }
 
 - (void)dealloc {
@@ -130,10 +107,10 @@
     return _currentCVImageBuffer;
 }
 
-- (QTCaptureDevice *)defaultVideoDevice {
-	QTCaptureDevice *result = [QTCaptureDevice defaultInputDeviceWithMediaType:QTMediaTypeVideo];
+- (AVCaptureDevice *)defaultVideoDevice {
+	AVCaptureDevice *result = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
 	if (!result) {
-		result = [QTCaptureDevice defaultInputDeviceWithMediaType:QTMediaTypeMuxed];
+		result = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeMuxed];
 	}
 	return result;
 }
@@ -142,26 +119,16 @@
     NSMutableArray *videoDevices = [NSMutableArray new];
     [videoDevices addObjectsFromArray:[AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo]];
     [videoDevices addObjectsFromArray:[AVCaptureDevice devicesWithMediaType:AVMediaTypeMuxed]];
-    [videoDevices addObjectsFromArray:[QTCaptureDevice inputDevicesWithMediaType:QTMediaTypeVideo]];
-    [videoDevices addObjectsFromArray:[QTCaptureDevice inputDevicesWithMediaType:QTMediaTypeMuxed]];
     return videoDevices;
 }
 
-- (void)setCurrentVideoDevice:(QTCaptureDevice *)aVideoDevice {
-    BOOL success = NO;
-    NSError *error;
-	
+- (void)setCurrentVideoDevice:(AVCaptureDevice *)aVideoDevice {
 	if (self.captureSession) {
 		[self teardownCaptureSession];
 	}
-	
-    success = [aVideoDevice open:&error];
-    if (!success) {
-        NSLog(@"%s - error opening the video input device: %@",__FUNCTION__,error);
-    } else {
-        self.selectedCaptureDevice = aVideoDevice;
-		[self bringUpCaptureSession];
-    }
+
+    self.selectedCaptureDevice = aVideoDevice;
+    [self bringUpCaptureSession];
 }
     
 - (void)saveFrameToURL:(NSURL *)aFileURL completion:(void (^)())aCompletion {
@@ -184,11 +151,11 @@
     
     NSDictionary *exifDictionary = @{
         (__bridge NSString *)kCGImagePropertyExifDateTimeOriginal : EXIFFormattedCreatedDate,
-        (__bridge NSString *)kCGImagePropertyExifMakerNote : self.selectedCaptureDevice.localizedDisplayName
+        (__bridge NSString *)kCGImagePropertyExifMakerNote : self.selectedCaptureDevice.localizedName
     };
     
     NSDictionary *tiffDictionary = @{
-        (__bridge NSString *)kCGImagePropertyTIFFModel : self.selectedCaptureDevice.localizedDisplayName,
+        (__bridge NSString *)kCGImagePropertyTIFFModel : self.selectedCaptureDevice.localizedName,
         (__bridge NSString *)kCGImagePropertyTIFFDateTime : EXIFFormattedCreatedDate
     };
     
@@ -275,8 +242,8 @@
 }
 
 
-// QTCapture delegate method, called when a frame has been loaded by the camera
-- (void)captureOutput:(QTCaptureOutput *)aCaptureOutput didOutputVideoFrame:(CVImageBufferRef)aVideoFrame withSampleBuffer:(QTSampleBuffer *)aSampleBuffer fromConnection:(QTCaptureConnection *)aConnection {
+// avcapture output method
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
 
 	// only grab the image if we are interested
 	if (!self.grabNextArrivingImage) {
@@ -288,7 +255,7 @@
         self.framesToSkip = self.framesToSkip - 1;
         return;
     }
-	    
+	CVImageBufferRef aVideoFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
     self.currentImageBuffer = aVideoFrame;
 	self.grabNextArrivingImage = NO; // we have our frame
     

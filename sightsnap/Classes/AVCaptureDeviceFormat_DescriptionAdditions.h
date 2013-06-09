@@ -4,5 +4,5 @@
 @interface AVCaptureDeviceFormat (DescriptionAdditions)
 
 @property (readonly) NSString *localizedName;
-
+- (CMTime)maxFrameDurationLessThanTimeInterval:(NSTimeInterval)aTimeInterval;
 @end
