@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <QTKit/QTKit.h>
+#import <AVFoundation/AVFoundation.h>
 
 typedef void (^TCMCaptureQuartzAction)(CGContextRef aContext, CGRect aFrame);
 

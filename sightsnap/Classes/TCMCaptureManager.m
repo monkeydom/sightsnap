@@ -22,6 +22,8 @@
 @property (nonatomic, copy) id drawingBlock;
 @property (nonatomic) NSInteger framesToSkip;
 @property (nonatomic) BOOL grabNextArrivingImage;
+
+@property (nonatomic, strong) AVCaptureSession *avCaptureSession;
 @end
 
 @implementation TCMCaptureManager
@@ -138,6 +140,8 @@
 
 - (NSArray *)availableVideoDevices {
     NSMutableArray *videoDevices = [NSMutableArray new];
+    [videoDevices addObjectsFromArray:[AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo]];
+    [videoDevices addObjectsFromArray:[AVCaptureDevice devicesWithMediaType:AVMediaTypeMuxed]];
     [videoDevices addObjectsFromArray:[QTCaptureDevice inputDevicesWithMediaType:QTMediaTypeVideo]];
     [videoDevices addObjectsFromArray:[QTCaptureDevice inputDevicesWithMediaType:QTMediaTypeMuxed]];
     return videoDevices;

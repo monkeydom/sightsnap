@@ -224,8 +224,19 @@ static void exception_handler(NSException *anException) {
 	NSString *result = [NSString stringWithFormat:@"%@ [%@ - %@]", self.localizedDisplayName, self.modelUniqueID, self.uniqueID];
 	return result;
 }
-
 @end
+
+@interface AVCaptureDevice (SightSnapAdditions)
+- (NSString *)localizedUniqueDisplayName;
+@end
+
+@implementation AVCaptureDevice (SightSnapAdditions)
+- (NSString *)localizedUniqueDisplayName {
+	NSString *result = [NSString stringWithFormat:@"%@ [%@ - %@]", self.localizedName, self.modelID, self.uniqueID];
+	return result;
+}
+@end
+
 
 typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUInteger aIndentLevel, NSUInteger aTerminalWidth);
 
@@ -366,9 +377,17 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
         if ([package booleanValueForSignature:list]) {
             puts("Video Devices:");
             for (QTCaptureDevice *device in captureManager.availableVideoDevices) {
-                puts([[NSString stringWithFormat:@"%@ %@",[device isEqual:defaultDevice] ?@"*":@" ",device.localizedUniqueDisplayName] UTF8String]);
-                for (QTFormatDescription *format in device.formatDescriptions) {
-                    puts([[NSString stringWithFormat:@"   - %@",format.localizedFormatSummary] UTF8String]);
+                if ([device isKindOfClass:[AVCaptureDevice class]]) {
+                    AVCaptureDevice *avDevice = (AVCaptureDevice *)device;
+                    puts([[NSString stringWithFormat:@"  %@", avDevice.localizedUniqueDisplayName] UTF8String]);
+                    for (AVCaptureDeviceFormat *format in avDevice.formats) {
+                        puts([[NSString stringWithFormat:@"   - %@",format.localizedName] UTF8String]);
+                    }
+                } else {
+                    puts([[NSString stringWithFormat:@"%@ %@",[device isEqual:defaultDevice] ?@"*":@" ",device.localizedUniqueDisplayName] UTF8String]);
+                    for (QTFormatDescription *format in device.formatDescriptions) {
+                        puts([[NSString stringWithFormat:@"   - %@",format.localizedFormatSummary] UTF8String]);
+                    }
                 }
             }
         } else {
