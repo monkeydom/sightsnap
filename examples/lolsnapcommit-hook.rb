@@ -22,11 +22,27 @@ branch_name = %x[git rev-parse --abbrev-ref HEAD].strip
 base_snap_path =  File.expand_path "~/Library/Application Support/lolsnap/"
 
 # install and remove
-commit_hook_path = File.join(top_level_dir, '.git/hooks/post-commit')
+git_dir = File.join(top_level_dir, '.git')
+unless File.directory?(git_dir) then
+	File.open(git_dir,'r') do |infile|
+		while (line = infile.gets)
+			line = line.strip
+			prefix = 'gitdir:'
+			if line.start_with? prefix then
+				content = line[prefix.length..-1].strip
+				git_dir = File.expand_path(File.join(top_level_dir, content))
+				break
+			end
+		end
+	end
+end
+
+commit_hook_dir  = File.join(git_dir,'hooks')
+commit_hook_path = File.join(commit_hook_dir,'/post-commit')
 ARGV.each {|arg|
 	if (arg == "--install") then
 		here = File.expand_path(__FILE__)
-		%x[echo '#!/bin/sh\n#{here}' > '#{commit_hook_path}' && chmod a+x '#{commit_hook_path}']
+		%x[mkdir -p '#{commit_hook_dir}'; echo '#!/bin/sh\n#{here}' > '#{commit_hook_path}' && chmod a+x '#{commit_hook_path}']
 		print "installed lolsnap post-commit hook\n"
 		exit (0)
 	elsif (arg == "--remove") then 
@@ -34,7 +50,9 @@ ARGV.each {|arg|
 		print "removed lolsnap post-commit hook\n"
 		exit (0)
 	elsif (arg == "--show") then 
-		%x[open '#{base_snap_path}']
+		path_to_show = base_snap_path
+		path_to_show = File.join(base_snap_path, repo_name) unless repo_name.nil? or repo_name.length == 0
+		%x[open '#{path_to_show}']
 		exit(0)
 	end
 }
