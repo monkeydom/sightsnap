@@ -243,13 +243,16 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
 @interface TCMCommandLineUtility ()
 @property (nonatomic) BOOL keepRunLoopAlive;
 @property (nonatomic) NSTimeInterval grabInterval;
+@property (nonatomic) NSTimeInterval maxGrabDuration;
 @property (nonatomic) NSInteger frameIndex;
 @property (nonatomic) NSString *baseFilePath;
 @property (nonatomic, strong) NSDate *lastFrameFireDate;
 @property (nonatomic, strong) NSDate *lastFrameScheduledDate;
+@property (nonatomic, strong) NSDate *firstCapturedFrameDate;
 @property (nonatomic) CGFloat fontSize;
 @property (nonatomic, strong) NSString *fontName;
 @property (nonatomic) BOOL shouldTimeStamp;
+@property (nonatomic) BOOL shouldCaptureMP4;
 @property (nonatomic, strong) NSString *topLeftText;
 @property (nonatomic, strong) NSString *titleText;
 @property (nonatomic, strong) NSString *commentText;
@@ -270,6 +273,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
     self = [super init];
     if (self) {
         self.grabInterval = -1.0;
+        self.maxGrabDuration = -1.0;
         self.frameIndex = 0;
         self.fontSize = 40;
         self.fontName = @"HelveticaNeue-Bold";
@@ -316,6 +320,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
     FSArgumentSignature
     *list = [FSArgumentSignature argumentSignatureWithFormat:@"[-l --listDevices]"],
     *time = [FSArgumentSignature argumentSignatureWithFormat:@"[-t --time]="],
+    *mp4 = [FSArgumentSignature argumentSignatureWithFormat:@"[-m --mp4]"],
     *skipframes = [FSArgumentSignature argumentSignatureWithFormat:@"[-k --skipframes]="],
     *maxWidth = [FSArgumentSignature argumentSignatureWithFormat:@"[-x --maxwidth]="],
     *maxHeight = [FSArgumentSignature argumentSignatureWithFormat:@"[-y --maxheight]="],
@@ -328,13 +333,13 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
     *device = [FSArgumentSignature argumentSignatureWithFormat:@"[-d --device]="],
     *zeroStart = [FSArgumentSignature argumentSignatureWithFormat:@"[-z --startAtZero]"],
     *help = [FSArgumentSignature argumentSignatureWithFormat:@"[-h --help]"];
-    NSArray *signatures = @[list,device,time,zeroStart,skipframes,jpegQuality,maxWidth,maxHeight,stamp,title,comment,fontName,fontSize,help];
+    NSArray *signatures = @[list,device,time,zeroStart,mp4,skipframes,jpegQuality,maxWidth,maxHeight,stamp,title,comment,fontName,fontSize,help];
 	
 	
 	self.helpFirstTabPosition = 26;
 	[list setDescriptionHelper:       [self descriptionHelperWithHelpText:@"List all available video devices and their formats."]];
 	[device setDescriptionHelper:     [self descriptionHelperWithHelpText:@"Use this <device>. First partial case-insensitive\nname match is taken." valueName:@"device"]];
-	[time setDescriptionHelper:       [self descriptionHelperWithHelpText:@"Takes a frame every <delay> seconds and saves it as\noutputfilename-XXXXXXX.jpg continuously." valueName:@"delay"]];
+	[time setDescriptionHelper:       [self descriptionHelperWithHelpText:@"Takes a frame every <delay> seconds and saves it as\noutputfilename-XXXXXXX.jpg continuously. Stops after <duration> seconds if given." valueName:@"delay[,duration]"]];
 	[zeroStart setDescriptionHelper:  [self descriptionHelperWithHelpText:@"Start at frame number 0 and overwrite - otherwise start\nwith next free frame number. Time mode only."]];
 	[skipframes setDescriptionHelper: [self descriptionHelperWithHelpText:@"Skips <n> frames before taking a picture. Gives cam\nwarmup time. (default is 2, frames are @6fps)" valueName:@"n"]];
 	[maxWidth  setDescriptionHelper:  [self descriptionHelperWithHelpText:@"If image is wider than <w> px, scale it down to fit." valueName:@"w"]];
@@ -346,6 +351,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
 	[comment setDescriptionHelper:    [self descriptionHelperWithHelpText:@"Adds <text> to the lower left of the image."  valueName:@"text"]];
 	[fontSize setDescriptionHelper:   [self descriptionHelperWithHelpText:@"Font size for timestamp in <size> px. (default is 40)" valueName:@"size"]];
 	[fontName setDescriptionHelper:   [self descriptionHelperWithHelpText:@"Postscript font name to use. Use FontBook.app->Font Info\nto find out about the available fonts on your system\n(default is 'HelveticaNeue-Bold')" valueName:@"font"]];
+    [mp4 setDescriptionHelper:        [self descriptionHelperWithHelpText:@"Also write out a movie as mp4 with the timelapse directly. Time mode only."]];
 	
 	
     FSArgumentPackage * package = [[NSProcessInfo processInfo] fsargs_parseArgumentsWithSignatures:signatures];
@@ -371,6 +377,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
 		}
 		puts("");
 		puts("To make timelapse videos use ffmpeg like this:\n  ffmpeg -i 'sightsnap-\%07d.jpg' sightsnap.mp4");
+        puts("To make animated gifs use e.g. ffmpeg -r 10 -i Test3-%07d.jpg -vf 'scale=512:-1' test3.gif ");
     } else {
         TCMCaptureManager *captureManager = [TCMCaptureManager captureManager];
 		AVCaptureDevice *defaultDevice = captureManager.defaultVideoDevice;
@@ -420,7 +427,11 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
             
             id timeValue = [package firstObjectForSignature:time];
             if (timeValue) {
-                self.grabInterval = [timeValue doubleValue];
+                NSArray *timeValueNumbers = [timeValue componentsSeparatedByString:@","];
+                self.grabInterval = [timeValueNumbers[0] doubleValue];
+                if (timeValueNumbers.count >= 2) {
+                    self.maxGrabDuration = [timeValueNumbers[1] doubleValue];
+                }
             }
             
 			id skipFramesValue = [package firstObjectForSignature:skipframes];
@@ -470,10 +481,14 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
             if (fontSizeValue) {
                 self.fontSize = [fontSizeValue doubleValue];
             }
+            
+            self.shouldCaptureMP4 = [package booleanValueForSignature:mp4];
+            
             self.lastFrameScheduledDate = [NSDate new];
 			if (self.grabInterval >= 0.0) {
-                [captureManager setupAssetsWriterForURL:[NSURL fileURLWithPath:[[self.baseFilePath stringByDeletingPathExtension] stringByAppendingPathExtension:@"mp4"]]];
-                
+                if (self.shouldCaptureMP4) {
+                    [captureManager setupAssetsWriterForURL:[NSURL fileURLWithPath:[[self.baseFilePath stringByDeletingPathExtension] stringByAppendingPathExtension:@"mp4"]]];
+                }
 				if (self.grabInterval <= 2.0) {
 					captureManager.shouldKeepCaptureSessionOpen = YES;
 				}
@@ -563,15 +578,55 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
 }
 
 - (void)didCaptureImage {
+    BOOL shouldStop = YES;
     self.frameIndex = self.frameIndex + 1;
     if (self.grabInterval >= 0.0) {
-        self.lastFrameScheduledDate = [self.lastFrameScheduledDate dateByAddingTimeInterval:self.grabInterval];
-        NSTimeInterval timeInterval = [self.lastFrameScheduledDate timeIntervalSinceNow];
-        if (timeInterval < 0) timeInterval = 0.0;
-        [self performSelector:@selector(captureImage) withObject:nil afterDelay:timeInterval];
-    } else {
-        self.keepRunLoopAlive = NO;
+        shouldStop = NO;
+        
+        NSDate *nextScheduleDate = [self.lastFrameScheduledDate dateByAddingTimeInterval:self.grabInterval];
+
+        if (!self.firstCapturedFrameDate) {
+            self.firstCapturedFrameDate = [NSDate date];
+        } else {
+            NSTimeInterval maxGrabDuration = self.maxGrabDuration;
+            if (maxGrabDuration > 0.0) {
+                if ([nextScheduleDate timeIntervalSinceDate:self.firstCapturedFrameDate] > maxGrabDuration) {
+                    shouldStop = YES;
+                }
+            }
+        }
+        
+        if (!shouldStop) {
+            self.lastFrameScheduledDate = nextScheduleDate;
+            NSTimeInterval timeInterval = [nextScheduleDate timeIntervalSinceNow];
+            if (timeInterval < 0) timeInterval = 0.0;
+            [self performSelector:@selector(captureImage) withObject:nil afterDelay:timeInterval];
+        }
     }
+    
+    if (shouldStop) {
+        dispatch_block_t finishBlock = ^{
+            puts("Finished Moviewriting…");
+            [self stopRunLoopAndCauseRunLoopEvent];
+        };
+        if (self.shouldCaptureMP4) {
+            puts("Finish Moviewriting…");
+            [[TCMCaptureManager captureManager] teardownAssetWriterWithCompletionHandler:finishBlock];
+        } else {
+            finishBlock();
+        }
+    }
+}
+
+- (void)stopRunLoop {
+    self.keepRunLoopAlive = NO;
+}
+
+- (void)stopRunLoopAndCauseRunLoopEvent {
+    // ensure we hop on the main thread and trigger a run loop event there
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self performSelector:@selector(stopRunLoop) withObject:nil afterDelay:0.0];
+    });
 }
 
 - (void)startRunLoop {

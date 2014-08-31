@@ -29,5 +29,6 @@ typedef void (^TCMCaptureQuartzAction)(CGContextRef aContext, CGRect aFrame);
 - (void)saveFrameToURL:(NSURL *)aFileURL completion:(void (^)())aCompletion;
 
 - (void)setupAssetsWriterForURL:(NSURL *)aFileURL;
+- (void)teardownAssetWriterWithCompletionHandler:(dispatch_block_t)aCompletionHandler;
 
 @end

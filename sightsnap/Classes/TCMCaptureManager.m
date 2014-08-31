@@ -150,6 +150,8 @@
 
 - (void)setupAssetsWriterForURL:(NSURL *)aFileURL {
     NSError *error;
+    // delete the file if there
+    [[NSFileManager defaultManager] removeItemAtURL:aFileURL error:nil];
     AVAssetWriter *assetWriter = [AVAssetWriter assetWriterWithURL:aFileURL fileType:AVFileTypeMPEG4 error:&error];
     if (!assetWriter) {
         NSLog(@"%s %@",__FUNCTION__,error);
@@ -168,13 +170,47 @@
     }
 }
 
-- (void)teardownAssetWriter {
-    if (self.assetWriter) {
+- (void)teardownAssetWriterWithCompletionHandler:(dispatch_block_t)aCompletionHandler {
+    AVAssetWriter *writer = self.assetWriter;
+    if (writer) {
         [self.assetWriterInput markAsFinished];
-        [self.assetWriter finishWriting];
+        dispatch_block_t finishBlock = ^{
+            // this use here also retains the writer in the block
+            // if the writer doesn't get rid of the completion handler after firing it
+            // this will cause a leak - however, not relevant as long as we only write one movie in this command line util
+            // and we need to prolong the writers life to actually fire the finishBlock anyways
+            if (writer.status != AVAssetWriterStatusCompleted) {
+                NSDictionary *statusDescription = @{
+                    @(AVAssetWriterStatusFailed) : @"Failed",
+                    @(AVAssetWriterStatusCancelled) : @"Cancelled",
+                    @(AVAssetWriterStatusUnknown) : @"Unknown",
+                    @(AVAssetWriterStatusWriting) : @"Writing",
+                };
+                printf("Assets written with status: %ld - %s\n", (long)writer.status, [statusDescription[@(writer.status)] UTF8String]);
+            }
+            if (aCompletionHandler) {
+                aCompletionHandler();
+            }
+        };
+        if (writer.status == AVAssetWriterStatusFailed) {
+            puts([[NSString stringWithFormat:@"Movie writing failed: (%@)\n",[writer.error localizedDescription]] UTF8String]);
+            if (aCompletionHandler) {
+                aCompletionHandler();
+            }
+        } else {
+            [writer finishWritingWithCompletionHandler:finishBlock];
+        }
         self.assetWriter = nil;
         self.assetWriterInput = nil;
+    } else {
+        if (aCompletionHandler) {
+            dispatch_async(dispatch_get_main_queue(), aCompletionHandler);
+        }
     }
+}
+
+- (void)teardownAssetWriter {
+    [self teardownAssetWriterWithCompletionHandler:NULL];
 }
 
 - (BOOL)writeCGImage:(CGImageRef)aCGImageRef toURL:(NSURL *)aFileURL {
