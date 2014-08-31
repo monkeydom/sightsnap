@@ -45,7 +45,7 @@
     self = [super init];
     if (self) {
         self.jpegQuality = 0.8;
-		self.skipFrames = 2; // with a frame cap of 6 per sec, this should be enough for the average cam
+		self.skipFrames = 5; // with a frame cap of 6 per sec, this should be enough for the average cam
     }
     return self;
 }
@@ -68,19 +68,19 @@
 	AVCaptureSession *session;
 	session = [[AVCaptureSession alloc] init];
 	self.captureSession = session;
-	
+
 	NSError *error;
 
     // config
     if ([self.selectedCaptureDevice lockForConfiguration:NULL]) {
-        [self.selectedCaptureDevice setActiveVideoMinFrameDuration:[self.selectedCaptureDevice.activeFormat maxFrameDurationLessThanTimeInterval:1.0 / 6.0]];
+        [self.selectedCaptureDevice setActiveVideoMinFrameDuration:[self.selectedCaptureDevice.activeFormat maxFrameDurationLessThanTimeInterval:1.0 / 12.0]];
         [self.selectedCaptureDevice unlockForConfiguration];
     }
 
     AVCaptureDeviceInput  *videoDeviceInput = [[AVCaptureDeviceInput alloc] initWithDevice:self.selectedCaptureDevice error:&error];
     
 	[session addInput:videoDeviceInput];
-    
+
     self.videoInput = videoDeviceInput;
 		
     // Create an object for outputing the video

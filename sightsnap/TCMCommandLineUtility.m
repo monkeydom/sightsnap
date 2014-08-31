@@ -586,6 +586,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
         NSDate *nextScheduleDate = [self.lastFrameScheduledDate dateByAddingTimeInterval:self.grabInterval];
 
         if (!self.firstCapturedFrameDate) {
+            //[[NSUserNotificationCenter defaultUserNotificationCenter] scheduleNotification:[[NSUserNotification alloc] init]];
             self.firstCapturedFrameDate = [NSDate date];
         } else {
             NSTimeInterval maxGrabDuration = self.maxGrabDuration;
@@ -606,7 +607,6 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
     
     if (shouldStop) {
         dispatch_block_t finishBlock = ^{
-            puts("Finished Moviewriting…");
             [self stopRunLoopAndCauseRunLoopEvent];
         };
         if (self.shouldCaptureMP4) {
