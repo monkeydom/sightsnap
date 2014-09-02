@@ -14,6 +14,13 @@
 ### Lol-Commits including emojiis and repo information
 ![Lolcommit](http://cl.ly/OAF1/2013-04-09_11-41-04_domtina.local.jpg)
 * [lolcommit-hook.rb](https://github.com/monkeydom/sightsnap/blob/develop/examples/lolsnapcommit-hook.rb)
+
+## What's new
+
+* mp4 creation on time lapse (currently without additional text overlays)
+* extended the --time option to take a total time for image sequence grabbing to make e.g. animated gifs
+* updated the post commit hook example to make animated gifs using ffmpeg
+
 ## License
 
 * [MIT](http://www.opensource.org/licenses/mit-license.php)
