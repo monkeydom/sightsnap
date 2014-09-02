@@ -4,4 +4,6 @@
 
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
+    #import <AVFoundation/AVFoundation.h>
+    #import "AVCaptureDeviceFormat_DescriptionAdditions.h"
 #endif
