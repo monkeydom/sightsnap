@@ -87,4 +87,4 @@ tmpsnappath = '/tmp/sightsnap'
 %x[mkdir -p #{tmpsnappath}]
 tmpsnapbasename = File.join(tmpsnappath,'lolcommit')
 
-%x[#{sightsnap} -poz -k 1 -T '#{title.escape_single}' -C='#{commit_message.escape_single}' -j 0.45 -t 0.2,1.2 -s #{font_size} -f '#{font}' '#{tmpsnapbasename.escape_single}' && #{ffmpeg} -y -r 8 -i #{tmpsnapbasename}-%07d.jpg -vf 'scale=768:-1' '#{snap_path.escape_single}.gif' && open '#{snap_path.escape_single}.gif' && rm -rf #{tmpsnappath}]
+%x[#{sightsnap} -poz -T '#{title.escape_single}' -C='#{commit_message.escape_single}' -j 0.45 -t 0.2,1.2 -s #{font_size} -f '#{font}' '#{tmpsnapbasename.escape_single}' && #{ffmpeg} -y -r 8 -i #{tmpsnapbasename}-%07d.jpg -vf 'scale=768:-1' '#{snap_path.escape_single}.gif' && open '#{snap_path.escape_single}.gif' && rm -rf #{tmpsnappath}]
