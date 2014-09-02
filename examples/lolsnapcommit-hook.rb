@@ -57,6 +57,15 @@ font_size = 40
 #print title, "\n"
 #print commit_message, "\n"
 
-snap_path = File.join(base_snap_path,"#{repo_name}/#{repo_name}_#{short_commit}.jpg")
+snap_path = File.join(base_snap_path,"#{repo_name}/#{repo_name}_#{short_commit}")
 
-%x[#{sightsnap} -p -T='#{title.escape_single}' -C='#{commit_message.escape_single}' -j 0.6 -f '#{font}' -s '#{font_size}' '#{snap_path.escape_single}' && open '#{snap_path.escape_single}']
+# one jpeg
+#%x[#{sightsnap} -p -T='#{title.escape_single}' -C='#{commit_message.escape_single}' -j 0.6 -f '#{font}' -s '#{font_size}' '#{snap_path.escape_single}.jpg' && open '#{snap_path.escape_single}.jpg']
+#exit(0)
+
+# animated gif
+tmpsnappath = '/tmp/sightsnap'
+%x[mkdir -p #{tmpsnappath}]
+tmpsnapbasename = File.join(tmpsnappath,'lolcommit')
+
+%x[/Users/domde/bin/sightsnap -poz -k 1 -T '#{title.escape_single}' -C='#{commit_message.escape_single}' -j 0.45 -t 0.2,1.2 -s #{font_size} -f '#{font}' '#{tmpsnapbasename.escape_single}' && ffmpeg -y -r 8 -i #{tmpsnapbasename}-%07d.jpg -vf 'scale=768:-1' '#{snap_path.escape_single}.gif' && open '#{snap_path.escape_single}.gif' && rm -rf #{tmpsnappath}]
