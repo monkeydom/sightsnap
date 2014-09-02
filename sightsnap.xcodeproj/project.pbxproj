@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F21B6C331764FF0800825BF3 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F21B6C321764FF0800825BF3 /* AVFoundation.framework */; };
+		F21B6C36176501E100825BF3 /* AVCaptureDeviceFormat_DescriptionAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = F21B6C35176501E100825BF3 /* AVCaptureDeviceFormat_DescriptionAdditions.m */; };
+		F21B6C38176502E000825BF3 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F21B6C37176502E000825BF3 /* AudioToolbox.framework */; };
+		F21B6C3A1765032C00825BF3 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F21B6C391765032C00825BF3 /* CoreMedia.framework */; };
+		F21B6C3C1765033300825BF3 /* CoreMediaIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F21B6C3B1765033300825BF3 /* CoreMediaIO.framework */; };
 		F23D89461712ED3900BCDCAE /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F23D89451712ED3900BCDCAE /* CoreText.framework */; };
 		F29C65831705A3A0003D2B24 /* TCMCommandLineUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = F29C65821705A3A0003D2B24 /* TCMCommandLineUtility.m */; };
 		F2D19187170341A8004B8DCD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2D19186170341A8004B8DCD /* Foundation.framework */; };
@@ -94,6 +99,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F21B6C321764FF0800825BF3 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		F21B6C34176501E100825BF3 /* AVCaptureDeviceFormat_DescriptionAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AVCaptureDeviceFormat_DescriptionAdditions.h; path = Classes/AVCaptureDeviceFormat_DescriptionAdditions.h; sourceTree = "<group>"; };
+		F21B6C35176501E100825BF3 /* AVCaptureDeviceFormat_DescriptionAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AVCaptureDeviceFormat_DescriptionAdditions.m; path = Classes/AVCaptureDeviceFormat_DescriptionAdditions.m; sourceTree = "<group>"; };
+		F21B6C37176502E000825BF3 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		F21B6C391765032C00825BF3 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		F21B6C3B1765033300825BF3 /* CoreMediaIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMediaIO.framework; path = System/Library/Frameworks/CoreMediaIO.framework; sourceTree = SDKROOT; };
 		F23D89451712ED3900BCDCAE /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		F29C65811705A3A0003D2B24 /* TCMCommandLineUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCMCommandLineUtility.h; sourceTree = "<group>"; };
 		F29C65821705A3A0003D2B24 /* TCMCommandLineUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCMCommandLineUtility.m; sourceTree = "<group>"; };
@@ -254,6 +265,10 @@
 				F2D192661704838E004B8DCD /* Quartz.framework in Frameworks */,
 				F2D19195170342C3004B8DCD /* QTKit.framework in Frameworks */,
 				F2D19187170341A8004B8DCD /* Foundation.framework in Frameworks */,
+				F21B6C331764FF0800825BF3 /* AVFoundation.framework in Frameworks */,
+				F21B6C38176502E000825BF3 /* AudioToolbox.framework in Frameworks */,
+				F21B6C3A1765032C00825BF3 /* CoreMedia.framework in Frameworks */,
+				F21B6C3C1765033300825BF3 /* CoreMediaIO.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -280,6 +295,10 @@
 		F2D19185170341A8004B8DCD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F21B6C3B1765033300825BF3 /* CoreMediaIO.framework */,
+				F21B6C391765032C00825BF3 /* CoreMedia.framework */,
+				F21B6C37176502E000825BF3 /* AudioToolbox.framework */,
+				F21B6C321764FF0800825BF3 /* AVFoundation.framework */,
 				F23D89451712ED3900BCDCAE /* CoreText.framework */,
 				F2D1926D170483E0004B8DCD /* CoreServices.framework */,
 				F2D1926B170483C5004B8DCD /* ImageIO.framework */,
@@ -316,6 +335,8 @@
 		F2D19196170345D4004B8DCD /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				F21B6C34176501E100825BF3 /* AVCaptureDeviceFormat_DescriptionAdditions.h */,
+				F21B6C35176501E100825BF3 /* AVCaptureDeviceFormat_DescriptionAdditions.m */,
 				F2D1919717034604004B8DCD /* TCMCaptureManager.h */,
 				F2D1919817034604004B8DCD /* TCMCaptureManager.m */,
 				F29C65811705A3A0003D2B24 /* TCMCommandLineUtility.h */,
@@ -659,6 +680,7 @@
 				F2D1925E17035C3B004B8DCD /* CPToken.m in Sources */,
 				F2D1925F17035C3B004B8DCD /* CPWhiteSpaceToken.m in Sources */,
 				F29C65831705A3A0003D2B24 /* TCMCommandLineUtility.m in Sources */,
+				F21B6C36176501E100825BF3 /* AVCaptureDeviceFormat_DescriptionAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

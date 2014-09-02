@@ -22,11 +22,27 @@ branch_name = %x[git rev-parse --abbrev-ref HEAD].strip
 base_snap_path =  File.expand_path "~/Library/Application Support/lolsnap/"
 
 # install and remove
-commit_hook_path = File.join(top_level_dir, '.git/hooks/post-commit')
+git_dir = File.join(top_level_dir, '.git')
+unless File.directory?(git_dir) then
+	File.open(git_dir,'r') do |infile|
+		while (line = infile.gets)
+			line = line.strip
+			prefix = 'gitdir:'
+			if line.start_with? prefix then
+				content = line[prefix.length..-1].strip
+				git_dir = File.expand_path(File.join(top_level_dir, content))
+				break
+			end
+		end
+	end
+end
+
+commit_hook_dir  = File.join(git_dir,'hooks')
+commit_hook_path = File.join(commit_hook_dir,'/post-commit')
 ARGV.each {|arg|
 	if (arg == "--install") then
 		here = File.expand_path(__FILE__)
-		%x[echo '#!/bin/sh\n#{here}' > '#{commit_hook_path}' && chmod a+x '#{commit_hook_path}']
+		%x[mkdir -p '#{commit_hook_dir}'; echo '#!/bin/sh\n#{here}' > '#{commit_hook_path}' && chmod a+x '#{commit_hook_path}']
 		print "installed lolsnap post-commit hook\n"
 		exit (0)
 	elsif (arg == "--remove") then 
@@ -34,7 +50,9 @@ ARGV.each {|arg|
 		print "removed lolsnap post-commit hook\n"
 		exit (0)
 	elsif (arg == "--show") then 
-		%x[open '#{base_snap_path}']
+		path_to_show = base_snap_path
+		path_to_show = File.join(base_snap_path, repo_name) unless repo_name.nil? or repo_name.length == 0
+		%x[open '#{path_to_show}']
 		exit(0)
 	end
 }
@@ -57,6 +75,15 @@ font_size = 40
 #print title, "\n"
 #print commit_message, "\n"
 
-snap_path = File.join(base_snap_path,"#{repo_name}/#{repo_name}_#{short_commit}.jpg")
+snap_path = File.join(base_snap_path,"#{repo_name}/#{repo_name}_#{short_commit}")
 
-%x[#{sightsnap} -p -T '#{title.escape_single}' -C '#{commit_message.escape_single}' -j 0.6 -f '#{font}' -s '#{font_size}' '#{snap_path.escape_single}' && open '#{snap_path.escape_single}']
+# one jpeg
+#%x[#{sightsnap} -p -T='#{title.escape_single}' -C='#{commit_message.escape_single}' -j 0.6 -f '#{font}' -s '#{font_size}' '#{snap_path.escape_single}.jpg' && open '#{snap_path.escape_single}.jpg']
+#exit(0)
+
+# animated gif
+tmpsnappath = '/tmp/sightsnap'
+%x[mkdir -p #{tmpsnappath}]
+tmpsnapbasename = File.join(tmpsnappath,'lolcommit')
+
+%x[/Users/domde/bin/sightsnap -poz -k 1 -T '#{title.escape_single}' -C='#{commit_message.escape_single}' -j 0.45 -t 0.2,1.2 -s #{font_size} -f '#{font}' '#{tmpsnapbasename.escape_single}' && ffmpeg -y -r 8 -i #{tmpsnapbasename}-%07d.jpg -vf 'scale=768:-1' '#{snap_path.escape_single}.gif' && open '#{snap_path.escape_single}.gif' && rm -rf #{tmpsnappath}]
