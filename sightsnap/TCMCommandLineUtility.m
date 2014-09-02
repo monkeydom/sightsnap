@@ -374,7 +374,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
     
 	NSInteger terminalWidth = 80;
     if ([package booleanValueForSignature:help]) {
-		puts("sightsnap v0.6 by @monkeydom");
+		puts("sightsnap v0.6.1 by @monkeydom");
         puts("usage: sightsnap [options] [output[.jpg|.png]] [options]");
 		puts("");
 		puts("Default output filename is signtsnap.jpg - if no extension is given, jpg is used.\nIf you add directory in front, it will be created.");
