@@ -288,7 +288,7 @@
     [context drawImage:coreImage inRect:contextRect fromRect:coreImage.extent];
     if (self.drawingBlock) {
         CGContextSaveGState(cgContext);
-        ((TCMCaptureQuartzAction)self.drawingBlock)(cgContext, contextRect);
+        ((TCMCaptureQuartzAction)self.drawingBlock)(cgContext, contextRect, [NSDate date]);
         CGContextRestoreGState(cgContext);
     }
     
