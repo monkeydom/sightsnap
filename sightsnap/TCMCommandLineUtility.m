@@ -247,11 +247,13 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
 @property (nonatomic) NSInteger frameIndex;
 @property (nonatomic) NSString *baseFilePath;
 @property (nonatomic, strong) NSDate *lastFrameFireDate;
+@property (nonatomic, strong) NSDate *timeStampDate;
 @property (nonatomic, strong) NSDate *lastFrameScheduledDate;
 @property (nonatomic, strong) NSDate *firstCapturedFrameDate;
 @property (nonatomic) CGFloat fontSize;
 @property (nonatomic, strong) NSString *fontName;
 @property (nonatomic) BOOL shouldTimeStamp;
+@property (nonatomic) BOOL onlyOneTimeStamp;
 @property (nonatomic) BOOL shouldCaptureMP4;
 @property (nonatomic, strong) NSString *topLeftText;
 @property (nonatomic, strong) NSString *titleText;
@@ -278,6 +280,8 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
         self.fontSize = 40;
         self.fontName = @"HelveticaNeue-Bold";
         self.shouldTimeStamp = NO;
+        self.onlyOneTimeStamp = NO;
+        self.shouldCaptureMP4 = NO;
 		self.helpFirstTabPosition = 30;
     }
     return self;
@@ -326,6 +330,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
     *maxHeight = [FSArgumentSignature argumentSignatureWithFormat:@"[-y --maxheight]="],
     *jpegQuality = [FSArgumentSignature argumentSignatureWithFormat:@"[-j --jpegQuality]="],
     *stamp = [FSArgumentSignature argumentSignatureWithFormat:@"[-p --timeStamp]"],
+    *onestamp = [FSArgumentSignature argumentSignatureWithFormat:@"[-o --onlyOneTimeStamp]"],
     *title = [FSArgumentSignature argumentSignatureWithFormat:@"[-T --title]="],
     *comment = [FSArgumentSignature argumentSignatureWithFormat:@"[-C --comment]="],
     *fontName = [FSArgumentSignature argumentSignatureWithFormat:@"[-f --fontName]="],
@@ -333,7 +338,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
     *device = [FSArgumentSignature argumentSignatureWithFormat:@"[-d --device]="],
     *zeroStart = [FSArgumentSignature argumentSignatureWithFormat:@"[-z --startAtZero]"],
     *help = [FSArgumentSignature argumentSignatureWithFormat:@"[-h --help]"];
-    NSArray *signatures = @[list,device,time,zeroStart,mp4,skipframes,jpegQuality,maxWidth,maxHeight,stamp,title,comment,fontName,fontSize,help];
+    NSArray *signatures = @[list,device,time,zeroStart,mp4,skipframes,jpegQuality,maxWidth,maxHeight,stamp, onestamp,title,comment,fontName,fontSize,help];
 	
 	
 	self.helpFirstTabPosition = 26;
@@ -347,6 +352,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
 	[jpegQuality setDescriptionHelper:[self descriptionHelperWithHelpText:@"JPEG image quality from 0.0 to 1.0 (default is 0.8)." valueName:@"q"]];
 	[help setDescriptionHelper:       [self descriptionHelperWithHelpText:@"Shows this help."]];
 	[stamp setDescriptionHelper:      [self descriptionHelperWithHelpText:@"Adds a Timestamp to the captured image."]];
+	[onestamp setDescriptionHelper:   [self descriptionHelperWithHelpText:@"Freeze the TimeStamp to the first value for all images."]];
 	[title setDescriptionHelper:      [self descriptionHelperWithHelpText:@"Adds <text> to the upper right of the image." valueName:@"text"]];
 	[comment setDescriptionHelper:    [self descriptionHelperWithHelpText:@"Adds <text> to the lower left of the image."  valueName:@"text"]];
 	[fontSize setDescriptionHelper:   [self descriptionHelperWithHelpText:@"Font size for timestamp in <size> px. (default is 40)" valueName:@"size"]];
@@ -368,7 +374,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
     
 	NSInteger terminalWidth = 80;
     if ([package booleanValueForSignature:help]) {
-		puts("sightsnap v0.5 by @monkeydom");
+		puts("sightsnap v0.6 by @monkeydom");
         puts("usage: sightsnap [options] [output[.jpg|.png]] [options]");
 		puts("");
 		puts("Default output filename is signtsnap.jpg - if no extension is given, jpg is used.\nIf you add directory in front, it will be created.");
@@ -377,7 +383,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
 		}
 		puts("");
 		puts("To make timelapse videos use ffmpeg like this:\n  ffmpeg -i 'sightsnap-\%07d.jpg' sightsnap.mp4");
-        puts("To make animated gifs use e.g. ffmpeg -r 10 -i Test3-%07d.jpg -vf 'scale=512:-1' test3.gif ");
+        puts("To make animated gifs use: \n  ffmpeg -r 10 -i Test3-%07d.jpg -vf 'scale=768:-1' test3.gif ");
     } else {
         TCMCaptureManager *captureManager = [TCMCaptureManager captureManager];
 		AVCaptureDevice *defaultDevice = captureManager.defaultVideoDevice;
@@ -455,6 +461,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
             }
             
             self.shouldTimeStamp = [package booleanValueForSignature:stamp];
+            self.onlyOneTimeStamp = [package booleanValueForSignature:onestamp];
 			
 			id titleValue = [package firstObjectForSignature:title];
 			if (titleValue) {
@@ -535,10 +542,15 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
 
     TCMCaptureManager *captureManager = [TCMCaptureManager captureManager];
 	if (self.shouldTimeStamp) {
+        if (!self.timeStampDate) {
+            self.timeStampDate = [NSDate date];
+        } else if (!self.onlyOneTimeStamp) {
+            self.timeStampDate = self.lastFrameFireDate;
+        }
         NSDateFormatter *dateFormatter = [NSDateFormatter new];
         dateFormatter.timeStyle = NSDateFormatterMediumStyle;
         dateFormatter.dateStyle = NSDateFormatterShortStyle;
-		self.topLeftText = [dateFormatter stringFromDate:self.lastFrameFireDate];
+		self.topLeftText = [dateFormatter stringFromDate:self.timeStampDate];
 	}
     if (self.topLeftText || self.titleText || self.commentText) {
 		
