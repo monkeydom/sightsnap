@@ -13,11 +13,11 @@
 		F21B6C3A1765032C00825BF3 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F21B6C391765032C00825BF3 /* CoreMedia.framework */; };
 		F21B6C3C1765033300825BF3 /* CoreMediaIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F21B6C3B1765033300825BF3 /* CoreMediaIO.framework */; };
 		F23D89461712ED3900BCDCAE /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F23D89451712ED3900BCDCAE /* CoreText.framework */; };
+		F25B168E2141D0FC0065840D /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2D19194170342C3004B8DCD /* QTKit.framework */; };
 		F29C65831705A3A0003D2B24 /* TCMCommandLineUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = F29C65821705A3A0003D2B24 /* TCMCommandLineUtility.m */; };
 		F2D19187170341A8004B8DCD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2D19186170341A8004B8DCD /* Foundation.framework */; };
 		F2D1918A170341A8004B8DCD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D19189170341A8004B8DCD /* main.m */; };
 		F2D1918E170341A8004B8DCD /* sightsnap.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = F2D1918D170341A8004B8DCD /* sightsnap.1 */; };
-		F2D19195170342C3004B8DCD /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2D19194170342C3004B8DCD /* QTKit.framework */; };
 		F2D1919917034604004B8DCD /* TCMCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1919817034604004B8DCD /* TCMCaptureManager.m */; };
 		F2D191C71703576E004B8DCD /* FSAliasRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1919D1703572A004B8DCD /* FSAliasRecognizer.m */; };
 		F2D191C81703576E004B8DCD /* FSAliasToken.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1919F1703572A004B8DCD /* FSAliasToken.m */; };
@@ -256,6 +256,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F25B168E2141D0FC0065840D /* QTKit.framework in Frameworks */,
 				F23D89461712ED3900BCDCAE /* CoreText.framework in Frameworks */,
 				F2D1926E170483E0004B8DCD /* CoreServices.framework in Frameworks */,
 				F2D1926C170483C5004B8DCD /* ImageIO.framework in Frameworks */,
@@ -263,7 +264,6 @@
 				F2D192681704839E004B8DCD /* CoreVideo.framework in Frameworks */,
 				F2D1926717048396004B8DCD /* QuartzCore.framework in Frameworks */,
 				F2D192661704838E004B8DCD /* Quartz.framework in Frameworks */,
-				F2D19195170342C3004B8DCD /* QTKit.framework in Frameworks */,
 				F2D19187170341A8004B8DCD /* Foundation.framework in Frameworks */,
 				F21B6C331764FF0800825BF3 /* AVFoundation.framework in Frameworks */,
 				F21B6C38176502E000825BF3 /* AudioToolbox.framework in Frameworks */,

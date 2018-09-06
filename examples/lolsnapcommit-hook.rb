@@ -3,7 +3,9 @@
 # to install simply copy to somewhere in your path where this script will stay
 # and either make sure sightsnap is in your path e.g. /usr/bin or you supply the
 # full path here instead of the shorthand
-sightsnap = "sightsnap"
+# you can find out about the whereabouts in the terminal with 'which <toolname>'
+sightsnap = "/usr/local/bin/sightsnap"
+ffmpeg = "/usr/local/bin/ffmpeg"
 
 # then run     lolsnapcommit-hook.rb --install  to install the hook in a repository when inside the repo
 # you can run  lolsnapcommit-hook.rb   to test it for the most recent commit
@@ -65,7 +67,6 @@ class String
     end
 end
 
-
 # settings
 title = "%s %s:%10s" % [repo_name, branch_name, short_commit]
 font = "Impact"
@@ -86,4 +87,4 @@ tmpsnappath = '/tmp/sightsnap'
 %x[mkdir -p #{tmpsnappath}]
 tmpsnapbasename = File.join(tmpsnappath,'lolcommit')
 
-%x[/Users/domde/bin/sightsnap -poz -k 1 -T '#{title.escape_single}' -C='#{commit_message.escape_single}' -j 0.45 -t 0.2,1.2 -s #{font_size} -f '#{font}' '#{tmpsnapbasename.escape_single}' && ffmpeg -y -r 8 -i #{tmpsnapbasename}-%07d.jpg -vf 'scale=768:-1' '#{snap_path.escape_single}.gif' && open '#{snap_path.escape_single}.gif' && rm -rf #{tmpsnappath}]
+%x[#{sightsnap} -poz -T '#{title.escape_single}' -C='#{commit_message.escape_single}' -j 0.45 -t 0.2,1.2 -s #{font_size} -f '#{font}' '#{tmpsnapbasename.escape_single}' && #{ffmpeg} -y -r 8 -i #{tmpsnapbasename}-%07d.jpg -vf 'scale=768:-1' '#{snap_path.escape_single}.gif' && open '#{snap_path.escape_single}.gif' && rm -rf #{tmpsnappath}]

@@ -7,7 +7,7 @@
 //
 
 #import "TCMCommandLineUtility.h"
-#import <QTKit/QTKit.h>
+#import <QTKit/QTKitDefines.h>
 #import "TCMCaptureManager.h"
 #import "FSArguments.h"
 #import "FSArguments_Coalescer_Internal.h"
@@ -215,17 +215,6 @@ static void exception_handler(NSException *anException) {
 	S_defaultHandler(anException);
 }
 
-@interface QTCaptureDevice (SightSnapAdditions)
-- (NSString *)localizedUniqueDisplayName;
-@end
-
-@implementation QTCaptureDevice (SightSnapAdditions)
-- (NSString *)localizedUniqueDisplayName {
-	NSString *result = [NSString stringWithFormat:@"%@ [%@ - %@]", self.localizedDisplayName, self.modelUniqueID, self.uniqueID];
-	return result;
-}
-@end
-
 @interface AVCaptureDevice (SightSnapAdditions)
 - (NSString *)localizedUniqueDisplayName;
 @end
@@ -374,7 +363,7 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
     
 	NSInteger terminalWidth = 80;
     if ([package booleanValueForSignature:help]) {
-		puts("sightsnap v0.6 by @monkeydom");
+		puts("sightsnap v0.6.1 by @monkeydom");
         puts("usage: sightsnap [options] [output[.jpg|.png]] [options]");
 		puts("");
 		puts("Default output filename is signtsnap.jpg - if no extension is given, jpg is used.\nIf you add directory in front, it will be created.");
@@ -539,41 +528,51 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
 
 - (void)captureImage {
     self.lastFrameFireDate = [NSDate new];
-
-    TCMCaptureManager *captureManager = [TCMCaptureManager captureManager];
-	if (self.shouldTimeStamp) {
-        if (!self.timeStampDate) {
-            self.timeStampDate = [NSDate date];
-        } else if (!self.onlyOneTimeStamp) {
-            self.timeStampDate = self.lastFrameFireDate;
-        }
-        NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    static NSDateFormatter *dateFormatter = nil;
+    if (!dateFormatter) {
+        dateFormatter = [NSDateFormatter new];
         dateFormatter.timeStyle = NSDateFormatterMediumStyle;
         dateFormatter.dateStyle = NSDateFormatterShortStyle;
-		self.topLeftText = [dateFormatter stringFromDate:self.timeStampDate];
+    }
+    TCMCaptureManager *captureManager = [TCMCaptureManager captureManager];
+    BOOL shouldTimeStamp = self.shouldTimeStamp;
+	if (shouldTimeStamp) {
+        if (!self.timeStampDate && self.onlyOneTimeStamp) {
+            self.timeStampDate = [NSDate date];
+        }
 	}
+    NSDate *timeStampDate = self.timeStampDate;
+    
     if (self.topLeftText || self.titleText || self.commentText) {
-		
+		NSString *fontName = self.fontName;
+        CGFloat fontSize = self.fontSize;
+        
 		SIGHTCaption *topLeftCaption;
 		if (self.topLeftText) {
-			SIGHTCaption *caption = [SIGHTCaption captionWithText:self.topLeftText position:kSIGHTCaptionPositionTopLeft fontName:self.fontName fontSize:self.fontSize];
+			SIGHTCaption *caption = [SIGHTCaption captionWithText:self.topLeftText position:kSIGHTCaptionPositionTopLeft fontName:fontName fontSize:fontSize];
 			topLeftCaption = caption;
 		}
 		SIGHTCaption *topRightCaption;
 		if (self.titleText) {
-			SIGHTCaption *caption = [SIGHTCaption captionWithText:self.titleText position:kSIGHTCaptionPositionTopRight fontName:self.fontName fontSize:self.fontSize];
+			SIGHTCaption *caption = [SIGHTCaption captionWithText:self.titleText position:kSIGHTCaptionPositionTopRight fontName:fontName fontSize:fontSize];
 			topRightCaption = caption;
 		}
 		
 		SIGHTCaption *bottomLeftCaption;
 		if (self.commentText) {
-			SIGHTCaption *caption = [SIGHTCaption captionWithText:self.commentText position:kSIGHTCaptionPositionBottomLeft fontName:self.fontName fontSize:self.fontSize];
+			SIGHTCaption *caption = [SIGHTCaption captionWithText:self.commentText position:kSIGHTCaptionPositionBottomLeft fontName:fontName fontSize:fontSize];
 			bottomLeftCaption = caption;
 		}
-        TCMCaptureQuartzAction drawAction = ^(CGContextRef ctx, CGRect aFrame) {
+        TCMCaptureQuartzAction drawAction = ^(CGContextRef ctx, CGRect aFrame, NSDate *frameTimestampDate) {
 			CGFloat topRightCaptionFirstLineMargin = 0.0;
-			if (topLeftCaption) {
-				topRightCaptionFirstLineMargin = [topLeftCaption drawInContext:ctx frame:aFrame firstLineLessWidth:0];
+			if (shouldTimeStamp) {
+                NSDate *date = timeStampDate;
+                if (!date) {
+                    date = frameTimestampDate;
+                }
+                NSString *timeStampString = [dateFormatter stringFromDate:date];
+                SIGHTCaption *caption = [SIGHTCaption captionWithText:timeStampString position:kSIGHTCaptionPositionTopLeft fontName:fontName fontSize:fontSize];
+				topRightCaptionFirstLineMargin = [caption drawInContext:ctx frame:aFrame firstLineLessWidth:0];
 			}
 			if (topRightCaption) {
 				[topRightCaption drawInContext:ctx frame:aFrame firstLineLessWidth:topRightCaptionFirstLineMargin];
@@ -600,6 +599,8 @@ typedef NSString * (^FSDescriptionHelper) (FSArgumentSignature *aSignature, NSUI
         if (!self.firstCapturedFrameDate) {
             //[[NSUserNotificationCenter defaultUserNotificationCenter] scheduleNotification:[[NSUserNotification alloc] init]];
             self.firstCapturedFrameDate = [NSDate date];
+            // fix the hop at the first frame due to the skipframes
+            nextScheduleDate = [self.firstCapturedFrameDate dateByAddingTimeInterval:self.grabInterval];
         } else {
             NSTimeInterval maxGrabDuration = self.maxGrabDuration;
             if (maxGrabDuration > 0.0) {

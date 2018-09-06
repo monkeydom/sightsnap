@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 
-typedef void (^TCMCaptureQuartzAction)(CGContextRef aContext, CGRect aFrame);
+typedef void (^TCMCaptureQuartzAction)(CGContextRef aContext, CGRect aFrame, NSDate *timestampTaken);
 
 @interface TCMCaptureManager : NSObject
 @property (nonatomic) CGFloat jpegQuality;
