@@ -108,13 +108,10 @@
                 NSAssert([[values objectAtIndex:0] isKindOfClass:[CPKeywordToken class]], @"expecting keyword token");
                 NSAssert([[values objectAtIndex:1] isKindOfClass:[CPKeywordToken class]], @"expecting keyword token");
                 NSAssert([[values objectAtIndex:3] isKindOfClass:[CPKeywordToken class]], @"expecting keyword token");
-                NSNumber * location = [[values objectAtIndex:2] number];
-                valueRange.location = [location integerValue];
-                valueRange.length = [location integerValue];
-                NSNumber * length;
+                valueRange.location = [(CPKeywordToken *)[values objectAtIndex:2] characterNumber];
+                valueRange.length =  valueRange.location;
                 if ([[values objectAtIndex:4] isKindOfClass:[CPNumberToken class]]) {
-                    length = [[values objectAtIndex:4] number];
-                    valueRange.length = MAX(valueRange.location, [length integerValue]);
+                    valueRange.length = MAX(valueRange.location, [(CPKeywordToken *)[values objectAtIndex:4] characterNumber]);
                 } else {
                     valueRange.length = NSNotFound; // infinite
                 }

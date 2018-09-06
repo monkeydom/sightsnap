@@ -7,7 +7,7 @@
 //
 
 #import "TCMCommandLineUtility.h"
-#import <QTKit/QTKit.h>
+#import <QTKit/QTKitDefines.h>
 #import "TCMCaptureManager.h"
 #import "FSArguments.h"
 #import "FSArguments_Coalescer_Internal.h"
@@ -214,17 +214,6 @@ static void exception_handler(NSException *anException) {
 	NSLog(@"%s %@",__FUNCTION__,anException);
 	S_defaultHandler(anException);
 }
-
-@interface QTCaptureDevice (SightSnapAdditions)
-- (NSString *)localizedUniqueDisplayName;
-@end
-
-@implementation QTCaptureDevice (SightSnapAdditions)
-- (NSString *)localizedUniqueDisplayName {
-	NSString *result = [NSString stringWithFormat:@"%@ [%@ - %@]", self.localizedDisplayName, self.modelUniqueID, self.uniqueID];
-	return result;
-}
-@end
 
 @interface AVCaptureDevice (SightSnapAdditions)
 - (NSString *)localizedUniqueDisplayName;
